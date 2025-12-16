@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import { SmoothScroll } from "./components/SmoothScroll";
 import { GrainOverlay } from "./components/GrainOverlay";
+import { Navbar } from "./components/Navbar";
+import { PageOffset} from "@/app/components/PageOffset";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -34,11 +36,14 @@ export default function RootLayout({
         className={`${cormorant.variable} ${manrope.variable} font-sans antialiased bg-[#F8F5F1] text-gray-900 selection:bg-[#3B4034] selection:text-white`}
       >
         <SmoothScroll>
+          {/* 1. 顶部导航（全站） */}
+          <Navbar />
+
           {/* 2. 视觉增强层 */}
           <GrainOverlay />
 
-          {/* 3. 页面主体 */}
-          {children}
+          {/* 3. 页面主体（给 fixed Navbar 让位） */}
+          <PageOffset>{children}</PageOffset>
         </SmoothScroll>
       </body>
     </html>
