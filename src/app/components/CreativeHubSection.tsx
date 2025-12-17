@@ -49,7 +49,7 @@ export function CreativeHubSection() {
           {/* 左图 */}
           <motion.div variants={fadeInUp} className="aspect-[4/3] overflow-hidden bg-white/5 group">
              <img
-               src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1000&auto=format&fit=crop"
+               src="/Homeowners.webp"
                alt="Creative Hub Showroom Area"
                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-90 group-hover:opacity-100"
              />
@@ -58,7 +58,7 @@ export function CreativeHubSection() {
           {/* 右图 */}
           <motion.div variants={fadeInUp} className="aspect-[4/3] overflow-hidden bg-white/5 group">
              <img
-               src="https://images.unsplash.com/photo-1631679706909-1e44ddd2a96b?q=80&w=1000&auto=format&fit=crop"
+               src="/Professionals.webp"
                alt="Material Selection Table"
                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-90 group-hover:opacity-100"
              />

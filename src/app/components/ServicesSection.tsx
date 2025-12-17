@@ -17,14 +17,14 @@ const SERVICES = [
     id: 2,
     title: "Local Processing",
     description: "Expert stone cutting and finishing in-house.",
-    image: "https://images.unsplash.com/photo-1531835551805-16d864c8d311?q=80&w=1000&auto=format&fit=crop", 
+    image: "/local-processing.jpg", 
     icon: Layers, 
   },
   {
     id: 3,
     title: "Design Consultation",
     description: "Collaborative sessions to bring vision to life.",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1000&auto=format&fit=crop", 
+    image: "/design_consulation.png", 
     icon: Users, 
   },
 ];

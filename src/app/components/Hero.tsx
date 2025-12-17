@@ -27,7 +27,7 @@ export function Hero() {
       {/* 1. 背景图层 (应用视差动画) */}
       <motion.div style={{ y, opacity }} className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2666&auto=format&fit=crop"
+          src="/AushenShop.webp"
           alt="Showroom Interior"
           // 关键点：scale-110 稍微放大图片，防止视差滚动时露出边缘空白
           className="w-full h-full object-cover brightness-[0.85] scale-110"

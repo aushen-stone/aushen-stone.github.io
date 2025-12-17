@@ -20,7 +20,7 @@ export function ProjectShowcase() {
             className="h-full w-full"
           >
             <img
-              src="https://images.unsplash.com/photo-1596178065887-1198b6148b2b?q=80&w=2670&auto=format&fit=crop"
+              src="/Application001.webp"
               alt="Aerial view of pool project"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
             />
