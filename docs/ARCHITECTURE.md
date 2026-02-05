@@ -1,0 +1,88 @@
+# Aushen Web - Architecture Overview
+
+## Project Type
+- Next.js App Router project.
+- Frontend-only app with static data and generated TypeScript data files.
+
+## Directory Structure (High Level)
+- `src/app/` contains routes and page-level UI.
+- `src/app/components/` contains reusable UI sections and layout components.
+- `src/data/` contains generated data and manual overrides.
+- `src/types/` contains shared TypeScript types.
+- `public/` contains static assets.
+- `scripts/` contains data build tooling.
+- `docs/` contains project documentation.
+
+## Routing
+- `src/app/page.tsx` is the homepage composition.
+- Product list: `src/app/products/page.tsx`
+- Product detail: `src/app/products/[slug]/page.tsx`
+- Other routes: `about`, `contact`, `services`, `projects`
+
+## Data Flow
+- Source of truth: `docs/aushen_product_library.csv` (outside app folder).
+- Build step: `scripts/build-product-data.ts` parses CSV and generates:
+  - `src/data/products.generated.ts`
+  - `src/data/categories.generated.ts`
+- Manual override layer:
+  - `src/data/product_overrides.ts` for tone tags, description, and image overrides.
+  - Placeholder image path: `/Application001.webp`
+
+## Data Contracts (What to Read vs. What to Write)
+- **Read from**:
+  - `Product.applicationIndex` for application-first UI (application -> finish -> sizes).
+  - `Product.finishes` if you need raw finish/application matrix.
+- **Write to**:
+  - `docs/aushen_product_library.csv` for product inventory changes.
+  - `src/data/product_overrides.ts` for tone tags, descriptions, and image mapping.
+- **Do not edit**:
+  - `src/data/products.generated.ts` and `src/data/categories.generated.ts` (build artifacts; regenerate instead).
+
+## Core Data Types
+- `Product`
+  - `materialId`, `materialName`
+  - `finishes` (finish variants with applications and sizes)
+  - `applicationIndex` (application-first index with finishes + sizes)
+  - `media` (product photo status + application photo progress)
+- `FinishVariant`
+  - `slipRating`
+  - `applications` (each with sizes)
+- `ApplicationIndexEntry`
+  - `label` and `category` metadata
+  - `finishes` for that application, each with sizes
+
+## Product UX
+- Product list (`/products`)
+  - Uses generated product data.
+  - Filters: material, application, tone.
+  - Placeholder images unless overridden.
+- Product detail (`/products/[slug]`)
+  - Application-first selector, then finish.
+  - Sizes are shown for the selected application+finish.
+  - Description from overrides, otherwise a default message.
+
+## Category Sources
+- Materials and applications are generated from the CSV into `categories.generated.ts`.
+- Navbar and sidebar menus use the generated categories.
+
+## Regenerating Data
+From `aushen-web/`:
+```bash
+npx tsc --target ES2019 --module commonjs --esModuleInterop --outDir /tmp/aushen-scripts scripts/build-product-data.ts
+node /tmp/aushen-scripts/build-product-data.js
+```
+
+## Pitfalls & Gotchas
+- **CSV header format**: 3-row header + forward-filled product fields. Missing this yields wrong grouping.
+- **Size values are messy**: mixed formats (`600x400x20/60`, `Random Size x20-30mm`, parentheses). We keep `raw` and only parse clean values.
+- **Client components and params**: detail page uses `useParams()`; passing `params` props can be undefined in client components.
+- **Generated files are overwritten** on regeneration.
+- **Strict lint rules**: `react/no-unescaped-entities`, `no-html-link-for-pages`, `react-hooks/set-state-in-effect` are common sources of dev errors.
+
+## Legacy / Unused
+- `src/data/categories.ts` is legacy; the app uses `src/data/categories.generated.ts`.
+
+## Notable Constraints
+- CSV contains a matrix of applications and sizes with forward-filled product metadata.
+- Size parsing is best-effort and keeps raw size strings when parsing is ambiguous.
+- Tone tags and descriptions are not in CSV and must be manually defined.
