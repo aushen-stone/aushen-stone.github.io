@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PRODUCT_CATEGORIES } from "@/data/categories";
+import { PRODUCT_CATEGORIES } from "@/data/categories.generated";
 
 export function Navbar() {
   const pathname = usePathname();

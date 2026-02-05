@@ -1,48 +1,19 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
+import { useParams } from "next/navigation";
 import { Navbar } from "@/app/components/Navbar";
 import { Footer } from "@/app/components/Footer";
 import { ArrowDownLeft, ArrowRight, Phone, Plus, Minus, MoveDown } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { PRODUCTS } from "@/data/products.generated";
+import {
+  DEFAULT_PRODUCT_DESCRIPTION,
+  DEFAULT_PRODUCT_IMAGE,
+  PRODUCT_OVERRIDES,
+} from "@/data/product_overrides";
+import type { Product } from "@/types/product";
 
-// --- MOCK DATA (保持不变) ---
-const PRODUCT = {
-  name: "Cat's Paw Sawn Bluestone",
-  subtitle: "Volcanic Basalt • Victoria",
-  description:
-    "A unique Australian bluestone characterized by distinctive natural air pockets (cats paws) and consistent grey tones. The sawn finish provides a non-slip surface perfect for modern architecture.",
-  images: [
-    {
-      src: "https://images.unsplash.com/photo-1620626012053-93f2685048d6?q=80&w=1600&auto=format&fit=crop",
-      alt: "Hero Texture Detail",
-      type: "hero",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop",
-      alt: "Poolside Application",
-      type: "lifestyle",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1517643312431-7e887884e942?q=80&w=1200&auto=format&fit=crop",
-      alt: "Outdoor Paver Context",
-      type: "lifestyle",
-    },
-  ],
-  options: {
-    finishes: ["Sawn", "Honed", "Sandblasted", "Chiselled"],
-    sizes: ["600x300", "800x400", "600x600", "1000x500", "French Pattern"],
-  },
-  details: {
-    techSpecs: [
-      { label: "Density", value: "2650 kg/m³" },
-      { label: "Water Absorption", value: "< 0.1%" },
-      { label: "Origin", value: "Victoria, Australia" },
-    ],
-    suitability: "Driveways, Pool Coping, Patios, Wall Cladding",
-    delivery: "Stock items dispatched within 48 hours.",
-  },
-};
 
 // === Hero 视差图（用于破格 overlap 的第一张）===
 function HeroParallaxImage({ src, alt }: { src: string; alt: string }) {
@@ -82,7 +53,7 @@ function OptionSelector({
   onSelect,
 }: {
   title: string;
-  options: string[];
+  options: { label: string; value: string }[];
   selected: string;
   onSelect: (val: string) => void;
 }) {
@@ -94,15 +65,15 @@ function OptionSelector({
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => (
           <button
-            key={opt}
-            onClick={() => onSelect(opt)}
+            key={opt.value}
+            onClick={() => onSelect(opt.value)}
             className={`relative px-5 py-2.5 text-[10px] uppercase tracking-widest transition-all duration-300 border ${
-              selected === opt
+              selected === opt.value
                 ? "bg-[#1a1c18] text-white border-[#1a1c18]"
                 : "bg-transparent text-gray-500 border-gray-200 hover:border-gray-900"
             }`}
           >
-            {opt}
+            {opt.label}
           </button>
         ))}
       </div>
@@ -155,16 +126,88 @@ function AccordionItem({
 }
 
 // === 主页面（Chiaroscuro 重构）===
-export default function ProductDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  // params 暂时不用也没关系（未来接真实数据用）
-  void params;
+type ProductDetailViewProps = {
+  product: Product;
+};
 
-  const [selectedFinish, setSelectedFinish] = useState(PRODUCT.options.finishes[0]);
-  const [selectedSize, setSelectedSize] = useState(PRODUCT.options.sizes[0]);
+function ProductDetailView({ product }: ProductDetailViewProps) {
+  const override = PRODUCT_OVERRIDES[product.slug];
+  const description = override?.description || DEFAULT_PRODUCT_DESCRIPTION;
+  const imageUrl = override?.imageUrl || DEFAULT_PRODUCT_IMAGE;
+
+  const images = useMemo(
+    () => [
+      { src: imageUrl, alt: "Hero Texture Detail", type: "hero" },
+      { src: imageUrl, alt: "Application Context", type: "lifestyle" },
+      { src: imageUrl, alt: "Surface Detail", type: "lifestyle" },
+    ],
+    [imageUrl]
+  );
+
+  const applicationOptions = useMemo(
+    () =>
+      product.applicationIndex.map((application) => ({
+        label: application.label,
+        value: application.id,
+      })),
+    [product]
+  );
+
+  const [selectedApplicationId, setSelectedApplicationId] = useState(
+    applicationOptions[0]?.value || ""
+  );
+
+  const selectedApplication =
+    product.applicationIndex.find(
+      (application) => application.id === selectedApplicationId
+    ) || product.applicationIndex[0];
+
+  const finishOptions = useMemo(
+    () =>
+      (selectedApplication?.finishes || []).map((finish) => ({
+        label: finish.slipRating ? `${finish.name} (${finish.slipRating})` : finish.name,
+        value: finish.id,
+      })),
+    [selectedApplication]
+  );
+
+  const [selectedFinishId, setSelectedFinishId] = useState(
+    finishOptions[0]?.value || ""
+  );
+
+  const selectedFinish =
+    selectedApplication?.finishes.find((finish) => finish.id === selectedFinishId) ||
+    selectedApplication?.finishes[0];
+
+  const handleApplicationSelect = (applicationId: string) => {
+    setSelectedApplicationId(applicationId);
+    const nextApplication = product.applicationIndex.find(
+      (application) => application.id === applicationId
+    );
+    if (nextApplication?.finishes.length) {
+      setSelectedFinishId(nextApplication.finishes[0].id);
+    }
+  };
+
+  const subtitle = selectedApplication
+    ? `${product.materialName} • ${selectedApplication.label}`
+    : product.materialName;
+
+  const suitability = useMemo(() => {
+    const labels = new Set<string>();
+    product.applicationIndex.forEach((application) => labels.add(application.label));
+    return labels.size > 0 ? Array.from(labels).join(", ") : "Application details coming soon.";
+  }, [product]);
+
+  const techSpecs = useMemo(
+    () => [
+      { label: "Material", value: product.materialName || "—" },
+      { label: "Finish", value: selectedFinish?.name || "—" },
+      { label: "Slip Rating", value: selectedFinish?.slipRating || "—" },
+      { label: "Application", value: selectedApplication?.label || "—" },
+    ],
+    [product, selectedFinish, selectedApplication]
+  );
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
@@ -195,12 +238,12 @@ export default function ProductDetailPage({
             </div>
 
             <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-[#F8F5F1] leading-[0.9] mb-6">
-              {PRODUCT.name}
+              {product.name}
             </h1>
 
             <div className="flex items-center gap-6 text-white/50 font-serif italic text-xl">
               <span className="block h-[1px] w-12 bg-white/20" />
-              {PRODUCT.subtitle}
+              {subtitle}
             </div>
           </div>
 
@@ -218,10 +261,10 @@ export default function ProductDetailPage({
           {/* LEFT: Visual Stream */}
           <div className="lg:col-span-7 flex flex-col gap-8 md:gap-16">
             {/* Hero：破格压线（深浅交界） + 视差 */}
-            <HeroParallaxImage src={PRODUCT.images[0].src} alt={PRODUCT.images[0].alt} />
+            <HeroParallaxImage src={images[0].src} alt={images[0].alt} />
 
             {/* 其余图：保持克制（你后面要继续加更高级 reveal 也很好接） */}
-            {PRODUCT.images.slice(1).map((img, index) => (
+            {images.slice(1).map((img, index) => (
               <div
                 key={`${img.alt}-${index}`}
                 className="relative w-full overflow-hidden shadow-xl bg-[#E5E5E5] aspect-[4/3] group"
@@ -247,24 +290,42 @@ export default function ProductDetailPage({
               <div className="space-y-4">
                 <h4 className="font-serif text-2xl text-gray-900">About the Stone</h4>
                 <p className="text-gray-600 leading-loose font-light text-sm md:text-base">
-                  {PRODUCT.description}
+                  {description}
                 </p>
               </div>
 
               {/* Selectors */}
               <div className="py-4 border-t border-gray-100">
                 <OptionSelector
-                  title="Surface Finish"
-                  options={PRODUCT.options.finishes}
-                  selected={selectedFinish}
-                  onSelect={setSelectedFinish}
+                  title="Application"
+                  options={applicationOptions}
+                  selected={selectedApplicationId}
+                  onSelect={handleApplicationSelect}
                 />
                 <OptionSelector
-                  title="Tile Size"
-                  options={PRODUCT.options.sizes}
-                  selected={selectedSize}
-                  onSelect={setSelectedSize}
+                  title="Surface Finish"
+                  options={finishOptions}
+                  selected={selectedFinishId}
+                  onSelect={setSelectedFinishId}
                 />
+
+                {selectedFinish && (
+                  <div className="mt-6">
+                    <h3 className="text-[10px] font-medium uppercase tracking-[0.2em] text-gray-400 mb-3">
+                      Available Sizes
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedFinish.sizes.map((size) => (
+                        <span
+                          key={size.raw}
+                          className="px-3 py-1 text-[10px] uppercase tracking-widest border border-gray-200 text-gray-500"
+                        >
+                          {size.raw}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Actions */}
@@ -293,7 +354,7 @@ export default function ProductDetailPage({
               <div className="pt-6">
                 <AccordionItem title="Technical Specifications" defaultOpen>
                   <div className="grid grid-cols-2 gap-y-4 gap-x-8">
-                    {PRODUCT.details.techSpecs.map((spec) => (
+                    {techSpecs.map((spec) => (
                       <div key={spec.label} className="flex flex-col">
                         <span className="text-[10px] uppercase text-gray-400 tracking-wider mb-1">
                           {spec.label}
@@ -305,11 +366,11 @@ export default function ProductDetailPage({
                 </AccordionItem>
 
                 <AccordionItem title="Suitability & Application">
-                  <p>{PRODUCT.details.suitability}</p>
+                  <p>{suitability}</p>
                 </AccordionItem>
 
                 <AccordionItem title="Delivery Information">
-                  <p>{PRODUCT.details.delivery}</p>
+                  <p>Stock items dispatched within 48 hours.</p>
                 </AccordionItem>
               </div>
             </div>
@@ -320,4 +381,32 @@ export default function ProductDetailPage({
       <Footer />
     </main>
   );
+}
+
+export default function ProductDetailPage() {
+  const params = useParams();
+  const slugParam = params?.slug;
+  const slug = Array.isArray(slugParam) ? slugParam[0] : slugParam;
+
+  const product = useMemo(
+    () => PRODUCTS.find((item) => item.slug === slug),
+    [slug]
+  );
+
+  if (!product) {
+    return (
+      <main className="bg-[#F8F5F1] min-h-screen">
+        <Navbar />
+        <div className="max-w-4xl mx-auto px-6 md:px-12 py-40">
+          <h1 className="font-serif text-4xl text-gray-900 mb-4">Stone not found</h1>
+          <p className="text-gray-600">
+            The product you&apos;re looking for is not available yet.
+          </p>
+        </div>
+        <Footer />
+      </main>
+    );
+  }
+
+  return <ProductDetailView key={product.slug} product={product} />;
 }
