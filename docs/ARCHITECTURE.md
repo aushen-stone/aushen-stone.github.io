@@ -15,6 +15,18 @@ Last updated: 2026-02-06
 - `scripts/` contains data build tooling.
 - `docs/` contains project documentation.
 
+## Documentation Workflow
+- Single-entry file for all agents: `docs/README_AGENT.md`.
+- Canonical active docs:
+  - `docs/README_AGENT.md`
+  - `docs/ARCHITECTURE.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+- Archived session snapshots belong under `docs/archive/` (not in active execution flow).
+- Conflict handling:
+  - Execution precedence: `NEXT_STEPS.md` > `README_AGENT.md` > `WORKLOG.md` > `ARCHITECTURE.md`
+  - Architecture facts are authoritative in `ARCHITECTURE.md`.
+
 ## Routing
 - `src/app/page.tsx` is the homepage composition.
 - Product list: `src/app/products/page.tsx`
@@ -98,7 +110,7 @@ node /tmp/aushen-scripts/build-product-data.js
 - **Client components and params**: detail page uses `useParams()`; passing `params` props can be undefined in client components.
 - **Generated files are overwritten** on regeneration.
 - **Strict lint rules**: `react/no-unescaped-entities`, `no-html-link-for-pages`, `react-hooks/set-state-in-effect` are common sources of dev errors.
-- **Build environment**: `next/font/google` can fail in restricted network environments.
+- **Build environment**: build command uses webpack mode (`next build --webpack`) in this environment for stability.
 
 ## Legacy / Unused
 - `src/data/categories.ts` is legacy; the app uses `src/data/categories.generated.ts`.

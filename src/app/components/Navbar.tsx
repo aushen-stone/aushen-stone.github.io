@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,6 +15,8 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+  const mobileCloseButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const menuItems = [
     { name: "Products", href: "/products", hasDropdown: true },
@@ -31,6 +33,63 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      mobileCloseButtonRef.current?.focus();
+    }
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const container = mobileMenuRef.current;
+    if (!container) return;
+
+    const getFocusableElements = () =>
+      Array.from(
+        container.querySelectorAll<HTMLElement>(
+          "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])"
+        )
+      ).filter((el) => !el.hasAttribute("disabled"));
+
+    const handleTabLoop = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const focusable = getFocusableElements();
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    container.addEventListener("keydown", handleTabLoop);
+    return () => container.removeEventListener("keydown", handleTabLoop);
+  }, [isMobileMenuOpen]);
 
   /** 非首页默认实心 Navbar */
   const shouldBeSolid = isScrolled || !!activeMenu || !isHome;
@@ -91,7 +150,10 @@ export function Navbar() {
           {/* --- Mobile Menu Button --- */}
           <button
             className={`md:hidden z-10 p-2 transition-colors ${textColorClass}`}
-            onClick={() => setIsMobileMenuOpen(true)}
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            aria-label="Toggle navigation menu"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-nav-drawer"
           >
             <Menu strokeWidth={1.5} size={24} />
           </button>
@@ -112,10 +174,10 @@ export function Navbar() {
             className={`flex items-center gap-6 md:gap-8 text-xs font-medium uppercase tracking-widest z-10 ml-auto transition-colors ${textColorClass}`}
           >
             <Link
-              href="/login"
+              href="/contact"
               className="hidden md:block hover:opacity-70 transition-opacity"
             >
-              Login
+              Contact
             </Link>
             <div className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity">
               <ShoppingCart size={20} strokeWidth={1.2} />
@@ -181,9 +243,21 @@ export function Navbar() {
                     Curated Series
                   </h4>
                   <ul className="space-y-3">
-                    <li><a className="text-sm text-gray-600 hover:text-gray-900 hover:pl-2 transition-all">European Limestone</a></li>
-                    <li><a className="text-sm text-gray-600 hover:text-gray-900 hover:pl-2 transition-all">Organic Steppers</a></li>
-                    <li><a className="text-sm text-gray-600 hover:text-gray-900 hover:pl-2 transition-all">Pool Essentials</a></li>
+                    <li>
+                      <span className="block text-sm text-gray-600">
+                        European Limestone
+                      </span>
+                    </li>
+                    <li>
+                      <span className="block text-sm text-gray-600">
+                        Organic Steppers
+                      </span>
+                    </li>
+                    <li>
+                      <span className="block text-sm text-gray-600">
+                        Pool Essentials
+                      </span>
+                    </li>
                   </ul>
                 </div>
 
@@ -209,6 +283,108 @@ export function Navbar() {
           )}
         </AnimatePresence>
       </header>
+
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <div className="fixed inset-0 z-[120] md:hidden">
+            <motion.button
+              type="button"
+              aria-label="Close menu overlay"
+              className="absolute inset-0 bg-black/50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <motion.div
+              id="mobile-nav-drawer"
+              ref={mobileMenuRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Mobile navigation"
+              className="absolute left-0 top-0 h-full w-[min(88vw,360px)] bg-[#F8F5F1] shadow-2xl border-r border-gray-200 p-6 overflow-y-auto"
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+            >
+              <div className="flex items-center justify-between mb-8">
+                <Link
+                  href="/"
+                  className="font-serif text-2xl text-gray-900"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Aushen
+                </Link>
+                <button
+                  ref={mobileCloseButtonRef}
+                  type="button"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  aria-label="Close mobile menu"
+                  className="p-2 border border-gray-300 text-gray-800 hover:border-gray-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <nav className="space-y-1 mb-8" aria-label="Main">
+                {menuItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`block py-3 border-b border-gray-100 text-sm uppercase tracking-[0.15em] ${
+                      pathname === item.href ? "text-gray-900" : "text-gray-600"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </nav>
+
+              <div className="space-y-6">
+                <section>
+                  <h4 className="text-[11px] uppercase tracking-[0.2em] text-gray-500 mb-3">
+                    By Material
+                  </h4>
+                  <ul className="space-y-2">
+                    {PRODUCT_CATEGORIES.materials.slice(0, 6).map((cat) => (
+                      <li key={cat.slug}>
+                        <Link
+                          href={`/products?category=${cat.slug}`}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="text-sm text-gray-700"
+                        >
+                          {cat.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                <section>
+                  <h4 className="text-[11px] uppercase tracking-[0.2em] text-gray-500 mb-3">
+                    By Application
+                  </h4>
+                  <ul className="space-y-2">
+                    {PRODUCT_CATEGORIES.applications.slice(0, 6).map((cat) => (
+                      <li key={cat.slug}>
+                        <Link
+                          href={`/products?category=${cat.slug}`}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="text-sm text-gray-700"
+                        >
+                          {cat.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

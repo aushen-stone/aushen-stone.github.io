@@ -8,35 +8,32 @@ export function Preloader() {
   const [counter, setCounter] = useState(0);
 
   useEffect(() => {
-    // 1. 禁用滚动：加载时禁止用户滑动页面
     document.body.style.overflow = "hidden";
+    let exitTimer: ReturnType<typeof setTimeout> | null = null;
 
-    // 2. 模拟加载进度 (Counter Animation)
     const interval = setInterval(() => {
       setCounter((prev) => {
-        if (prev < 100) {
-          // 随机增加进度，模拟真实网络波动
-          return prev + Math.floor(Math.random() * 10) + 1;
-        } else {
-          clearInterval(interval);
-          return 100;
+        if (prev >= 100) {
+          return prev;
         }
+        const next = Math.min(100, prev + Math.floor(Math.random() * 10) + 1);
+        if (next >= 100) {
+          clearInterval(interval);
+          exitTimer = setTimeout(() => {
+            setIsLoading(false);
+            document.body.style.overflow = "unset";
+          }, 800);
+        }
+        return next;
       });
     }, 150);
 
-    // 3. 进度条跑完后的收尾
-    if (counter >= 100) {
-      setCounter(100);
-      // 延迟一点点，让用户看到 100%，然后触发离场动画
-      setTimeout(() => {
-        setIsLoading(false);
-        // 恢复滚动
-        document.body.style.overflow = "unset";
-      }, 800);
-    }
-
-    return () => clearInterval(interval);
-  }, [counter]);
+    return () => {
+      clearInterval(interval);
+      if (exitTimer) clearTimeout(exitTimer);
+      document.body.style.overflow = "unset";
+    };
+  }, []);
 
   return (
     <AnimatePresence mode="wait">

@@ -61,7 +61,7 @@ export function ProductSidebar({
 
   return (
     <aside className={className}>
-      <div className={sticky ? "sticky top-28 space-y-8" : "space-y-8"}>
+      <div className={sticky ? "sticky top-24 space-y-8" : "space-y-8"}>
         <div className="flex items-center justify-between border-b border-gray-200 pb-4">
           <span className="font-serif text-lg text-gray-900">Filters</span>
           <button

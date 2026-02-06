@@ -1,6 +1,7 @@
 // components/ProjectShowcase.tsx
 "use client"; // 必须标记为 client component 以使用 framer-motion
 
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -68,13 +69,13 @@ export function ProjectShowcase() {
                 visible: { opacity: 1, x: 0, transition: { duration: 0.6 } }
               }}
             >
-              <a
+              <Link
                 href="/projects"
                 className="group inline-flex items-center gap-3 text-xs uppercase tracking-[0.25em] font-medium text-gray-900 pb-2 border-b border-gray-900 hover:text-gray-600 hover:border-gray-600 transition-all"
               >
                 Explore More
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </a>
+              </Link>
             </motion.div>
           </motion.div>
         </div>

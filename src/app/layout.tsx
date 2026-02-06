@@ -1,24 +1,9 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Manrope } from "next/font/google";
 import { SmoothScroll } from "./components/SmoothScroll";
 import { GrainOverlay } from "./components/GrainOverlay";
 import { Navbar } from "./components/Navbar";
 import { PageOffset} from "@/app/components/PageOffset";
 import "./globals.css";
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  variable: "--font-cormorant",
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  variable: "--font-manrope",
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Aushen Stone",
@@ -33,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${cormorant.variable} ${manrope.variable} font-sans antialiased bg-[#F8F5F1] text-gray-900 selection:bg-[#3B4034] selection:text-white`}
+        className="font-sans antialiased bg-[#F8F5F1] text-gray-900 selection:bg-[#3B4034] selection:text-white"
       >
         <SmoothScroll>
           {/* 1. 顶部导航（全站） */}

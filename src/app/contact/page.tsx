@@ -9,10 +9,10 @@ function IdentityToggle({ active, onChange }: { active: 'homeowner' | 'pro', onC
   return (
     <div className="flex flex-col gap-4 mb-12">
       <span className="text-xs uppercase tracking-widest text-gray-500">I am a...</span>
-      <div className="flex gap-6">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
         <button 
           onClick={() => onChange('homeowner')}
-          className={`group flex items-center gap-3 text-lg md:text-2xl font-serif transition-colors ${active === 'homeowner' ? 'text-[#1a1c18]' : 'text-gray-300 hover:text-gray-500'}`}
+          className={`group w-full sm:w-auto flex items-center gap-3 text-base sm:text-lg md:text-2xl font-serif transition-colors ${active === 'homeowner' ? 'text-[#1a1c18]' : 'text-gray-300 hover:text-gray-500'}`}
         >
           <span className={`w-6 h-6 rounded-full border flex items-center justify-center ${active === 'homeowner' ? 'border-[#1a1c18] bg-[#1a1c18] text-white' : 'border-gray-300'}`}>
             {active === 'homeowner' && <Check size={14} />}
@@ -22,7 +22,7 @@ function IdentityToggle({ active, onChange }: { active: 'homeowner' | 'pro', onC
 
         <button 
           onClick={() => onChange('pro')}
-          className={`group flex items-center gap-3 text-lg md:text-2xl font-serif transition-colors ${active === 'pro' ? 'text-[#1a1c18]' : 'text-gray-300 hover:text-gray-500'}`}
+          className={`group w-full sm:w-auto flex items-center gap-3 text-base sm:text-lg md:text-2xl font-serif transition-colors ${active === 'pro' ? 'text-[#1a1c18]' : 'text-gray-300 hover:text-gray-500'}`}
         >
           <span className={`w-6 h-6 rounded-full border flex items-center justify-center ${active === 'pro' ? 'border-[#1a1c18] bg-[#1a1c18] text-white' : 'border-gray-300'}`}>
              {active === 'pro' && <Check size={14} />}
@@ -85,7 +85,12 @@ export default function ContactPage() {
                      123 Architectural Avenue,<br/>
                      Bayside, Melbourne VIC 3186
                    </p>
-                   <a href="#" className="inline-block mt-4 text-xs uppercase tracking-widest text-gray-400 border-b border-gray-300 pb-1 hover:text-[#1a1c18] hover:border-[#1a1c18] transition-all">
+                   <a
+                     href="https://maps.google.com/?q=123+Architectural+Avenue,+Bayside,+Melbourne+VIC+3186"
+                     target="_blank"
+                     rel="noreferrer"
+                     className="inline-block mt-4 text-xs uppercase tracking-widest text-gray-400 border-b border-gray-300 pb-1 hover:text-[#1a1c18] hover:border-[#1a1c18] transition-all"
+                   >
                       Get Directions
                    </a>
                 </div>

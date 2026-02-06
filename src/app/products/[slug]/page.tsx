@@ -328,7 +328,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
           </div>
 
           <div className="lg:col-span-5 relative h-full pt-20 lg:pt-32">
-            <div className="sticky top-32 flex flex-col gap-10 pl-0 lg:pl-12 border-l-0 lg:border-l border-gray-200">
+            <div className="sticky top-24 flex flex-col gap-10 pl-0 lg:pl-12 border-l-0 lg:border-l border-gray-200">
               <div className="space-y-4">
                 <h4 className="font-serif text-2xl text-gray-900">About the Stone</h4>
                 <p className="text-gray-700 leading-loose font-light text-base">{description}</p>

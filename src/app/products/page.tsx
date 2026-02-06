@@ -3,7 +3,7 @@
 
 // src/app/products/page.tsx
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Footer } from "@/app/components/Footer";
 import { ProductSidebar } from "@/app/components/ProductSidebar";
@@ -367,7 +367,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
   );
 }
 
-export default function ProductsPage() {
+function ProductsPageInner() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category");
   const searchKey = searchParams.toString() || "all";
@@ -377,5 +377,13 @@ export default function ProductsPage() {
       key={searchKey}
       initialCategory={initialCategory}
     />
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<ProductsPageContent initialCategory={null} />}>
+      <ProductsPageInner />
+    </Suspense>
   );
 }

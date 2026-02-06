@@ -1,8 +1,9 @@
 // components/BestSellers.tsx
 "use client"; // 动效组件需要客户端渲染
 
+import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { motion } from "framer-motion"; // 引入 motion
+import { motion, type Variants } from "framer-motion"; // 引入 motion
 import { FadeIn } from "./animations/FadeIn"; // 引入基础动效组件
 
 // 假数据
@@ -27,8 +28,10 @@ const PRODUCTS = [
   },
 ];
 
+const smoothEase: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
+
 // 定义交错动画参数
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -39,12 +42,12 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 30 }, // 初始：透明且向下偏移
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] } // 使用同样的优雅曲线
+    transition: { duration: 0.8, ease: smoothEase } // 使用同样的优雅曲线
   },
 };
 
@@ -64,12 +67,12 @@ export function BestSellers() {
             </p>
           </div>
 
-          <a
+          <Link
             href="/products"
             className="group relative inline-block text-xs uppercase tracking-[0.2em] font-medium text-gray-900 pb-2 border-b border-gray-300 hover:border-gray-900 transition-colors cursor-pointer"
           >
             Shop Best Sellers
-          </a>
+          </Link>
         </FadeIn>
 
         {/* --- 右侧产品区域 (交错出现) --- */}

@@ -2,7 +2,7 @@
 "use client";
 
 import { ScanLine, Layers, Users } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { FadeIn } from "./animations/FadeIn";
 
 const SERVICES = [
@@ -29,8 +29,10 @@ const SERVICES = [
   },
 ];
 
+const smoothEase: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
+
 // 复用同样的动画配置，保持全站统一感
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -38,12 +40,12 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 40 },
   visible: { 
     opacity: 1, 
     y: 0, 
-    transition: { duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] } 
+    transition: { duration: 0.8, ease: smoothEase } 
   },
 };
 
@@ -70,7 +72,7 @@ export function ServicesSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
         >
-          {SERVICES.map((service, index) => (
+          {SERVICES.map((service) => (
             // 单个服务项
             <motion.div key={service.id} className="group flex flex-col items-center text-center cursor-default" variants={itemVariants}>
               

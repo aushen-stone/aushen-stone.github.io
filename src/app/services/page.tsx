@@ -109,26 +109,51 @@ export default function ServicesPage() {
                {FABRICATION_SERVICES.map((service, index) => (
                  <div
                    key={service.id}
-                   onMouseEnter={() => setActiveService(index)}
-                   className={`group cursor-pointer py-10 border-b border-white/10 transition-all duration-500 ${activeService === index ? "opacity-100" : "opacity-40 hover:opacity-70"}`}
+                   className={`group py-10 border-b border-white/10 transition-all duration-500 ${
+                     activeService === index ? "opacity-100" : "opacity-70 hover:opacity-90"
+                   }`}
                  >
-                   <div className="flex items-baseline gap-4 mb-4">
-                     {/* Refinement: Added Numbering */}
-                     <span className="font-serif italic text-white/20 text-xl">0{index + 1}/</span>
-                     <h3 className={`font-serif text-2xl md:text-3xl transition-colors ${activeService === index ? "text-white" : "text-white/60"}`}>
-                        {service.title}
-                     </h3>
-                   </div>
+                   <button
+                     type="button"
+                     onClick={() => setActiveService(index)}
+                     onFocus={() => setActiveService(index)}
+                     onMouseEnter={() => setActiveService(index)}
+                     aria-expanded={activeService === index}
+                     aria-controls={`service-panel-${service.id}`}
+                     className="w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
+                   >
+                     <div className="flex items-baseline gap-4 mb-4">
+                       <span className="font-serif italic text-white/20 text-xl">0{index + 1}/</span>
+                       <h3
+                         className={`font-serif text-2xl md:text-3xl transition-colors ${
+                           activeService === index ? "text-white" : "text-white/60"
+                         }`}
+                       >
+                         {service.title}
+                       </h3>
+                     </div>
+                   </button>
 
                    <motion.div
+                     id={`service-panel-${service.id}`}
                      initial={false}
-                     animate={{ height: activeService === index ? "auto" : 0, opacity: activeService === index ? 1 : 0 }}
-                     className="overflow-hidden pl-10" // Indent description to align with title
+                     animate={{
+                       height: activeService === index ? "auto" : 0,
+                       opacity: activeService === index ? 1 : 0,
+                     }}
+                     className="overflow-hidden pl-10"
                    >
-                     <p className="text-sm text-white/60 leading-relaxed font-light mb-6">{service.description}</p>
+                     <p className="text-sm text-white/60 leading-relaxed font-light mb-6">
+                       {service.description}
+                     </p>
                      <ul className="space-y-2">
-                       {service.features.map(feature => (
-                         <li key={feature} className="flex items-center gap-3 text-xs uppercase tracking-widest text-white/40"><CheckCircle2 size={12} className="text-[#3B4034]" /> {feature}</li>
+                       {service.features.map((feature) => (
+                         <li
+                           key={feature}
+                           className="flex items-center gap-3 text-xs uppercase tracking-widest text-white/40"
+                         >
+                           <CheckCircle2 size={12} className="text-[#3B4034]" /> {feature}
+                         </li>
                        ))}
                      </ul>
                    </motion.div>
@@ -138,7 +163,7 @@ export default function ServicesPage() {
 
             {/* Sticky Image */}
             <div className="lg:col-span-7 relative h-[600px] hidden lg:block">
-               <div className="sticky top-32 w-full h-full rounded-sm overflow-hidden bg-white/5 border border-white/10">
+               <div className="sticky top-24 w-full h-full rounded-sm overflow-hidden bg-white/5 border border-white/10">
                  <AnimatePresence mode="wait">
                    <motion.div
                      key={activeService}

@@ -8,7 +8,7 @@ export function BrandBanner() {
         {/* 左侧线框 Logo (用 CSS 模拟截图中的 S 形状) */}
         <div className="flex-shrink-0">
           <div className="w-16 h-16 flex items-center justify-center transform mt-2 ml-2">
-          <img src="AushenLogoLetterS.webp" />
+          <img src="/AushenLogoLetterS.webp" alt="Aushen letter S logo" />
           </div>
         </div>
 

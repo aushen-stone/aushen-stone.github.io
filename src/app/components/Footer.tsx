@@ -1,15 +1,17 @@
 // components/Footer.tsx
 "use client";
 
+import Link from "next/link";
 import { ArrowUpRight, Instagram, Facebook, Linkedin, Twitter } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 export function Footer() {
 
   // Footer 元素专用的微动效果
-  const footerItemVariant = {
+  const smoothEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
+  const footerItemVariant: Variants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: smoothEase } },
   };
 
   return (
@@ -45,12 +47,17 @@ export function Footer() {
         <motion.div variants={footerItemVariant} className="md:col-span-2 space-y-6">
           <h4 className="font-serif text-lg text-white">Explore</h4>
           <ul className="space-y-4 text-sm text-white/60">
-            {["Products", "Projects", "Services", "Our Story"].map((item) => (
-              <li key={item}>
-                <a href="#" className="hover:text-white transition-colors block w-max group">
-                  {item}
+            {[
+              { label: "Products", href: "/products" },
+              { label: "Projects", href: "/projects" },
+              { label: "Services", href: "/services" },
+              { label: "Our Story", href: "/about" },
+            ].map((item) => (
+              <li key={item.label}>
+                <Link href={item.href} className="hover:text-white transition-colors block w-max group">
+                  {item.label}
                   <span className="block max-w-0 group-hover:max-w-full transition-all duration-500 h-px bg-white/50"></span>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -60,13 +67,25 @@ export function Footer() {
         <motion.div variants={footerItemVariant} className="md:col-span-2 space-y-6">
           <h4 className="font-serif text-lg text-white">Company</h4>
           <ul className="space-y-4 text-sm text-white/60">
-            {["Contact", "Careers", "Privacy Policy", "Terms of Use"].map((item) => (
-              <li key={item}>
-                <a href="#" className="hover:text-white transition-colors block w-max">
-                  {item}
-                </a>
-              </li>
-            ))}
+            <li>
+              <Link href="/contact" className="hover:text-white transition-colors block w-max">
+                Contact
+              </Link>
+            </li>
+            <li>
+              <a
+                href="mailto:hello@aushen.com.au?subject=Careers%20at%20Aushen"
+                className="hover:text-white transition-colors block w-max"
+              >
+                Careers
+              </a>
+            </li>
+            <li>
+              <span className="text-white/40 block w-max">Privacy Policy (On Request)</span>
+            </li>
+            <li>
+              <span className="text-white/40 block w-max">Terms of Use (On Request)</span>
+            </li>
           </ul>
         </motion.div>
 
@@ -107,8 +126,19 @@ export function Footer() {
         className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-end pt-12"
       >
         <div className="flex gap-6 mb-8 md:mb-0">
-          {[Instagram, Facebook, Linkedin, Twitter].map((Icon, i) => (
-            <a key={i} href="#" className="w-10 h-10 border border-white/10 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:border-white transition-all duration-300">
+          {[
+            { Icon: Instagram, href: "https://www.instagram.com" },
+            { Icon: Facebook, href: "https://www.facebook.com" },
+            { Icon: Linkedin, href: "https://www.linkedin.com" },
+            { Icon: Twitter, href: "https://x.com" },
+          ].map(({ Icon, href }) => (
+            <a
+              key={href}
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              className="w-10 h-10 border border-white/10 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:border-white transition-all duration-300"
+            >
               <Icon size={16} />
             </a>
           ))}

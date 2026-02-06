@@ -2,14 +2,16 @@
 "use client";
 
 import Marquee from "react-fast-marquee";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 export function CreativeHubSection() {
 
+  const smoothEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
   // 定义通用的上浮动画变体
-  const fadeInUp = {
+  const fadeInUp: Variants = {
     hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: smoothEase } },
   };
 
   return (

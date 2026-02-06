@@ -209,7 +209,7 @@ export default function ProjectsPage() {
       </section>
 
       {/* --- Filter Bar (Sticky) --- */}
-      <div className="sticky top-20 z-40 bg-[#F8F5F1]/90 backdrop-blur-md border-b border-gray-200/50 transition-all">
+      <div className="sticky top-24 z-40 bg-[#F8F5F1]/90 backdrop-blur-md border-b border-gray-200/50 transition-all">
         <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar w-full md:w-auto">
             {CATEGORIES.map((cat) => (

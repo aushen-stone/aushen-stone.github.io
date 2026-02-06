@@ -4,6 +4,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-cormorant: "Georgia";
+  --font-manrope: "Avenir Next";
 }
 
 html,
@@ -11,6 +13,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-size: 18px; /* 你想大就留 18 */
+  overflow-x: hidden;
 }
 
 @keyframes grain {
@@ -28,4 +31,13 @@ body {
 
 .animate-grain {
   animation: grain 8s steps(10) infinite;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
