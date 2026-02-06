@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Footer } from "@/app/components/Footer";
 import { MapPin, Phone, Clock, ArrowRight, Check } from "lucide-react";
+import { SAMPLE_CART_CONTACT_HANDOFF_KEY } from "@/types/cart";
 
 // === 组件: 身份切换器 (The Identity Toggle) ===
 function IdentityToggle({ active, onChange }: { active: 'homeowner' | 'pro', onChange: (val: 'homeowner' | 'pro') => void }) {
@@ -52,6 +53,26 @@ function InputField({ label, type = "text", placeholder }: { label: string, type
 
 export default function ContactPage() {
   const [userType, setUserType] = useState<'homeowner' | 'pro'>('homeowner');
+  const [message, setMessage] = useState(() => {
+    if (typeof window === "undefined") return "";
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("source") !== "sample-cart") return "";
+
+    try {
+      const prefillMessage = window.sessionStorage.getItem(
+        SAMPLE_CART_CONTACT_HANDOFF_KEY
+      );
+      if (prefillMessage) {
+        window.sessionStorage.removeItem(SAMPLE_CART_CONTACT_HANDOFF_KEY);
+        return prefillMessage;
+      }
+    } catch {
+      // Ignore sessionStorage failures and keep default message state.
+    }
+
+    return "";
+  });
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen selection:bg-[#1a1c18] selection:text-white">
@@ -161,6 +182,8 @@ export default function ContactPage() {
                    <textarea 
                      rows={4}
                      className="w-full bg-transparent border-b border-gray-200 py-4 text-lg text-[#1a1c18] placeholder:text-gray-200 focus:outline-none focus:border-[#1a1c18] transition-colors font-serif resize-none"
+                     value={message}
+                     onChange={(event) => setMessage(event.target.value)}
                      placeholder={userType === 'homeowner' ? "I'm looking for bluestone pavers for my new pool area..." : "Commercial project in CBD, approx 500m2..."}
                    ></textarea>
                 </div>

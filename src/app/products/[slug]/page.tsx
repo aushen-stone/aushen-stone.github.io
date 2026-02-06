@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { Footer } from "@/app/components/Footer";
 import { ArrowDownLeft, ArrowRight, Phone, Plus, Minus, MoveDown } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
 import { PRODUCTS } from "@/data/products.generated";
 import {
   DEFAULT_HOMEOWNER_SUMMARY,
@@ -16,6 +17,7 @@ import {
   DEFAULT_PRODUCT_IMAGE,
   PRODUCT_OVERRIDES,
 } from "@/data/product_overrides";
+import type { AddSampleResult } from "@/types/cart";
 import type { AudienceMode, Product } from "@/types/product";
 
 function HeroParallaxImage({ src, alt }: { src: string; alt: string }) {
@@ -171,7 +173,10 @@ type ProductDetailViewProps = {
   product: Product;
 };
 
+type SampleFeedback = AddSampleResult | "unavailable";
+
 function ProductDetailView({ product }: ProductDetailViewProps) {
+  const { addSample, openDrawer } = useSampleCart();
   const override = PRODUCT_OVERRIDES[product.slug];
   const description = override?.description || DEFAULT_PRODUCT_DESCRIPTION;
   const imageUrl = override?.imageUrl || DEFAULT_PRODUCT_IMAGE;
@@ -207,6 +212,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     applicationOptions[0]?.value || ""
   );
   const [audienceMode, setAudienceMode] = useState<AudienceMode>("homeowner");
+  const [sampleFeedback, setSampleFeedback] = useState<SampleFeedback | null>(null);
 
   const selectedApplication =
     product.applicationIndex.find((application) => application.id === selectedApplicationId) ||
@@ -237,6 +243,26 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     }
   };
 
+  const handleAddSample = () => {
+    if (!selectedFinish) {
+      setSampleFeedback("unavailable");
+      return;
+    }
+
+    const result = addSample({
+      productSlug: product.slug,
+      productName: product.name,
+      finishId: selectedFinish.id,
+      finishName: selectedFinish.name,
+    });
+
+    setSampleFeedback(result);
+
+    if (result === "added" || result === "exists") {
+      openDrawer();
+    }
+  };
+
   const subtitle = selectedApplication
     ? `${product.materialName} • ${selectedApplication.label}`
     : product.materialName;
@@ -261,6 +287,16 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     audienceMode === "homeowner" ? homeownerSummary : professionalSummary;
   const audienceBullets =
     audienceMode === "homeowner" ? homeownerUseCases : professionalNotes;
+  const sampleFeedbackMessage =
+    sampleFeedback === "added"
+      ? "Sample added to trolley."
+      : sampleFeedback === "exists"
+      ? "This finish is already in your sample cart."
+      : sampleFeedback === "limit_reached"
+      ? "Sample cart can hold up to 10 finish lines."
+      : sampleFeedback === "unavailable"
+      ? "Select a finish before adding a sample."
+      : null;
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
@@ -383,7 +419,10 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
               {audienceMode === "homeowner" ? (
                 <div className="flex flex-col gap-4">
                   <button
-                    className="w-full bg-[#1a1c18] text-[#F8F5F1] py-5 px-8 flex items-center justify-between group hover:bg-[#3B4034] transition-all duration-500 shadow-xl shadow-gray-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+                    type="button"
+                    onClick={handleAddSample}
+                    disabled={!selectedFinish}
+                    className="w-full bg-[#1a1c18] text-[#F8F5F1] py-5 px-8 flex items-center justify-between group hover:bg-[#3B4034] transition-all duration-500 shadow-xl shadow-gray-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1] disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label={sampleLabel}
                   >
                     <span className="uppercase tracking-[0.22em] text-xs font-medium">{sampleLabel}</span>
@@ -395,12 +434,14 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
 
                   <div className="grid grid-cols-2 gap-4">
                     <button
+                      type="button"
                       className="border border-gray-300 text-gray-900 py-4 px-6 flex items-center justify-center gap-3 hover:border-gray-900 transition-all uppercase tracking-[0.15em] text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
                       aria-label={consultLabel}
                     >
                       {consultLabel}
                     </button>
                     <button
+                      type="button"
                       className="border border-gray-300 text-gray-900 py-4 px-6 flex items-center justify-center gap-3 hover:border-gray-900 transition-all uppercase tracking-[0.15em] text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
                       aria-label={enquireLabel}
                     >
@@ -411,6 +452,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
               ) : (
                 <div className="flex flex-col gap-4">
                   <button
+                    type="button"
                     className="w-full bg-[#1a1c18] text-[#F8F5F1] py-5 px-8 flex items-center justify-between group hover:bg-[#3B4034] transition-all duration-500 shadow-xl shadow-gray-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
                     aria-label={enquireLabel}
                   >
@@ -423,19 +465,29 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
 
                   <div className="grid grid-cols-2 gap-4">
                     <button
+                      type="button"
                       className="border border-gray-300 text-gray-900 py-4 px-6 flex items-center justify-center gap-3 hover:border-gray-900 transition-all uppercase tracking-[0.15em] text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
                       aria-label="Call us"
                     >
                       <Phone size={14} /> Call Us
                     </button>
                     <button
-                      className="border border-gray-300 text-gray-900 py-4 px-6 flex items-center justify-center gap-3 hover:border-gray-900 transition-all uppercase tracking-[0.15em] text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+                      type="button"
+                      onClick={handleAddSample}
+                      disabled={!selectedFinish}
+                      className="border border-gray-300 text-gray-900 py-4 px-6 flex items-center justify-center gap-3 hover:border-gray-900 transition-all uppercase tracking-[0.15em] text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1] disabled:opacity-50 disabled:cursor-not-allowed"
                       aria-label={sampleLabel}
                     >
                       {sampleLabel}
                     </button>
                   </div>
                 </div>
+              )}
+
+              {sampleFeedbackMessage && (
+                <p className="text-xs uppercase tracking-[0.16em] text-gray-500">
+                  {sampleFeedbackMessage}
+                </p>
               )}
 
               <div className="pt-6">

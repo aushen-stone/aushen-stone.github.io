@@ -7,10 +7,13 @@ import { usePathname } from "next/navigation";
 import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PRODUCT_CATEGORIES } from "@/data/categories.generated";
+import { SampleCartDrawer } from "@/app/components/cart/SampleCartDrawer";
+import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
 
 export function Navbar() {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const { lineCount, isDrawerOpen, openDrawer, closeDrawer } = useSampleCart();
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -44,15 +47,24 @@ export function Navbar() {
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
-    if (!isMobileMenuOpen) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key !== "Escape") return;
+      if (isMobileMenuOpen) {
         setIsMobileMenuOpen(false);
+        return;
+      }
+      if (isDrawerOpen) {
+        closeDrawer();
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, isDrawerOpen, closeDrawer]);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    closeDrawer();
+  }, [isMobileMenuOpen, closeDrawer]);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -113,53 +125,59 @@ export function Navbar() {
         }`}
         onMouseLeave={() => setActiveMenu(null)}
       >
-        <div className="h-full px-6 md:px-12 flex items-center justify-between relative z-50">
-          {/* --- Desktop Nav --- */}
-          <nav className="hidden md:flex gap-10 h-full items-center">
-            {menuItems.map((item) => (
-              <div
-                key={item.name}
-                className="h-full flex items-center relative"
-                onMouseEnter={() =>
-                  item.hasDropdown
-                    ? setActiveMenu(item.name)
-                    : setActiveMenu(null)
-                }
-              >
-                <Link
-                  href={item.href}
-                  className={`group relative text-xs font-medium uppercase tracking-[0.15em] transition-colors flex items-center gap-1 ${textColorClass}`}
+        <div className="h-full px-6 md:px-12 grid grid-cols-[1fr_auto_1fr] items-center gap-4 relative z-50">
+          <div className="min-w-0 flex items-center">
+            {/* --- Mobile Menu Button --- */}
+            <button
+              className={`min-[1600px]:hidden z-10 p-2 transition-colors ${textColorClass}`}
+              onClick={() => {
+                setActiveMenu(null);
+                closeDrawer();
+                setIsMobileMenuOpen((prev) => !prev);
+              }}
+              aria-label="Toggle navigation menu"
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-nav-drawer"
+            >
+              <Menu strokeWidth={1.5} size={24} />
+            </button>
+
+            {/* --- Desktop Nav --- */}
+            <nav className="hidden min-[1600px]:flex min-[1600px]:flex-wrap min-[1600px]:items-center gap-x-8 gap-y-1 min-w-0 pr-6">
+              {menuItems.map((item) => (
+                <div
+                  key={item.name}
+                  className="flex items-center relative py-1"
+                  onMouseEnter={() =>
+                    item.hasDropdown
+                      ? setActiveMenu(item.name)
+                      : setActiveMenu(null)
+                  }
                 >
-                  {item.name}
-                  {item.hasDropdown && (
-                    <ChevronDown
-                      size={14}
-                      className={`transition-transform duration-300 ${
-                        activeMenu === item.name ? "rotate-180" : ""
-                      }`}
+                  <Link
+                    href={item.href}
+                    className={`group relative text-xs font-medium uppercase tracking-[0.15em] transition-colors flex items-center gap-1 ${textColorClass}`}
+                  >
+                    {item.name}
+                    {item.hasDropdown && (
+                      <ChevronDown
+                        size={14}
+                        className={`transition-transform duration-300 ${
+                          activeMenu === item.name ? "rotate-180" : ""
+                        }`}
+                      />
+                    )}
+                    <span
+                      className={`absolute -bottom-2 left-1/2 w-0 h-[1px] transition-all duration-300 ease-out group-hover:w-full group-hover:left-0 ${underlineColorClass}`}
                     />
-                  )}
-                  <span
-                    className={`absolute -bottom-2 left-1/2 w-0 h-[1px] transition-all duration-300 ease-out group-hover:w-full group-hover:left-0 ${underlineColorClass}`}
-                  />
-                </Link>
-              </div>
-            ))}
-          </nav>
+                  </Link>
+                </div>
+              ))}
+            </nav>
+          </div>
 
-          {/* --- Mobile Menu Button --- */}
-          <button
-            className={`md:hidden z-10 p-2 transition-colors ${textColorClass}`}
-            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-            aria-label="Toggle navigation menu"
-            aria-expanded={isMobileMenuOpen}
-            aria-controls="mobile-nav-drawer"
-          >
-            <Menu strokeWidth={1.5} size={24} />
-          </button>
-
-          {/* --- Logo --- */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 z-0">
+          {/* --- Logo (reserved center column) --- */}
+          <div className="flex justify-center transition-all duration-500 z-0">
             <Link href="/" className="block cursor-pointer">
               <img
                 src="/AushenLogo.webp"
@@ -171,18 +189,33 @@ export function Navbar() {
 
           {/* --- Right Icons --- */}
           <div
-            className={`flex items-center gap-6 md:gap-8 text-xs font-medium uppercase tracking-widest z-10 ml-auto transition-colors ${textColorClass}`}
+            className={`flex items-center justify-end gap-5 md:gap-7 text-xs font-medium uppercase tracking-widest z-10 transition-colors ${textColorClass}`}
           >
             <Link
               href="/contact"
-              className="hidden md:block hover:opacity-70 transition-opacity"
+              className="hidden min-[1600px]:block hover:opacity-70 transition-opacity"
             >
               Contact
             </Link>
-            <div className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity">
+            <button
+              type="button"
+              className="flex items-center gap-2 hover:opacity-70 transition-opacity"
+              onClick={() => {
+                if (isDrawerOpen) {
+                  closeDrawer();
+                  return;
+                }
+                setActiveMenu(null);
+                setIsMobileMenuOpen(false);
+                openDrawer();
+              }}
+              aria-label="Open sample cart"
+              aria-expanded={isDrawerOpen}
+              aria-controls="sample-cart-drawer"
+            >
               <ShoppingCart size={20} strokeWidth={1.2} />
-              <span>(0)</span>
-            </div>
+              <span>({lineCount})</span>
+            </button>
           </div>
         </div>
 
@@ -194,7 +227,7 @@ export function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 w-full bg-[#F8F5F1] border-b border-gray-200/50 shadow-xl py-12 px-6 md:px-16"
+              className="absolute top-full left-0 w-full bg-[#F8F5F1] border-b border-gray-200/50 shadow-xl py-12 px-6 md:px-16 hidden min-[1600px]:block"
               onMouseEnter={() => setActiveMenu("Products")}
               onMouseLeave={() => setActiveMenu(null)}
             >
@@ -286,7 +319,7 @@ export function Navbar() {
 
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <div className="fixed inset-0 z-[120] md:hidden">
+          <div className="fixed inset-0 z-[120] min-[1600px]:hidden">
             <motion.button
               type="button"
               aria-label="Close menu overlay"
@@ -385,6 +418,7 @@ export function Navbar() {
           </div>
         )}
       </AnimatePresence>
+      <SampleCartDrawer />
     </>
   );
 }

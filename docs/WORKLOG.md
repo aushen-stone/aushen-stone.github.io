@@ -55,10 +55,61 @@ Last updated: 2026-02-06
   - `src/app/globals.css`
   - `package.json`
 
+## Docs-Only Release Gap Audit (2026-02-06)
+- Scope: documentation alignment only (`docs/NEXT_STEPS.md`, `docs/WORKLOG.md`, `docs/README_AGENT.md`).
+- Code changes: none in this audit pass.
+- Outcome:
+  - release blockers were reclassified and made explicit in `NEXT_STEPS`:
+    - `UI-NAV-001` (navbar overlap at `md` widths)
+    - `CART-SAMPLE-001` (trolley/sample-cart flow missing)
+  - primary CTA gaps were expanded into a concrete route/component inventory.
+  - placeholder asset debt was elevated to release-readiness tracking.
+  - responsive QA tracking model was formalized as:
+    - `Static Risk` (code-level risk)
+    - `Confirmed Defect` (visual evidence attached)
+
+### Sample Cart v1 Decisions Locked in Docs
+- Trolley is now defined as the primary entry to a sample cart funnel, not a decorative icon.
+- Scope decisions:
+  - sample cart only (no checkout/payment/pricing/inventory)
+  - add from product detail only
+  - variant key: `product + finish`
+  - sample size fixed at `200x100mm`
+  - max 1 sample per finish, max 10 lines total
+  - persistence via `localStorage`
+  - UI: right drawer + dedicated `/cart` page
+  - submit: cart-origin `Ask for sample` handoff to `/contact` with message-field prefill
+
+## P0 Implementation Session (2026-02-06)
+- Scope implemented:
+  - `UI-NAV-001`: navbar overlap mitigation by moving desktop nav visibility to `min-[1600px]`, switching lower widths to mobile menu, and reserving logo center space in a 3-column grid layout.
+  - `CART-SAMPLE-001`: sample-cart core flow with typed cart model, global provider, drawer, `/cart` page, detail-page sample add, and contact prefill handoff.
+- New files:
+  - `src/types/cart.ts`
+  - `src/app/components/cart/SampleCartProvider.tsx`
+  - `src/app/components/cart/SampleCartDrawer.tsx`
+  - `src/app/cart/page.tsx`
+- Updated files:
+  - `src/app/layout.tsx`
+  - `src/app/components/Navbar.tsx`
+  - `src/app/products/[slug]/page.tsx`
+  - `src/app/contact/page.tsx`
+- Validation:
+  - `npm run build`: pass
+  - `npx tsc --noEmit`: pass
+  - `npm run lint`: `0 errors, 20 warnings`
+
+## P0 Closure Confirmation (2026-02-06)
+- Manual QA feedback confirmed the previous overlap around ~1680px, then a second navbar iteration was landed.
+- Final P0 sign-off:
+  - `UI-NAV-001`: closed
+  - `CART-SAMPLE-001`: closed
+- Result: no open P0 blockers remain; execution focus moves to P1 quality backlog.
+
 ## Validation Snapshot
-- `npm run lint`: `0 errors, 20 warnings`
-- `npx tsc --noEmit`: pass
 - `npm run build`: pass (`next build --webpack`)
+- `npx tsc --noEmit`: pass **after** build; cold start may fail if `.next/types` has not been generated.
+- `npm run lint`: `0 errors, 20 warnings`
 
 ## Decisions Made
 - Documentation model switched to stable canonical files:
@@ -72,6 +123,14 @@ Last updated: 2026-02-06
 - Conflict precedence is standardized:
   - Execution precedence: `NEXT_STEPS.md` > `README_AGENT.md` > `WORKLOG.md` > `ARCHITECTURE.md`
   - Architecture facts: `ARCHITECTURE.md` is authoritative.
+- Release-readiness criteria now explicitly include:
+  - primary CTA actionability
+  - trolley/sample-cart funnel completeness
+  - responsive nav integrity at mobile/tablet widths
+- Docs now define target interface contracts for Sample Cart v1:
+  - route contract (`/cart`, cart-origin contact handoff)
+  - client storage contract (`aushen_sample_cart_v1`)
+  - interaction contract (navbar trolley count and cart-origin `Ask for sample`)
 
 ## Pruned/Closed Items
 - Closed: mobile hamburger menu blocker.
