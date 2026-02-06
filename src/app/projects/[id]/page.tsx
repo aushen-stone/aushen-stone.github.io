@@ -1,9 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { Navbar } from "@/app/components/Navbar";
 import { Footer } from "@/app/components/Footer";
-import { ArrowRight, ArrowDownLeft } from "lucide-react";
+import { ArrowDownLeft } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 // --- MOCK DATA: 模拟一个具体的豪宅项目详情 ---
@@ -147,8 +146,6 @@ function GetTheLook() {
 export default function ProjectDetail() {
   return (
     <main className="bg-[#F8F5F1] min-h-screen selection:bg-[#1a1c18] selection:text-white">
-      <Navbar />
-      
       {/* 1. Hero */}
       <ProjectHero />
 

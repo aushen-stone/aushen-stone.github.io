@@ -1,10 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { Navbar } from "@/app/components/Navbar";
 import { Footer } from "@/app/components/Footer";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowDown } from "lucide-react";
 
 // === 组件: 杂志风分屏 Hero (Split Editorial Hero) ===
 function EditorialHero() {
@@ -74,7 +72,7 @@ function Manifesto() {
        <div className="max-w-[1200px] mx-auto text-center relative z-10" ref={ref}>
           <motion.div style={{ y }}>
              <p className="font-serif italic text-3xl md:text-5xl lg:text-6xl leading-tight opacity-90">
-               "We reject 90% of what we find. Not out of arrogance, but out of respect for the home you are building."
+               &quot;We reject 90% of what we find. Not out of arrogance, but out of respect for the home you are building.&quot;
              </p>
              <div className="mt-12">
                <span className="inline-block px-4 py-2 border border-[#F0F2E4]/30 rounded-full text-[10px] uppercase tracking-[0.2em]">Our Philosophy</span>
@@ -160,7 +158,7 @@ function SignatureBlock() {
     <section className="bg-[#F8F5F1] py-32 text-center border-t border-white">
        <div className="max-w-2xl mx-auto px-6">
           <p className="font-serif text-2xl text-gray-400 italic mb-8">
-            "We invite you to experience the difference yourself."
+            &quot;We invite you to experience the difference yourself.&quot;
           </p>
           {/* Jun 的签名复用之前的 */}
           <div className="w-32 h-16 mx-auto opacity-80">
@@ -179,8 +177,6 @@ function SignatureBlock() {
 export default function OurStoryPage() {
   return (
     <main className="bg-[#F8F5F1] min-h-screen selection:bg-[#3B4034] selection:text-[#F0F2E4]">
-      <Navbar />
-
       {/* 1. Light Editorial Hero */}
       <EditorialHero />
 

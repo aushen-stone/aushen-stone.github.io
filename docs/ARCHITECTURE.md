@@ -1,5 +1,7 @@
 # Aushen Web - Architecture Overview
 
+Last updated: 2026-02-06
+
 ## Project Type
 - Next.js App Router project.
 - Frontend-only app with static data and generated TypeScript data files.
@@ -18,6 +20,7 @@
 - Product list: `src/app/products/page.tsx`
 - Product detail: `src/app/products/[slug]/page.tsx`
 - Other routes: `about`, `contact`, `services`, `projects`
+- Global navbar is rendered in `src/app/layout.tsx` only.
 
 ## Data Flow
 - Source of truth: `docs/aushen_product_library.csv` (outside app folder).
@@ -26,6 +29,10 @@
   - `src/data/categories.generated.ts`
 - Manual override layer:
   - `src/data/product_overrides.ts` for tone tags, description, and image overrides.
+  - Audience-specific content fields for product detail:
+    - `homeownerSummary`, `homeownerUseCases`
+    - `professionalSummary`, `professionalNotes`
+    - `ctaOverride`
   - Placeholder image path: `/Application001.webp`
 
 ## Data Contracts (What to Read vs. What to Write)
@@ -50,16 +57,29 @@
 - `ApplicationIndexEntry`
   - `label` and `category` metadata
   - `finishes` for that application, each with sizes
+- `AudienceMode`
+  - `"homeowner" | "professional"`
 
 ## Product UX
 - Product list (`/products`)
   - Uses generated product data.
   - Filters: material, application, tone.
+  - Desktop sidebar + mobile drawer share `ProductSidebar`.
+  - Mobile drawer supports ESC close, overlay close, and body scroll lock.
   - Placeholder images unless overridden.
 - Product detail (`/products/[slug]`)
   - Application-first selector, then finish.
   - Sizes are shown for the selected application+finish.
-  - Description from overrides, otherwise a default message.
+  - Audience toggle: Homeowner / Professional.
+  - CTA priority changes by audience mode.
+  - Description and audience copy from overrides, otherwise defaults.
+
+## Layout & Semantics
+- `src/app/layout.tsx` contains:
+  - Global `Navbar`
+  - `GrainOverlay`
+  - `PageOffset`
+- `PageOffset` uses a `div` wrapper (not `main`) to avoid nested landmark issues.
 
 ## Category Sources
 - Materials and applications are generated from the CSV into `categories.generated.ts`.
@@ -78,6 +98,7 @@ node /tmp/aushen-scripts/build-product-data.js
 - **Client components and params**: detail page uses `useParams()`; passing `params` props can be undefined in client components.
 - **Generated files are overwritten** on regeneration.
 - **Strict lint rules**: `react/no-unescaped-entities`, `no-html-link-for-pages`, `react-hooks/set-state-in-effect` are common sources of dev errors.
+- **Build environment**: `next/font/google` can fail in restricted network environments.
 
 ## Legacy / Unused
 - `src/data/categories.ts` is legacy; the app uses `src/data/categories.generated.ts`.

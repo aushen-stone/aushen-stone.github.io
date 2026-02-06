@@ -1,13 +1,13 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 // src/app/products/page.tsx
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Navbar } from "@/app/components/Navbar";
 import { Footer } from "@/app/components/Footer";
 import { ProductSidebar } from "@/app/components/ProductSidebar";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, X } from "lucide-react";
 import { PRODUCTS } from "@/data/products.generated";
 import { PRODUCT_CATEGORIES } from "@/data/categories.generated";
 import {
@@ -75,9 +75,12 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
     name: app.name,
     slug: app.slug,
   }));
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const drawerRef = useRef<HTMLDivElement | null>(null);
   const [selected, setSelected] = useState<FilterState>(() =>
     buildInitialSelected(initialCategory, materials, applications)
   );
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const toggleFilter = (group: keyof FilterState, slug: string) => {
     setSelected((prev) => {
@@ -123,10 +126,69 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
       return true;
     });
   }, [selected]);
+
+  useEffect(() => {
+    if (!isFilterOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isFilterOpen]);
+
+  useEffect(() => {
+    if (!isFilterOpen) return;
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsFilterOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isFilterOpen]);
+
+  useEffect(() => {
+    if (isFilterOpen) {
+      closeButtonRef.current?.focus();
+    }
+  }, [isFilterOpen]);
+
+  useEffect(() => {
+    if (!isFilterOpen) return;
+    const container = drawerRef.current;
+    if (!container) return;
+
+    const getFocusableElements = () =>
+      Array.from(
+        container.querySelectorAll<HTMLElement>(
+          "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])"
+        )
+      ).filter((element) => !element.hasAttribute("disabled"));
+
+    const handleTabLoop = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const focusableElements = getFocusableElements();
+      if (focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    };
+
+    container.addEventListener("keydown", handleTabLoop);
+    return () => container.removeEventListener("keydown", handleTabLoop);
+  }, [isFilterOpen]);
+
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
-      <Navbar />
-
       {/* --- 1. Page Header (Artistic & Textured) --- */}
       <section className="relative pt-44 pb-24 px-6 md:px-12 overflow-hidden bg-[#1a1c18]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_#2A2D28_0%,_#151614_100%)]"></div>
@@ -143,7 +205,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
 
         <div className="max-w-[1600px] mx-auto relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
           <div className="max-w-2xl">
-            <span className="inline-block py-1 px-3 border border-white/30 rounded-full text-[10px] uppercase tracking-[0.2em] text-white/90 mb-6 backdrop-blur-md bg-white/5">
+            <span className="inline-block py-1 px-3 border border-white/30 rounded-full text-xs uppercase tracking-[0.2em] text-white/90 mb-6 backdrop-blur-md bg-white/5">
               Collection 2025
             </span>
             <h1 className="font-serif text-5xl md:text-7xl text-[#F0F2E4] leading-[0.9]">
@@ -161,7 +223,13 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
       <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-20">
         {/* Mobile Filter Button */}
         <div className="md:hidden mb-10 sticky top-24 z-30">
-          <button className="w-full flex items-center justify-between bg-[#1a1c18] text-white px-6 py-4 shadow-lg">
+          <button
+            className="w-full flex items-center justify-between bg-[#1a1c18] text-white px-6 py-4 shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+            onClick={() => setIsFilterOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={isFilterOpen}
+            aria-controls="mobile-product-filters"
+          >
             <span className="uppercase tracking-widest text-xs font-medium">Filter Collection</span>
             <span className="text-xs">+</span>
           </button>
@@ -175,6 +243,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
             selected={selected}
             onToggle={toggleFilter}
             onClear={clearFilters}
+            idPrefix="desktop"
           />
 
           <div className="flex-1">
@@ -192,7 +261,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
                 No products match the current filters.{" "}
                 <button
                   onClick={clearFilters}
-                  className="uppercase tracking-widest text-xs text-gray-900 underline underline-offset-4"
+                  className="uppercase tracking-widest text-xs text-gray-900 underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
                 >
                   Clear filters
                 </button>
@@ -231,7 +300,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
                           <h3 className="font-serif text-2xl text-gray-900 leading-none group-hover:underline decoration-1 underline-offset-4 decoration-gray-300 transition-all">
                             {product.name}
                           </h3>
-                          <p className="text-[10px] uppercase tracking-[0.2em] text-gray-500 mt-2">
+                          <p className="text-xs uppercase tracking-[0.2em] text-gray-500 mt-2">
                             {product.materialName}
                           </p>
                         </div>
@@ -250,6 +319,48 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
           </div>
         </div>
       </div>
+
+      {isFilterOpen && (
+        <div className="fixed inset-0 z-[70] md:hidden">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setIsFilterOpen(false)}
+            aria-label="Close product filters"
+          />
+          <div
+            id="mobile-product-filters"
+            ref={drawerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Product filters"
+            className="absolute right-0 top-0 h-full w-[min(90vw,380px)] bg-[#F8F5F1] shadow-2xl p-6 overflow-y-auto"
+          >
+            <div className="flex items-center justify-end mb-6">
+              <button
+                ref={closeButtonRef}
+                type="button"
+                onClick={() => setIsFilterOpen(false)}
+                aria-label="Close filters panel"
+                className="p-2 border border-gray-300 text-gray-800 hover:border-gray-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <ProductSidebar
+              materials={materials}
+              applications={applications}
+              tones={TONE_OPTIONS}
+              selected={selected}
+              onToggle={toggleFilter}
+              onClear={clearFilters}
+              className="w-full"
+              sticky={false}
+              idPrefix="mobile"
+            />
+          </div>
+        </div>
+      )}
 
       <Footer />
     </main>

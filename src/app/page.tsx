@@ -1,5 +1,4 @@
 // app/page.tsx
-import { Navbar } from "@/app/components/Navbar"
 import { Hero } from "@/app/components/Hero"
 import { BrandBanner } from "@/app/components/BrandBanner"
 import { BestSellers } from "@/app/components/BestSellers"
@@ -11,7 +10,6 @@ import { Footer } from "@/app/components/Footer"
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <Navbar />
       <Hero />
       <BrandBanner />
       <BestSellers />

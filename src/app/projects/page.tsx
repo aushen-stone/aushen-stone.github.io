@@ -2,13 +2,23 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { Navbar } from "@/app/components/Navbar";
 import { Footer } from "@/app/components/Footer";
 import { ArrowUpRight, MoveDown } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
+type ProjectItem = {
+  id: number;
+  slug: string;
+  title: string;
+  category: string;
+  location: string;
+  image: string;
+  aspect: string;
+  gridArea: "left" | "right" | "center";
+};
+
 // --- MOCK DATA ---
-const PROJECTS = [
+const PROJECTS: ProjectItem[] = [
   {
     id: 1,
     slug: "brighton-residence",
@@ -69,7 +79,7 @@ const PROJECTS = [
 const CATEGORIES = ["All", "Residential", "Commercial", "Landscape"];
 
 // === ProjectCard ===
-function ProjectCard({ project, index }: { project: any; index: number }) {
+function ProjectCard({ project, index }: { project: ProjectItem; index: number }) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   const { scrollYProgress } = useScroll({
@@ -156,8 +166,6 @@ export default function ProjectsPage() {
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
-      <Navbar />
-
       {/* --- Header --- */}
       <section className="relative bg-[#1a1c18] pt-44 pb-32 px-6 md:px-12 overflow-hidden">
         <div

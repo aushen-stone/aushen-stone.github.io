@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Navbar } from "@/app/components/Navbar";
 import { Footer } from "@/app/components/Footer";
-import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, Clock, ArrowRight, Check } from "lucide-react";
+import { MapPin, Phone, Clock, ArrowRight, Check } from "lucide-react";
 
 // === 组件: 身份切换器 (The Identity Toggle) ===
 function IdentityToggle({ active, onChange }: { active: 'homeowner' | 'pro', onChange: (val: 'homeowner' | 'pro') => void }) {
@@ -57,8 +55,6 @@ export default function ContactPage() {
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen selection:bg-[#1a1c18] selection:text-white">
-      <Navbar />
-
       {/* Global Noise Overlay (Consistent with Story Page) */}
       <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.03] mix-blend-multiply" 
            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")` }}>

@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Navbar } from "@/app/components/Navbar";
 import { Footer } from "@/app/components/Footer";
-import { ArrowRight, MoveDown, CheckCircle2, ArrowUpRight } from "lucide-react";
+import { MoveDown, CheckCircle2, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // --- MOCK DATA ---
@@ -66,8 +65,6 @@ export default function ServicesPage() {
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen selection:bg-[#1a1c18] selection:text-white">
-      <Navbar />
-
       {/* =========================================
           1. HERO (Dark)
          ========================================= */}
@@ -87,7 +84,7 @@ export default function ServicesPage() {
 
           <div className="flex flex-col items-end gap-8">
              <p className="text-white/60 text-sm font-light max-w-sm text-right leading-loose hidden md:block">
-               We don't just supply natural stone. We craft, customize, and curate it to fit your vision perfectly.
+               We don&apos;t just supply natural stone. We craft, customize, and curate it to fit your vision perfectly.
              </p>
              <div className="flex items-center gap-3 text-white/30 text-[10px] uppercase tracking-widest animate-pulse">
                 Process <MoveDown size={14} />
@@ -182,7 +179,7 @@ export default function ServicesPage() {
                  />
               </div>
               <div className="absolute -bottom-10 -right-10 bg-white p-8 shadow-xl max-w-xs hidden md:block border border-gray-100">
-                 <p className="font-serif italic text-2xl text-[#1a1c18] mb-4">"Bring your plans, the coffee is on us."</p>
+                 <p className="font-serif italic text-2xl text-[#1a1c18] mb-4">&quot;Bring your plans, the coffee is on us.&quot;</p>
                  <div className="h-[1px] w-12 bg-[#1a1c18]/20"></div>
               </div>
             </div>
@@ -227,7 +224,7 @@ export default function ServicesPage() {
                  </div>
                  <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">Trusted Installer Network</h3>
                  <p className="text-sm text-gray-500 leading-relaxed font-light">
-                    We don't install, but we know who does it best. Access our curated list of verified professionals.
+                    We don&apos;t install, but we know who does it best. Access our curated list of verified professionals.
                  </p>
               </div>
 
@@ -264,7 +261,7 @@ export default function ServicesPage() {
          <div className="max-w-[1600px] mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-8">
             <div>
                <h2 className="font-serif text-3xl md:text-5xl mb-2">Ready to begin?</h2>
-               <p className="text-white/40 font-light">Let's discuss your project over coffee.</p>
+               <p className="text-white/40 font-light">Let&apos;s discuss your project over coffee.</p>
             </div>
             <div className="flex gap-4">
                <button className="border border-white/20 px-8 py-4 text-[10px] uppercase tracking-[0.2em] hover:bg-white hover:text-[#1a1c18] transition-colors">

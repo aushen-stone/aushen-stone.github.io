@@ -21,6 +21,9 @@ type ProductSidebarProps = {
   selected: FilterState;
   onToggle: (group: keyof FilterState, slug: string) => void;
   onClear: () => void;
+  className?: string;
+  sticky?: boolean;
+  idPrefix?: string;
 };
 
 export function ProductSidebar({
@@ -30,6 +33,9 @@ export function ProductSidebar({
   selected,
   onToggle,
   onClear,
+  className = "w-64 flex-shrink-0 hidden md:block",
+  sticky = true,
+  idPrefix = "desktop",
 }: ProductSidebarProps) {
   const [openSections, setOpenSections] = useState<string[]>([
     "material",
@@ -54,13 +60,14 @@ export function ProductSidebar({
   };
 
   return (
-    <aside className="w-64 flex-shrink-0 hidden md:block">
-      <div className="sticky top-28 space-y-8">
+    <aside className={className}>
+      <div className={sticky ? "sticky top-28 space-y-8" : "space-y-8"}>
         <div className="flex items-center justify-between border-b border-gray-200 pb-4">
           <span className="font-serif text-lg text-gray-900">Filters</span>
           <button
-            className="text-xs uppercase tracking-wider text-gray-500 hover:text-gray-900"
+            className="text-xs uppercase tracking-wider text-gray-500 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
             onClick={onClear}
+            aria-label="Clear all active product filters"
           >
             Clear All
           </button>
@@ -70,7 +77,9 @@ export function ProductSidebar({
           <div key={section.id} className="border-b border-gray-100 pb-6 last:border-0">
             <button
               onClick={() => toggleSection(section.id)}
-              className="flex items-center justify-between w-full py-2 group"
+              className="flex items-center justify-between w-full py-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+              aria-expanded={openSections.includes(section.id)}
+              aria-controls={`${idPrefix}-product-filter-${section.id}`}
             >
               <span className="text-sm font-medium uppercase tracking-widest text-gray-900 group-hover:text-gray-600 transition-colors">
                 {section.name}
@@ -83,7 +92,7 @@ export function ProductSidebar({
             </button>
 
             {openSections.includes(section.id) && (
-              <div className="mt-4 space-y-3">
+              <div id={`${idPrefix}-product-filter-${section.id}`} className="mt-4 space-y-3">
                 {section.options.map((option) => {
                   const group = section.id as keyof FilterState;
                   const isChecked = selected[group].includes(option.slug);
@@ -97,7 +106,8 @@ export function ProductSidebar({
                           type="checkbox"
                           checked={isChecked}
                           onChange={() => onToggle(group, option.slug)}
-                          className="peer appearance-none w-full h-full opacity-0 absolute inset-0 cursor-pointer"
+                          className="peer appearance-none w-full h-full opacity-0 absolute inset-0 cursor-pointer focus-visible:outline-none"
+                          aria-label={`Filter by ${section.name}: ${option.name}`}
                         />
                         <Check
                           size={12}

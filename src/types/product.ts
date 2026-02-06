@@ -66,6 +66,8 @@ export type Product = {
   media?: MediaStatus;
 };
 
+export type AudienceMode = "homeowner" | "professional";
+
 export type ProductCategory = {
   name: string;
   slug: string;
@@ -81,4 +83,13 @@ export type ProductOverride = {
   toneTags?: string[];
   description?: string;
   imageUrl?: string;
+  homeownerSummary?: string;
+  homeownerUseCases?: string[];
+  professionalSummary?: string;
+  professionalNotes?: string[];
+  ctaOverride?: {
+    sample?: string;
+    enquire?: string;
+    consult?: string;
+  };
 };
