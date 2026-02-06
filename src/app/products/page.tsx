@@ -190,7 +190,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
       {/* --- 1. Page Header (Artistic & Textured) --- */}
-      <section className="relative pt-44 pb-24 px-6 md:px-12 overflow-hidden bg-[#1a1c18]">
+      <section className="relative pt-36 sm:pt-40 md:pt-44 pb-20 sm:pb-24 page-padding-x overflow-hidden bg-[#1a1c18]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_#2A2D28_0%,_#151614_100%)]"></div>
 
         <div
@@ -208,7 +208,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
             <span className="inline-block py-1 px-3 border border-white/30 rounded-full text-xs uppercase tracking-[0.2em] text-white/90 mb-6 backdrop-blur-md bg-white/5">
               Collection 2025
             </span>
-            <h1 className="font-serif text-5xl md:text-7xl text-[#F0F2E4] leading-[0.9]">
+            <h1 className="font-serif text-[clamp(2.25rem,7.2vw,4.75rem)] text-[#F0F2E4] leading-[0.9]">
               The Stone <br /> <span className="italic text-white/40">Archive</span>
             </h1>
           </div>
@@ -220,9 +220,9 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
       </section>
 
       {/* --- 2. Main Content (Masonry Layout) --- */}
-      <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-20">
+      <div className="max-w-[1800px] mx-auto page-padding-x py-16 sm:py-20">
         {/* Mobile Filter Button */}
-        <div className="md:hidden mb-10 sticky top-24 z-30">
+        <div className="lg:hidden mb-8 sm:mb-10 sticky top-[var(--content-sticky-top)] z-30">
           <button
             className="w-full flex items-center justify-between bg-[#1a1c18] text-white px-6 py-4 shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
             onClick={() => setIsFilterOpen(true)}
@@ -235,7 +235,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
           </button>
         </div>
 
-        <div className="flex gap-16">
+        <div className="flex gap-8 lg:gap-12 xl:gap-16">
           <ProductSidebar
             materials={materials}
             applications={applications}
@@ -267,7 +267,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
                 </button>
               </div>
             ) : (
-              <div className="columns-1 sm:columns-2 lg:columns-3 gap-8 space-y-8">
+              <div className="columns-1 sm:columns-2 2xl:columns-3 gap-8 space-y-8">
                 {filteredProducts.map((product, index) => {
                   const override = PRODUCT_OVERRIDES[product.slug];
                   const imageUrl = override?.imageUrl || DEFAULT_PRODUCT_IMAGE;
@@ -297,10 +297,10 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
                       {/* Info */}
                       <div className="pt-5 flex justify-between items-start">
                         <div>
-                          <h3 className="font-serif text-2xl text-gray-900 leading-none group-hover:underline decoration-1 underline-offset-4 decoration-gray-300 transition-all">
+                          <h3 className="font-serif text-xl sm:text-2xl text-gray-900 leading-tight group-hover:underline decoration-1 underline-offset-4 decoration-gray-300 transition-all">
                             {product.name}
                           </h3>
-                          <p className="text-xs uppercase tracking-[0.2em] text-gray-500 mt-2">
+                          <p className="text-xs uppercase tracking-[0.16em] sm:tracking-[0.2em] text-gray-500 mt-2">
                             {product.materialName}
                           </p>
                         </div>
@@ -321,7 +321,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
       </div>
 
       {isFilterOpen && (
-        <div className="fixed inset-0 z-[70] md:hidden">
+        <div className="fixed inset-0 z-[70] lg:hidden">
           <button
             type="button"
             className="absolute inset-0 bg-black/50"

@@ -51,12 +51,12 @@ const itemVariants: Variants = {
 
 export function ServicesSection() {
   return (
-    <section className="py-24 md:py-32 px-10 md:px-16 bg-white">
+    <section className="py-16 sm:py-24 md:py-32 page-padding-x bg-white">
       <div className="max-w-[1400px] mx-auto">
         
         {/* --- 头部文案 --- */}
-        <FadeIn className="text-center mb-20 space-y-4">
-          <h2 className="font-serif text-5xl md:text-6xl text-[#1a1a1a]">
+        <FadeIn className="text-center mb-14 sm:mb-20 space-y-4">
+          <h2 className="font-serif display-lg text-[#1a1a1a]">
             What we do
           </h2>
           <p className="text-gray-500 text-sm md:text-base">
@@ -66,7 +66,7 @@ export function ServicesSection() {
 
         {/* --- 三列布局容器 --- */}
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20"
+          className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12 lg:gap-20"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -77,7 +77,7 @@ export function ServicesSection() {
             <motion.div key={service.id} className="group flex flex-col items-center text-center cursor-default" variants={itemVariants}>
               
               {/* 1. 图片容器 */}
-              <div className="relative w-full aspect-square overflow-hidden mb-8 bg-gray-100">
+              <div className="relative w-full aspect-square overflow-hidden mb-6 sm:mb-8 bg-gray-100">
                 <img 
                   src={service.image} 
                   alt={service.title} 
@@ -95,7 +95,7 @@ export function ServicesSection() {
               </div>
 
               {/* 4. 文字标题 */}
-              <h3 className="font-serif text-xl text-[#1a1a1a] mb-2">
+              <h3 className="font-serif text-lg sm:text-xl text-[#1a1a1a] mb-2">
                 {service.title}
               </h3>
               

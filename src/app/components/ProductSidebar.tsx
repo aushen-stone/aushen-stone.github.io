@@ -33,7 +33,7 @@ export function ProductSidebar({
   selected,
   onToggle,
   onClear,
-  className = "w-64 flex-shrink-0 hidden md:block",
+  className = "w-64 xl:w-72 flex-shrink-0 hidden lg:block",
   sticky = true,
   idPrefix = "desktop",
 }: ProductSidebarProps) {
@@ -61,7 +61,7 @@ export function ProductSidebar({
 
   return (
     <aside className={className}>
-      <div className={sticky ? "sticky top-24 space-y-8" : "space-y-8"}>
+      <div className={sticky ? "sticky top-[var(--content-sticky-top)] space-y-8" : "space-y-8"}>
         <div className="flex items-center justify-between border-b border-gray-200 pb-4">
           <span className="font-serif text-lg text-gray-900">Filters</span>
           <button

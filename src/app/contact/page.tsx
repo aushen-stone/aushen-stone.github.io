@@ -81,19 +81,19 @@ export default function ContactPage() {
            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")` }}>
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-6 md:px-12 pt-40 pb-24 relative z-10">
+      <div className="max-w-[1600px] mx-auto page-padding-x pt-32 sm:pt-36 md:pt-40 pb-20 sm:pb-24 relative z-10">
         
         {/* Header Title */}
-        <div className="mb-24 md:mb-32">
-           <h1 className="font-serif text-6xl md:text-8xl text-[#1a1c18] leading-[0.9]">
+        <div className="mb-16 sm:mb-20 md:mb-32">
+           <h1 className="font-serif text-[clamp(2.2rem,8vw,6rem)] text-[#1a1c18] leading-[0.9]">
              Start the <br/> <span className="italic text-gray-400">Conversation.</span>
            </h1>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-32 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
           
           {/* === LEFT COLUMN: The Invitation (Info) === */}
-          <div className="lg:col-span-4 lg:sticky lg:top-40">
+          <div className="lg:col-span-4 lg:sticky lg:top-[var(--content-sticky-top)]">
              
              {/* Info Block */}
              <div className="space-y-12">
@@ -164,8 +164,8 @@ export default function ContactPage() {
              <IdentityToggle active={userType} onChange={setUserType} />
 
              {/* 2. The Form Fields */}
-             <form className="space-y-12 mt-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+             <form className="space-y-8 sm:space-y-12 mt-10 sm:mt-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
                    <InputField label="First Name" placeholder="John" />
                    <InputField label="Last Name" placeholder="Doe" />
                 </div>
@@ -189,8 +189,8 @@ export default function ContactPage() {
                 </div>
 
                 {/* 3. Submit Button */}
-                <div className="pt-8 flex justify-end">
-                   <button className="bg-[#1a1c18] text-white px-12 py-5 uppercase tracking-[0.25em] text-xs hover:bg-[#3B4034] transition-colors shadow-xl shadow-gray-900/10 flex items-center gap-4 group">
+                <div className="pt-4 sm:pt-8 flex justify-stretch sm:justify-end">
+                   <button className="w-full sm:w-auto justify-center sm:justify-start bg-[#1a1c18] text-white px-[var(--btn-px)] py-[var(--btn-py)] uppercase tracking-[0.16em] sm:tracking-[0.25em] text-[11px] sm:text-xs hover:bg-[#3B4034] transition-colors shadow-xl shadow-gray-900/10 flex items-center gap-4 group">
                       Send Message
                       <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                    </button>

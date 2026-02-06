@@ -68,7 +68,7 @@ export default function ServicesPage() {
       {/* =========================================
           1. HERO (Dark)
          ========================================= */}
-      <section className="relative bg-[#1a1c18] pt-44 pb-32 px-6 md:px-12 overflow-hidden z-10">
+      <section className="relative bg-[#1a1c18] pt-36 sm:pt-40 md:pt-44 pb-24 sm:pb-32 page-padding-x overflow-hidden z-10">
         <div className="absolute inset-0 opacity-30 mix-blend-overlay pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")` }}></div>
         <div className="absolute top-0 right-0 w-[60%] h-full bg-gradient-to-l from-[#2A2D28] to-transparent opacity-40 pointer-events-none"></div>
 
@@ -77,7 +77,7 @@ export default function ServicesPage() {
             <span className="block text-white/40 text-[10px] uppercase tracking-[0.3em] mb-6 pl-1 border-l border-white/20">
               Our Expertise
             </span>
-            <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl text-[#F8F5F1] leading-[0.9] tracking-tight">
+            <h1 className="font-serif text-[clamp(2.2rem,8vw,6rem)] text-[#F8F5F1] leading-[0.9] tracking-tight">
               Beyond <br/> <span className="italic text-white/30 ml-4 md:ml-12">The Stone</span>
             </h1>
           </div>
@@ -96,7 +96,7 @@ export default function ServicesPage() {
       {/* =========================================
           2. FABRICATION (Dark + Numbering)
          ========================================= */}
-      <section className="bg-[#1a1c18] text-[#F8F5F1] pt-32 pb-48 px-6 md:px-12 relative border-t border-white/5 z-10">
+      <section className="bg-[#1a1c18] text-[#F8F5F1] pt-24 sm:pt-32 pb-32 sm:pb-48 page-padding-x relative border-t border-white/5 z-10">
         <div className="max-w-[1600px] mx-auto">
           <div className="mb-20">
              <span className="text-[#3B4034] bg-[#F0F2E4] px-2 py-1 text-[10px] uppercase tracking-widest rounded mb-4 inline-block">The Workshop</span>
@@ -162,8 +162,8 @@ export default function ServicesPage() {
             </div>
 
             {/* Sticky Image */}
-            <div className="lg:col-span-7 relative h-[600px] hidden lg:block">
-               <div className="sticky top-24 w-full h-full rounded-sm overflow-hidden bg-white/5 border border-white/10">
+            <div className="lg:col-span-7 relative h-[clamp(420px,58vh,600px)] hidden lg:block">
+               <div className="sticky top-[var(--content-sticky-top)] w-full h-full rounded-sm overflow-hidden bg-white/5 border border-white/10">
                  <AnimatePresence mode="wait">
                    <motion.div
                      key={activeService}
@@ -189,7 +189,7 @@ export default function ServicesPage() {
       {/* =========================================
           3. CONSULTATION (Overlap / Broken Grid)
          ========================================= */}
-      <section className="bg-[#F8F5F1] pb-24 px-6 md:px-12 overflow-hidden relative z-20">
+      <section className="bg-[#F8F5F1] pb-24 page-padding-x overflow-hidden relative z-20">
         <div className="max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
 
@@ -218,7 +218,7 @@ export default function ServicesPage() {
                <p className="text-gray-600 leading-loose mb-8 font-light">
                  Navigating natural stone options can be overwhelming. Our experienced team is here to guide you through color palettes, finishes, and technical suitability for your specific project.
                </p>
-               <button className="group inline-flex items-center gap-4 bg-[#1a1c18] text-white px-8 py-4 uppercase tracking-[0.2em] text-xs hover:bg-[#3B4034] transition-colors shadow-xl shadow-gray-900/10">
+               <button className="group w-full sm:w-auto inline-flex items-center justify-center gap-4 bg-[#1a1c18] text-white px-6 sm:px-8 py-4 uppercase tracking-[0.14em] sm:tracking-[0.2em] text-[11px] sm:text-xs hover:bg-[#3B4034] transition-colors shadow-xl shadow-gray-900/10">
                  Book a Consultation
                  <ArrowUpRight size={16} className="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
                </button>
@@ -231,7 +231,7 @@ export default function ServicesPage() {
       {/* =========================================
           4. LOGISTICS (Architectural Grid Lines)
          ========================================= */}
-      <section className="bg-[#F8F5F1] pb-32 px-6 md:px-12">
+      <section className="bg-[#F8F5F1] pb-24 sm:pb-32 page-padding-x">
         <div className="max-w-[1600px] mx-auto pt-24">
 
            <div className="mb-12 flex items-end justify-between">
@@ -283,16 +283,16 @@ export default function ServicesPage() {
           5. CTA
          ========================================= */}
       <section className="bg-[#1a1c18] text-[#F8F5F1] py-24 border-t border-white/10">
-         <div className="max-w-[1600px] mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-8">
+         <div className="max-w-[1600px] mx-auto page-padding-x flex flex-col md:flex-row items-center justify-between gap-8">
             <div>
                <h2 className="font-serif text-3xl md:text-5xl mb-2">Ready to begin?</h2>
                <p className="text-white/40 font-light">Let&apos;s discuss your project over coffee.</p>
             </div>
-            <div className="flex gap-4">
-               <button className="border border-white/20 px-8 py-4 text-[10px] uppercase tracking-[0.2em] hover:bg-white hover:text-[#1a1c18] transition-colors">
+            <div className="flex w-full sm:w-auto flex-col sm:flex-row gap-3 sm:gap-4">
+               <button className="w-full sm:w-auto border border-white/20 px-6 sm:px-8 py-4 text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] hover:bg-white hover:text-[#1a1c18] transition-colors">
                   Contact Us
                </button>
-               <button className="bg-white text-[#1a1c18] px-8 py-4 text-[10px] uppercase tracking-[0.2em] hover:bg-[#F0F2E4] transition-colors">
+               <button className="w-full sm:w-auto bg-white text-[#1a1c18] px-6 sm:px-8 py-4 text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] hover:bg-[#F0F2E4] transition-colors">
                   Visit Showroom
                </button>
             </div>

@@ -6,14 +6,61 @@
   --foreground: #171717;
   --font-cormorant: "Georgia";
   --font-manrope: "Avenir Next";
+  --page-x: clamp(1rem, 3.2vw, 3rem);
+  --hero-min-height: clamp(28rem, 72vh, 50rem);
+  --display-hero: clamp(2.2rem, 8.8vw, 7rem);
+  --display-xl: clamp(2rem, 7.2vw, 5.5rem);
+  --display-lg: clamp(1.6rem, 5.6vw, 4.2rem);
+  --body-size: clamp(1rem, 0.35vw + 0.95rem, 1.125rem);
+  --btn-px: clamp(1rem, 3vw, 2rem);
+  --btn-py: clamp(0.75rem, 1.8vw, 1.25rem);
+  --nav-h-expanded: 6rem;
+  --nav-h-scrolled: 5rem;
+  --nav-logo-h-solid: 2.5rem;
+  --nav-logo-h-transparent: 3.5rem;
+  --content-sticky-top: 6rem;
 }
 
 html,
 body {
   background: var(--background);
   color: var(--foreground);
-  font-size: 18px; /* 你想大就留 18 */
+  font-size: var(--body-size);
   overflow-x: hidden;
+}
+
+.page-padding-x {
+  padding-left: var(--page-x);
+  padding-right: var(--page-x);
+}
+
+.display-hero {
+  font-size: var(--display-hero);
+}
+
+.display-xl {
+  font-size: var(--display-xl);
+}
+
+.display-lg {
+  font-size: var(--display-lg);
+}
+
+@media (max-height: 430px) {
+  :root {
+    --page-x: clamp(0.75rem, 2.2vw, 1.25rem);
+    --hero-min-height: 24rem;
+    --display-hero: clamp(1.85rem, 6.2vw, 3.3rem);
+    --display-xl: clamp(1.65rem, 5.8vw, 3rem);
+    --display-lg: clamp(1.35rem, 4.8vw, 2.5rem);
+    --btn-px: clamp(0.9rem, 2.2vw, 1.35rem);
+    --btn-py: clamp(0.65rem, 1.6vw, 0.9rem);
+    --nav-h-expanded: 5rem;
+    --nav-h-scrolled: 4.25rem;
+    --nav-logo-h-solid: 2rem;
+    --nav-logo-h-transparent: 2.6rem;
+    --content-sticky-top: 4.75rem;
+  }
 }
 
 @keyframes grain {

@@ -114,22 +114,22 @@ export function Navbar() {
     : "bg-transparent border-transparent";
 
   const logoClass = shouldBeSolid
-    ? "h-10 opacity-90"
-    : "h-14 brightness-0 invert";
+    ? "h-[var(--nav-logo-h-solid)] opacity-90"
+    : "h-[var(--nav-logo-h-transparent)] brightness-0 invert";
 
   return (
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${navBackgroundClass} ${
-          isScrolled ? "h-20" : "h-24"
+          isScrolled ? "h-[var(--nav-h-scrolled)]" : "h-[var(--nav-h-expanded)]"
         }`}
         onMouseLeave={() => setActiveMenu(null)}
       >
-        <div className="h-full px-6 md:px-12 grid grid-cols-[1fr_auto_1fr] items-center gap-4 relative z-50">
+        <div className="h-full page-padding-x grid grid-cols-[auto_minmax(0,1fr)_auto] min-[1600px]:grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-3 md:gap-4 relative z-50">
           <div className="min-w-0 flex items-center">
             {/* --- Mobile Menu Button --- */}
             <button
-              className={`min-[1600px]:hidden z-10 p-2 transition-colors ${textColorClass}`}
+              className={`min-[1600px]:hidden z-10 p-1.5 sm:p-2 transition-colors shrink-0 ${textColorClass}`}
               onClick={() => {
                 setActiveMenu(null);
                 closeDrawer();
@@ -177,19 +177,19 @@ export function Navbar() {
           </div>
 
           {/* --- Logo (reserved center column) --- */}
-          <div className="flex justify-center transition-all duration-500 z-0">
+          <div className="min-w-0 flex justify-center transition-all duration-500 z-0">
             <Link href="/" className="block cursor-pointer">
               <img
                 src="/AushenLogo.webp"
                 alt="Aushen"
-                className={`object-contain transition-all duration-500 ${logoClass}`}
+                className={`w-[clamp(96px,28vw,180px)] md:w-[clamp(120px,20vw,240px)] max-w-full object-contain transition-all duration-500 ${logoClass}`}
               />
             </Link>
           </div>
 
           {/* --- Right Icons --- */}
           <div
-            className={`flex items-center justify-end gap-5 md:gap-7 text-xs font-medium uppercase tracking-widest z-10 transition-colors ${textColorClass}`}
+            className={`flex items-center justify-end gap-3 sm:gap-4 md:gap-6 text-[11px] sm:text-xs font-medium uppercase tracking-[0.14em] sm:tracking-[0.18em] z-10 transition-colors ${textColorClass}`}
           >
             <Link
               href="/contact"
@@ -199,7 +199,7 @@ export function Navbar() {
             </Link>
             <button
               type="button"
-              className="flex items-center gap-2 hover:opacity-70 transition-opacity"
+              className="flex items-center gap-1.5 sm:gap-2 hover:opacity-70 transition-opacity whitespace-nowrap"
               onClick={() => {
                 if (isDrawerOpen) {
                   closeDrawer();
@@ -214,7 +214,7 @@ export function Navbar() {
               aria-controls="sample-cart-drawer"
             >
               <ShoppingCart size={20} strokeWidth={1.2} />
-              <span>({lineCount})</span>
+              <span className="text-[11px] sm:text-xs">({lineCount})</span>
             </button>
           </div>
         </div>

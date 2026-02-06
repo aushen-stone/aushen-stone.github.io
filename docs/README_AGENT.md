@@ -9,6 +9,7 @@ Last updated: 2026-02-06
   - primary CTA actionability
   - image/lint warning reduction
   - placeholder asset replacement on release-critical routes
+  - responsive QA evidence + automation follow-up after full-route squeeze hardening
 - Update docs only on major changes (behavior/gates/contracts/priorities/risks).
 
 ## System Health Snapshot
@@ -24,6 +25,37 @@ Last updated: 2026-02-06
   - automated e2e coverage
 
 ## What Changed Last
+- Responsive squeeze mitigation was expanded from core five routes to secondary routes and shared sections:
+  - routes:
+    - `/about`
+    - `/projects`
+    - `/projects/[id]`
+    - `/cart`
+  - shared/layout components:
+    - `src/app/components/PageOffset.tsx`
+    - `src/app/components/BrandBanner.tsx`
+    - `src/app/components/BestSellers.tsx`
+    - `src/app/components/ServicesSection.tsx`
+    - `src/app/components/CreativeHubSection.tsx`
+    - `src/app/components/Footer.tsx`
+    - `src/app/components/cart/SampleCartDrawer.tsx`
+- Current responsive baseline status:
+  - core and secondary release routes now use variable-driven spacing/typography/sticky offsets.
+  - low-height (`max-height: 430px`) rules are active via `src/app/globals.css`.
+- Responsive squeeze mitigation landed for the core five routes plus global navbar:
+  - unified responsive baseline variables in `src/app/globals.css` (fluid typography/spacing + low-height `max-height: 430px` rules)
+  - navbar anti-squeeze updates in `src/app/components/Navbar.tsx` (logo clamp, tighter mobile spacing, variable nav heights)
+  - content-driven low-height updates in:
+    - `src/app/components/Hero.tsx`
+    - `src/app/components/ProjectShowcase.tsx`
+  - products responsiveness updates in:
+    - `src/app/components/ProductSidebar.tsx` (desktop sidebar breakpoint moved to `lg`)
+    - `src/app/products/page.tsx`
+    - `src/app/products/[slug]/page.tsx`
+  - services/contact squeeze fixes in:
+    - `src/app/services/page.tsx`
+    - `src/app/contact/page.tsx`
+  - verification snapshot remained healthy (`build`/`tsc` pass, lint still `0 errors, 20 warnings`)
 - P0 implementation and sign-off are complete:
   - `UI-NAV-001` closed (final navbar layout iteration removed overlap near ~1680px).
   - `CART-SAMPLE-001` closed (sample-cart flow operational via detail add -> trolley drawer -> `/cart` -> contact handoff).

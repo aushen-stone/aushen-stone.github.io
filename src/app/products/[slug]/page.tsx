@@ -300,7 +300,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
-      <section className="relative bg-[#1a1c18] pt-40 pb-32 px-6 md:px-12 overflow-hidden">
+      <section className="relative bg-[#1a1c18] pt-36 sm:pt-40 pb-24 sm:pb-32 page-padding-x overflow-hidden">
         <div
           className="absolute inset-0 opacity-30 mix-blend-overlay pointer-events-none"
           style={{
@@ -321,7 +321,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
               </span>
             </div>
 
-            <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-[#F8F5F1] leading-[0.9] mb-6">
+            <h1 className="font-serif text-[clamp(2.2rem,8vw,6rem)] text-[#F8F5F1] leading-[0.9] mb-6">
               {product.name}
             </h1>
 
@@ -339,7 +339,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
         </div>
       </section>
 
-      <div className="max-w-[1800px] mx-auto px-6 md:px-12 pb-32 -mt-20 relative z-20">
+      <div className="max-w-[1800px] mx-auto page-padding-x pb-24 sm:pb-32 -mt-12 sm:-mt-20 relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
           <div className="lg:col-span-7 flex flex-col gap-8 md:gap-16">
             <HeroParallaxImage src={images[0].src} alt={images[0].alt} />
@@ -364,7 +364,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
           </div>
 
           <div className="lg:col-span-5 relative h-full pt-20 lg:pt-32">
-            <div className="sticky top-24 flex flex-col gap-10 pl-0 lg:pl-12 border-l-0 lg:border-l border-gray-200">
+            <div className="sticky top-[var(--content-sticky-top)] flex flex-col gap-10 pl-0 lg:pl-12 border-l-0 lg:border-l border-gray-200">
               <div className="space-y-4">
                 <h4 className="font-serif text-2xl text-gray-900">About the Stone</h4>
                 <p className="text-gray-700 leading-loose font-light text-base">{description}</p>
@@ -422,27 +422,27 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                     type="button"
                     onClick={handleAddSample}
                     disabled={!selectedFinish}
-                    className="w-full bg-[#1a1c18] text-[#F8F5F1] py-5 px-8 flex items-center justify-between group hover:bg-[#3B4034] transition-all duration-500 shadow-xl shadow-gray-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-[#1a1c18] text-[#F8F5F1] py-4 sm:py-5 px-5 sm:px-8 flex items-center justify-between group hover:bg-[#3B4034] transition-all duration-500 shadow-xl shadow-gray-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1] disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label={sampleLabel}
                   >
-                    <span className="uppercase tracking-[0.22em] text-xs font-medium">{sampleLabel}</span>
+                    <span className="uppercase tracking-[0.15em] sm:tracking-[0.22em] text-[11px] sm:text-xs font-medium">{sampleLabel}</span>
                     <ArrowRight
                       size={16}
                       className="transition-transform duration-500 group-hover:translate-x-2"
                     />
                   </button>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <button
                       type="button"
-                      className="border border-gray-300 text-gray-900 py-4 px-6 flex items-center justify-center gap-3 hover:border-gray-900 transition-all uppercase tracking-[0.15em] text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+                      className="border border-gray-300 text-gray-900 py-3.5 sm:py-4 px-4 sm:px-6 flex items-center justify-center gap-3 hover:border-gray-900 transition-all uppercase tracking-[0.12em] sm:tracking-[0.15em] text-[11px] sm:text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
                       aria-label={consultLabel}
                     >
                       {consultLabel}
                     </button>
                     <button
                       type="button"
-                      className="border border-gray-300 text-gray-900 py-4 px-6 flex items-center justify-center gap-3 hover:border-gray-900 transition-all uppercase tracking-[0.15em] text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+                      className="border border-gray-300 text-gray-900 py-3.5 sm:py-4 px-4 sm:px-6 flex items-center justify-center gap-3 hover:border-gray-900 transition-all uppercase tracking-[0.12em] sm:tracking-[0.15em] text-[11px] sm:text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
                       aria-label={enquireLabel}
                     >
                       <ArrowDownLeft size={14} /> {enquireLabel}
@@ -453,20 +453,20 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                 <div className="flex flex-col gap-4">
                   <button
                     type="button"
-                    className="w-full bg-[#1a1c18] text-[#F8F5F1] py-5 px-8 flex items-center justify-between group hover:bg-[#3B4034] transition-all duration-500 shadow-xl shadow-gray-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+                    className="w-full bg-[#1a1c18] text-[#F8F5F1] py-4 sm:py-5 px-5 sm:px-8 flex items-center justify-between group hover:bg-[#3B4034] transition-all duration-500 shadow-xl shadow-gray-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
                     aria-label={enquireLabel}
                   >
-                    <span className="uppercase tracking-[0.22em] text-xs font-medium">{enquireLabel}</span>
+                    <span className="uppercase tracking-[0.15em] sm:tracking-[0.22em] text-[11px] sm:text-xs font-medium">{enquireLabel}</span>
                     <ArrowRight
                       size={16}
                       className="transition-transform duration-500 group-hover:translate-x-2"
                     />
                   </button>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <button
                       type="button"
-                      className="border border-gray-300 text-gray-900 py-4 px-6 flex items-center justify-center gap-3 hover:border-gray-900 transition-all uppercase tracking-[0.15em] text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+                      className="border border-gray-300 text-gray-900 py-3.5 sm:py-4 px-4 sm:px-6 flex items-center justify-center gap-3 hover:border-gray-900 transition-all uppercase tracking-[0.12em] sm:tracking-[0.15em] text-[11px] sm:text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
                       aria-label="Call us"
                     >
                       <Phone size={14} /> Call Us
@@ -475,7 +475,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                       type="button"
                       onClick={handleAddSample}
                       disabled={!selectedFinish}
-                      className="border border-gray-300 text-gray-900 py-4 px-6 flex items-center justify-center gap-3 hover:border-gray-900 transition-all uppercase tracking-[0.15em] text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1] disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="border border-gray-300 text-gray-900 py-3.5 sm:py-4 px-4 sm:px-6 flex items-center justify-center gap-3 hover:border-gray-900 transition-all uppercase tracking-[0.12em] sm:tracking-[0.15em] text-[11px] sm:text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1] disabled:opacity-50 disabled:cursor-not-allowed"
                       aria-label={sampleLabel}
                     >
                       {sampleLabel}
@@ -492,7 +492,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
 
               <div className="pt-6">
                 <AccordionItem title="Technical Specifications" defaultOpen>
-                  <div className="grid grid-cols-2 gap-y-4 gap-x-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8">
                     {techSpecs.map((spec) => (
                       <div key={spec.label} className="flex flex-col">
                         <span className="text-xs uppercase text-gray-500 tracking-[0.14em] mb-1">

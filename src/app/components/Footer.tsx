@@ -15,7 +15,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-[#1a1c18] text-[#F8F5F1] pt-24 pb-16 px-10 md:px-16 overflow-hidden">
+    <footer className="bg-[#1a1c18] text-[#F8F5F1] pt-16 sm:pt-24 pb-12 sm:pb-16 page-padding-x overflow-hidden">
 
       {/* Top Section: Grid Layout */}
       <motion.div
@@ -25,7 +25,7 @@ export function Footer() {
         variants={{
           visible: { transition: { staggerChildren: 0.1 } }
         }}
-        className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-8 mb-24"
+        className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 sm:gap-16 md:gap-8 mb-16 sm:mb-24"
       >
 
         {/* Column 1: Brand & Address */}
@@ -90,9 +90,9 @@ export function Footer() {
         </motion.div>
 
         {/* Column 4: Newsletter */}
-        <motion.div variants={footerItemVariant} className="md:col-span-4 flex flex-col justify-between h-full">
+        <motion.div variants={footerItemVariant} className="md:col-span-4 flex flex-col justify-between h-full gap-6">
           <div>
-            <h4 className="font-serif text-3xl md:text-4xl leading-tight mb-2">
+            <h4 className="font-serif text-2xl sm:text-3xl md:text-4xl leading-tight mb-2">
               Stay Inspired.
             </h4>
             <p className="text-white/40 text-sm mb-8">
@@ -104,7 +104,7 @@ export function Footer() {
             <input
               type="email"
               placeholder="Email Address"
-              className="w-full bg-transparent border-b border-white/20 py-4 text-lg text-white placeholder:text-white/20 focus:outline-none focus:border-white transition-colors"
+              className="w-full bg-transparent border-b border-white/20 py-4 text-base sm:text-lg text-white placeholder:text-white/20 focus:outline-none focus:border-white transition-colors"
             />
             <button
               type="button"
@@ -123,7 +123,7 @@ export function Footer() {
         whileInView={{ opacity: 1 }}
         transition={{ delay: 0.5, duration: 1 }}
         viewport={{ once: true }}
-        className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-end pt-12"
+        className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-start md:items-end pt-8 sm:pt-12"
       >
         <div className="flex gap-6 mb-8 md:mb-0">
           {[

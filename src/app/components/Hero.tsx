@@ -22,7 +22,7 @@ export function Hero() {
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
-    <div ref={containerRef} className="relative w-full h-[calc(100vh-96px)] min-h-[600px] overflow-hidden">
+    <div ref={containerRef} className="relative w-full min-h-[var(--hero-min-height)] overflow-hidden">
 
       {/* 1. 背景图层 (应用视差动画) */}
       <motion.div style={{ y, opacity }} className="absolute inset-0">
@@ -35,11 +35,11 @@ export function Hero() {
       </motion.div>
 
       {/* 2. 内容层 */}
-      <div className="relative z-10 h-full max-w-[1920px] mx-auto px-10 md:px-16 flex flex-col justify-center">
+      <div className="relative z-10 h-full max-w-[1920px] mx-auto page-padding-x py-16 sm:py-20 md:py-24 flex flex-col justify-center">
 
         {/* 标题区域 */}
         <div className="max-w-2xl">
-          <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl text-white leading-[1.1]">
+          <h1 className="font-serif display-hero text-white leading-[1.05]">
             {/* 第一行文字：延迟 0.2s 浮现 */}
             <FadeIn delay={0.2} className="block">
               <span>Find your crafted</span>
@@ -52,8 +52,8 @@ export function Hero() {
           </h1>
 
           {/* 按钮：延迟 0.6s 最后浮现 */}
-          <FadeIn delay={0.6} className="mt-12">
-            <button className="group border border-white/80 px-8 py-4 text-white text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center gap-3">
+          <FadeIn delay={0.6} className="mt-8 sm:mt-10 md:mt-12">
+            <button className="group w-full sm:w-auto border border-white/80 px-[var(--btn-px)] py-[var(--btn-py)] text-white text-[11px] sm:text-sm uppercase tracking-[0.16em] sm:tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-3">
               Make Appointments
               <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
             </button>

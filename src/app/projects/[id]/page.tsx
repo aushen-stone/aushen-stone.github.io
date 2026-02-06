@@ -234,7 +234,7 @@ function ProjectHero({ project }: { project: ProjectDetailRecord }) {
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   return (
-    <div ref={ref} className="relative h-screen w-full overflow-hidden bg-[#1a1c18]">
+    <div ref={ref} className="relative h-[clamp(24rem,86vh,56rem)] w-full overflow-hidden bg-[#1a1c18]">
       <motion.div style={{ y }} className="absolute inset-0 w-full h-full">
         <img
           src={project.gallery[0].src}
@@ -246,7 +246,7 @@ function ProjectHero({ project }: { project: ProjectDetailRecord }) {
 
       <motion.div
         style={{ opacity }}
-        className="absolute bottom-0 left-0 w-full p-6 md:p-12 lg:p-20 z-10"
+        className="absolute bottom-0 left-0 w-full page-padding-x py-6 sm:py-8 md:py-12 lg:py-16 z-10"
       >
         <div className="max-w-[1800px] mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -254,7 +254,7 @@ function ProjectHero({ project }: { project: ProjectDetailRecord }) {
               <span className="block text-white/60 text-[10px] uppercase tracking-[0.3em] mb-4">
                 {project.location} — {project.year}
               </span>
-              <h1 className="font-serif text-5xl md:text-7xl lg:text-9xl text-[#F8F5F1] leading-[0.9]">
+              <h1 className="font-serif text-[clamp(2rem,8vw,6.6rem)] text-[#F8F5F1] leading-[0.9]">
                 {project.title}
               </h1>
             </div>
@@ -270,14 +270,14 @@ function ProjectHero({ project }: { project: ProjectDetailRecord }) {
 
 function GetTheLook({ project }: { project: ProjectDetailRecord }) {
   return (
-    <section className="bg-[#1a1c18] text-[#F8F5F1] py-24 px-6 md:px-12 border-t border-white/10">
+    <section className="bg-[#1a1c18] text-[#F8F5F1] py-20 sm:py-24 page-padding-x border-t border-white/10">
       <div className="max-w-[1800px] mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
           <div className="max-w-xl">
             <span className="text-[#F0F2E4]/60 text-[10px] uppercase tracking-[0.3em] mb-4 block">
               Material Palette
             </span>
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight">
+            <h2 className="font-serif text-[clamp(1.8rem,5.8vw,4rem)] leading-tight">
               Get The Look
             </h2>
             <p className="mt-4 text-white/50 font-light text-sm max-w-md">
@@ -286,7 +286,7 @@ function GetTheLook({ project }: { project: ProjectDetailRecord }) {
           </div>
           <Link
             href="/products"
-            className="border border-white/20 text-white px-8 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-white hover:text-[#1a1c18] transition-all"
+            className="w-full sm:w-auto text-center border border-white/20 text-white px-6 sm:px-8 py-3 text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.2em] hover:bg-white hover:text-[#1a1c18] transition-all"
           >
             View All Products
           </Link>
@@ -343,7 +343,7 @@ export default function ProjectDetailPage() {
   if (!project) {
     return (
       <main className="bg-[#F8F5F1] min-h-screen">
-        <div className="max-w-4xl mx-auto px-6 md:px-12 py-40">
+        <div className="max-w-4xl mx-auto page-padding-x py-28 sm:py-40">
           <h1 className="font-serif text-4xl text-gray-900 mb-4">Project not found</h1>
           <p className="text-gray-600 mb-8">
             The project you&apos;re trying to view doesn&apos;t exist in this collection.
@@ -364,15 +364,15 @@ export default function ProjectDetailPage() {
     <main className="bg-[#F8F5F1] min-h-screen selection:bg-[#1a1c18] selection:text-white">
       <ProjectHero project={project} />
 
-      <section className="max-w-[1600px] mx-auto px-6 md:px-12 py-24 md:py-32">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+      <section className="max-w-[1600px] mx-auto page-padding-x py-16 sm:py-24 md:py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-16 lg:gap-24">
           <div className="lg:col-span-4">
-            <div className="sticky top-24 space-y-12">
+            <div className="sticky top-[var(--content-sticky-top)] space-y-8 sm:space-y-12">
               <p className="font-serif text-2xl md:text-3xl leading-relaxed text-[#1a1c18]">
                 {project.description}
               </p>
 
-              <div className="grid grid-cols-2 gap-y-8 gap-x-4 border-t border-gray-200 pt-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-4 border-t border-gray-200 pt-8">
                 <div>
                   <span className="block text-[10px] uppercase tracking-widest text-gray-400 mb-2">
                     Architect
@@ -411,7 +411,7 @@ export default function ProjectDetailPage() {
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="border border-gray-300 px-3 py-1 text-[10px] uppercase tracking-widest text-gray-600"
+                    className="border border-gray-300 px-3 py-1 text-[10px] uppercase tracking-[0.14em] sm:tracking-widest text-gray-600"
                   >
                     {tag}
                   </span>
@@ -420,7 +420,7 @@ export default function ProjectDetailPage() {
             </div>
           </div>
 
-          <div className="lg:col-span-8 flex flex-col gap-16 md:gap-32">
+          <div className="lg:col-span-8 flex flex-col gap-12 sm:gap-16 md:gap-24">
             {project.gallery.map((img, index) => {
               if (img.type === "full") {
                 return (
@@ -469,11 +469,11 @@ export default function ProjectDetailPage() {
       <GetTheLook project={project} />
 
       {nextProject && (
-        <div className="bg-[#F8F5F1] py-20 text-center border-t border-gray-200">
+        <div className="bg-[#F8F5F1] py-16 sm:py-20 text-center border-t border-gray-200">
           <p className="text-[10px] uppercase tracking-widest text-gray-400 mb-4">Next Project</p>
           <Link
             href={`/projects/${nextProject.slug}`}
-            className="font-serif text-4xl md:text-6xl text-[#1a1c18] hover:italic transition-all"
+            className="font-serif text-[clamp(1.9rem,6.2vw,4rem)] text-[#1a1c18] hover:italic transition-all"
           >
             {nextProject.title}
           </Link>

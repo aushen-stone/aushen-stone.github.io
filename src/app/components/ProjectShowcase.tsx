@@ -8,10 +8,10 @@ import { motion } from "framer-motion";
 export function ProjectShowcase() {
   return (
     <section className="bg-[#F0F2E4] w-full">
-      <div className="grid grid-cols-1 md:grid-cols-2 min-h-[600px] md:h-[80vh] max-h-[900px]">
+      <div className="grid grid-cols-1 md:grid-cols-2">
 
         {/* --- 左侧：沉浸式大图 --- */}
-        <div className="relative h-full w-full overflow-hidden group">
+        <div className="relative w-full overflow-hidden group aspect-[4/3] md:aspect-auto md:min-h-[clamp(26rem,60vh,46rem)]">
           {/* 动画层：图片容器 */}
           <motion.div
             initial={{ scale: 1.1, opacity: 0 }}
@@ -31,7 +31,7 @@ export function ProjectShowcase() {
         </div>
 
         {/* --- 右侧：留白与排版 --- */}
-        <div className="flex flex-col justify-center px-10 py-16 md:px-24 lg:px-32 xl:px-40">
+        <div className="flex flex-col justify-center page-padding-x py-12 sm:py-14 md:py-16 lg:py-20 xl:py-24 md:px-10 lg:px-16 xl:px-20">
           <motion.div
             className="max-w-xl"
             initial="hidden"
@@ -47,7 +47,7 @@ export function ProjectShowcase() {
                 hidden: { opacity: 0, y: 30 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
               }}
-              className="font-serif text-5xl md:text-6xl lg:text-7xl text-[#1a1a1a] leading-[1.1] mb-8"
+              className="font-serif display-xl text-[#1a1a1a] leading-[1.08] mb-6 sm:mb-8"
             >
               Get Inspired by <br className="hidden lg:block"/>
               <span className="italic font-light opacity-80">Our Favorite</span> Projects
@@ -58,7 +58,7 @@ export function ProjectShowcase() {
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
               }}
-              className="text-gray-600 text-sm md:text-base leading-relaxed mb-12 max-w-md"
+              className="text-gray-600 text-sm md:text-base leading-relaxed mb-8 sm:mb-12 max-w-md"
             >
               Explore our curated portfolio of residential and commercial spaces, showcasing the timeless beauty of natural stone in harmony with modern architecture.
             </motion.p>
@@ -71,7 +71,7 @@ export function ProjectShowcase() {
             >
               <Link
                 href="/projects"
-                className="group inline-flex items-center gap-3 text-xs uppercase tracking-[0.25em] font-medium text-gray-900 pb-2 border-b border-gray-900 hover:text-gray-600 hover:border-gray-600 transition-all"
+                className="group inline-flex items-center gap-2 sm:gap-3 text-[11px] sm:text-xs uppercase tracking-[0.16em] sm:tracking-[0.22em] font-medium text-gray-900 pb-2 border-b border-gray-900 hover:text-gray-600 hover:border-gray-600 transition-all"
               >
                 Explore More
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

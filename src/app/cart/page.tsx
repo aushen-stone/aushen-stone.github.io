@@ -35,9 +35,9 @@ export default function CartPage() {
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
-      <section className="pt-40 pb-20 px-6 md:px-12 border-b border-gray-200/60">
+      <section className="pt-32 sm:pt-36 md:pt-40 pb-16 sm:pb-20 page-padding-x border-b border-gray-200/60">
         <div className="max-w-[1200px] mx-auto">
-          <h1 className="font-serif text-5xl md:text-7xl text-[#1a1c18] leading-[0.95]">Sample Cart</h1>
+          <h1 className="font-serif text-[clamp(2.2rem,7.6vw,5rem)] text-[#1a1c18] leading-[0.95]">Sample Cart</h1>
           <p className="mt-6 text-sm md:text-base text-gray-600 max-w-2xl">
             Review your selected finishes and submit one sample request from this page.
           </p>
@@ -53,7 +53,7 @@ export default function CartPage() {
         </div>
       </section>
 
-      <section className="py-14 px-6 md:px-12">
+      <section className="py-12 sm:py-14 page-padding-x">
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
           <div className="lg:col-span-8 space-y-4">
             {lines.length === 0 ? (
@@ -77,8 +77,8 @@ export default function CartPage() {
                     className="border border-gray-200 bg-white p-6"
                   >
                     <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="font-serif text-2xl text-gray-900">{line.productName}</p>
+                      <div className="min-w-0">
+                        <p className="font-serif text-xl sm:text-2xl text-gray-900 break-words">{line.productName}</p>
                         <p className="text-xs uppercase tracking-[0.16em] text-gray-500 mt-3">
                           Finish: {line.finishName}
                         </p>
@@ -102,7 +102,7 @@ export default function CartPage() {
           </div>
 
           <aside className="lg:col-span-4">
-            <div className="border border-gray-200 bg-white p-6 lg:sticky lg:top-28 space-y-6">
+            <div className="border border-gray-200 bg-white p-6 lg:sticky lg:top-[calc(var(--content-sticky-top)+0.5rem)] space-y-6">
               <div>
                 <p className="text-xs uppercase tracking-[0.18em] text-gray-500 mb-2">Summary</p>
                 <p className="font-serif text-3xl text-gray-900">{lineCount} finish line{lineCount === 1 ? "" : "s"}</p>
@@ -112,7 +112,7 @@ export default function CartPage() {
                 type="button"
                 onClick={handleAskForSample}
                 disabled={lines.length === 0}
-                className="w-full bg-[#1a1c18] text-[#F8F5F1] py-4 px-6 uppercase tracking-[0.2em] text-xs hover:bg-[#3B4034] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                className="w-full bg-[#1a1c18] text-[#F8F5F1] py-4 px-6 uppercase tracking-[0.14em] sm:tracking-[0.2em] text-[11px] sm:text-xs hover:bg-[#3B4034] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-3"
               >
                 Ask for sample
                 <ArrowRight size={14} />
@@ -122,7 +122,7 @@ export default function CartPage() {
                 type="button"
                 onClick={clearSamples}
                 disabled={lines.length === 0}
-                className="w-full border border-gray-300 py-4 px-6 uppercase tracking-[0.2em] text-xs text-gray-900 hover:border-gray-900 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-full border border-gray-300 py-4 px-6 uppercase tracking-[0.14em] sm:tracking-[0.2em] text-[11px] sm:text-xs text-gray-900 hover:border-gray-900 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Clear cart
               </button>

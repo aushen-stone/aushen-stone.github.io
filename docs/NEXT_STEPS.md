@@ -3,7 +3,7 @@
 Last updated: 2026-02-06
 
 ## Current Release Goal
-Stabilize post-P0 quality by finishing primary CTA behavior, reducing image/lint debt, and replacing placeholder assets while keeping engineering gates reproducible in this environment.
+Stabilize post-P0 quality by finishing primary CTA behavior, reducing image/lint debt, replacing placeholder assets, and extending responsive hardening beyond the newly-fixed core five routes while keeping engineering gates reproducible in this environment.
 
 ## P0 (Release Blockers)
 No open P0 blockers.
@@ -73,15 +73,67 @@ No open P0 blockers.
 - Definition of Done: release-critical pages no longer depend on obvious placeholder imagery.
 
 ### 4) Consolidate responsive QA baseline
-- Problem: responsive quality still depends on ad-hoc checks.
+- Problem: route-level squeeze fixes are now broadly landed, but visual evidence and automated regression coverage are still incomplete.
+- Implemented now:
+  - responsive baseline variables + low-height rule (`max-height: 430px`) in `src/app/globals.css`
+  - navbar squeeze hardening in `src/app/components/Navbar.tsx`
+  - route updates in:
+    - `src/app/components/Hero.tsx`
+    - `src/app/components/ProjectShowcase.tsx`
+    - `src/app/components/ProductSidebar.tsx`
+    - `src/app/products/page.tsx`
+    - `src/app/products/[slug]/page.tsx`
+    - `src/app/services/page.tsx`
+    - `src/app/contact/page.tsx`
+    - `src/app/about/page.tsx`
+    - `src/app/projects/page.tsx`
+    - `src/app/projects/[id]/page.tsx`
+    - `src/app/cart/page.tsx`
+  - shared-section updates in:
+    - `src/app/components/PageOffset.tsx`
+    - `src/app/components/BrandBanner.tsx`
+    - `src/app/components/BestSellers.tsx`
+    - `src/app/components/ServicesSection.tsx`
+    - `src/app/components/CreativeHubSection.tsx`
+    - `src/app/components/Footer.tsx`
+    - `src/app/components/cart/SampleCartDrawer.tsx`
 - Action:
   - use two evidence classes in tracking:
     - `Static Risk`: code-level risk not yet visually confirmed.
     - `Confirmed Defect`: reproduced with screenshot/video.
-  - keep sticky offsets synchronized with navbar conventions.
+  - keep sticky offsets synchronized with navbar conventions (CSS variable driven).
+  - attach screenshot/video evidence for each target viewport matrix checkpoint.
 - Definition of Done:
-  - 320/375/390/768/1024 checks show no horizontal overflow and no sticky overlap regressions.
+  - 320/360/390/768/1024 checks plus horizontal low-height checks (`height <= 430px`) show no horizontal overflow and no sticky overlap regressions across release routes.
   - static-risk items are either confirmed or closed.
+
+### 5) Add Playwright responsive smoke regression (deferred to next cycle)
+- Problem: responsive squeeze fixes are code-complete, but regression protection still relies on manual checks.
+- Scope (routes):
+  - `/`
+  - `/products`
+  - `/products/[slug]` (pick one stable slug from generated data)
+  - `/services`
+  - `/contact`
+  - `/about`
+  - `/projects`
+  - `/projects/[id]` (pick one stable slug from fixture/mock list)
+  - `/cart`
+- Viewport matrix:
+  - portrait widths: `320/360/390/768/1024`
+  - low-height landscape: `height <= 430px` (at least one `812x375`-class viewport)
+- Core assertions:
+  - no horizontal overflow (`document.documentElement.scrollWidth <= window.innerWidth`)
+  - key nav elements are visible and non-overlapping (menu/logo/cart area)
+  - drawers still open/close correctly (`Navbar` menu, product filter drawer, sample cart drawer)
+  - primary CTA blocks are rendered and clickable in compact layouts
+- CI integration target:
+  - add a dedicated `playwright:smoke:responsive` command
+  - run on PR for frontend-touching changes, with artifact upload (screenshots/videos) on failure
+- Definition of Done:
+  - smoke suite is stable in CI (>= 3 consecutive green runs)
+  - at least one intentional layout break is caught locally by the suite
+  - responsive QA checklist references automated smoke report links instead of manual-only evidence
 
 ## P2 / Backlog
 
@@ -138,13 +190,14 @@ No open P0 blockers.
 6. Click `Ask for sample` in cart: navigates to `/contact` with message prefilled.
 7. `/products` list page has no direct sample add entry.
 8. Navbar has no logo/menu overlap at threshold widths (including ~1600 and ~1680).
-9. `build -> tsc -> lint` command sequence reproduces expected health state.
+9. Release routes (`/`, `/products`, `/products/[slug]`, `/services`, `/contact`, `/about`, `/projects`, `/projects/[id]`, `/cart`) show no squeeze at 320/360/390/768/1024 and no low-height overlap at `height <= 430px`.
+10. `build -> tsc -> lint` command sequence reproduces expected health state.
 
 ## Assumptions and Defaults
 1. No payment, pricing, inventory, or order lifecycle in current phase.
 2. Sample request is the only cart business objective in v1.
 3. Responsive issue tracking uses static audit first, then screenshot confirmation.
-4. This cycle updates docs only; no implementation/code change is required by this plan.
+4. Responsive squeeze mitigation is implemented for core and secondary release routes; remaining work is evidence collection and automation.
 
 ## Exit Criteria
 - P0 blockers (`UI-NAV-001`, `CART-SAMPLE-001`) are closed.
@@ -152,7 +205,7 @@ No open P0 blockers.
 - `npm run build` passes.
 - `npx tsc --noEmit` passes after build (required for `.next/types` presence).
 - `npm run lint` reports no errors (warnings are tracked until resolved).
-- Mobile and tablet widths (320/375/390/768/1024) show no critical nav/overlay regressions.
+- Mobile/tablet widths (320/360/390/768/1024) and low-height landscape (`height <= 430px`) show no critical nav/overlay regressions on release routes.
 
 ## Verification Commands
 ```bash

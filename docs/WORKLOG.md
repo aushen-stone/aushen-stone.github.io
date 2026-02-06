@@ -4,6 +4,64 @@ Last updated: 2026-02-06
 
 ## Completed and Landed
 
+### Responsive Squeeze Mitigation Extension (2026-02-06)
+- Scope implemented:
+  - expanded route coverage:
+    - `src/app/about/page.tsx`
+    - `src/app/projects/page.tsx`
+    - `src/app/projects/[id]/page.tsx`
+    - `src/app/cart/page.tsx`
+  - expanded shared component coverage:
+    - `src/app/components/PageOffset.tsx`
+    - `src/app/components/BrandBanner.tsx`
+    - `src/app/components/BestSellers.tsx`
+    - `src/app/components/ServicesSection.tsx`
+    - `src/app/components/CreativeHubSection.tsx`
+    - `src/app/components/Footer.tsx`
+    - `src/app/components/cart/SampleCartDrawer.tsx`
+- Responsive behavior alignment:
+  - sticky offsets standardized to CSS variable (`--content-sticky-top`) across newly updated routes/components.
+  - title/button spacing and tracking tightened on narrow and low-height viewports.
+  - mobile-first stacking applied where two-column button/info layouts caused squeeze.
+- Validation:
+  - `npm run build`: pass
+  - `npx tsc --noEmit`: pass (run after build)
+  - `npm run lint`: `0 errors, 20 warnings`
+
+### Session Wrap-Up (首尾总结, 2026-02-06)
+- 起点（首）:
+  - issue focus was responsive squeeze under small width/height, with core five routes prioritized first.
+  - target matrix was locked to `320/360/390/768/1024` plus low-height landscape (`height <= 430px`).
+- 终点（尾）:
+  - responsive hardening now covers release routes and shared high-impact sections/components.
+  - engineering gates are green (`build`, `tsc`, `lint` with existing warnings only).
+  - Playwright responsive smoke suite is explicitly deferred into `docs/NEXT_STEPS.md` for next cycle implementation.
+
+### Responsive Squeeze Mitigation Session (2026-02-06)
+- Scope implemented:
+  - core five route responsive hardening:
+    - `/` (hero + project showcase)
+    - `/products` (sidebar breakpoint and masonry density)
+    - `/products/[slug]` (CTA/spec grids and sticky offset behavior)
+    - `/services` (hero density and CTA stacking)
+    - `/contact` (hero/form spacing and submit button behavior)
+  - global navbar anti-squeeze updates for small width + low height.
+  - responsive baseline variables were introduced in `src/app/globals.css`, including low-height tuning for `max-height: 430px`.
+- Updated files:
+  - `src/app/globals.css`
+  - `src/app/components/Navbar.tsx`
+  - `src/app/components/Hero.tsx`
+  - `src/app/components/ProjectShowcase.tsx`
+  - `src/app/components/ProductSidebar.tsx`
+  - `src/app/products/page.tsx`
+  - `src/app/products/[slug]/page.tsx`
+  - `src/app/services/page.tsx`
+  - `src/app/contact/page.tsx`
+- Validation:
+  - `npm run build`: pass
+  - `npx tsc --noEmit`: pass (run after build)
+  - `npm run lint`: `0 errors, 20 warnings`
+
 ### Session Summary (from retired handover)
 - Mobile navigation drawer in `Navbar` is now fully functional (open/close/ESC/focus trap/scroll lock/ARIA).
 - Services interaction is now touch-safe (click/focus-driven, no longer hover-only dependent).

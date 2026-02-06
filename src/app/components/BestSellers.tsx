@@ -53,13 +53,13 @@ const itemVariants: Variants = {
 
 export function BestSellers() {
   return (
-    <section className="py-24 px-10 md:px-16 bg-white">
-      <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[350px_1fr] gap-16 lg:gap-24">
+    <section className="py-16 sm:py-24 page-padding-x bg-white">
+      <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[350px_1fr] gap-10 sm:gap-16 lg:gap-24">
 
         {/* --- 左侧文案区域 (整体作为一个块浮现) --- */}
         <FadeIn className="flex flex-col justify-center items-start space-y-8">
           <div>
-            <h2 className="font-serif text-5xl md:text-6xl text-[#1a1a1a] mb-6">
+            <h2 className="font-serif display-lg text-[#1a1a1a] mb-5 sm:mb-6">
               Best sellers
             </h2>
             <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
@@ -69,7 +69,7 @@ export function BestSellers() {
 
           <Link
             href="/products"
-            className="group relative inline-block text-xs uppercase tracking-[0.2em] font-medium text-gray-900 pb-2 border-b border-gray-300 hover:border-gray-900 transition-colors cursor-pointer"
+            className="group relative inline-block text-[11px] sm:text-xs uppercase tracking-[0.14em] sm:tracking-[0.2em] font-medium text-gray-900 pb-2 border-b border-gray-300 hover:border-gray-900 transition-colors cursor-pointer"
           >
             Shop Best Sellers
           </Link>
@@ -79,7 +79,7 @@ export function BestSellers() {
         <div className="relative">
 
           {/* 顶部小箭头 */}
-          <div className="absolute -top-12 right-0 flex gap-4 text-gray-400">
+          <div className="absolute -top-10 sm:-top-12 right-0 hidden sm:flex gap-4 text-gray-400">
              <ChevronLeft size={20} className="cursor-pointer hover:text-gray-900 transition-colors" />
              <ChevronRight size={20} className="cursor-pointer hover:text-gray-900 transition-colors" />
           </div>
@@ -103,8 +103,8 @@ export function BestSellers() {
                     alt={product.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pb-8">
-                    <button className="bg-black text-white text-[10px] uppercase tracking-widest px-6 py-3 hover:bg-gray-800 transition-colors">
+                  <div className="absolute inset-0 flex items-end justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pb-6 sm:pb-8">
+                    <button className="bg-black text-white text-[10px] uppercase tracking-[0.14em] sm:tracking-widest px-5 sm:px-6 py-3 hover:bg-gray-800 transition-colors">
                       Quick View
                     </button>
                   </div>

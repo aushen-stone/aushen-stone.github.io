@@ -128,7 +128,7 @@ function ProjectCard({ project, index }: { project: ProjectItem; index: number }
       <div className="mt-8 flex justify-between items-end border-t border-gray-900/10 pt-5">
         <div className="overflow-hidden">
           <motion.h3
-            className="font-serif text-3xl md:text-4xl text-[#1a1c18] mb-2 leading-none"
+            className="font-serif text-[clamp(1.6rem,4vw,2.4rem)] text-[#1a1c18] mb-2 leading-tight"
             initial={{ y: "100%" }}
             whileInView={{ y: 0 }}
             viewport={{ once: true }}
@@ -137,7 +137,7 @@ function ProjectCard({ project, index }: { project: ProjectItem; index: number }
             {project.title}
           </motion.h3>
           <motion.p
-            className="text-[10px] uppercase tracking-[0.2em] text-gray-500"
+            className="text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.2em] text-gray-500"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -167,7 +167,7 @@ export default function ProjectsPage() {
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
       {/* --- Header --- */}
-      <section className="relative bg-[#1a1c18] pt-44 pb-32 px-6 md:px-12 overflow-hidden">
+      <section className="relative bg-[#1a1c18] pt-36 sm:pt-40 md:pt-44 pb-24 sm:pb-32 page-padding-x overflow-hidden">
         <div
           className="absolute inset-0 opacity-30 mix-blend-overlay pointer-events-none"
           style={{
@@ -186,7 +186,7 @@ export default function ProjectsPage() {
             <span className="block text-white/40 text-[10px] uppercase tracking-[0.3em] mb-6 pl-1">
               Selected Works 2020 — 2024
             </span>
-            <h1 className="font-serif text-6xl md:text-8xl lg:text-9xl text-[#F8F5F1] leading-[0.85] tracking-tight">
+            <h1 className="font-serif text-[clamp(2.2rem,8.4vw,7rem)] text-[#F8F5F1] leading-[0.85] tracking-tight">
               Curated <br /> <span className="italic text-white/30 ml-4 md:ml-12">Spaces</span>
             </h1>
           </motion.div>
@@ -209,15 +209,15 @@ export default function ProjectsPage() {
       </section>
 
       {/* --- Filter Bar (Sticky) --- */}
-      <div className="sticky top-24 z-40 bg-[#F8F5F1]/90 backdrop-blur-md border-b border-gray-200/50 transition-all">
-        <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="sticky top-[var(--content-sticky-top)] z-40 bg-[#F8F5F1]/90 backdrop-blur-md border-b border-gray-200/50 transition-all">
+        <div className="max-w-[1800px] mx-auto page-padding-x py-4 sm:py-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar w-full md:w-auto">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={`
-                  px-5 py-2 rounded-full text-[10px] uppercase tracking-widest transition-all duration-500 border
+                  px-4 sm:px-5 py-2 rounded-full text-[10px] uppercase tracking-[0.14em] sm:tracking-widest transition-all duration-500 border
                   ${
                     activeCategory === cat
                       ? "bg-[#1a1c18] text-white border-[#1a1c18]"
@@ -236,8 +236,8 @@ export default function ProjectsPage() {
       </div>
 
       {/* --- The Animated Gallery --- */}
-      <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-20 md:py-32">
-        <div className="flex flex-col gap-20 md:gap-32">
+      <div className="max-w-[1800px] mx-auto page-padding-x py-16 sm:py-20 md:py-32">
+        <div className="flex flex-col gap-14 sm:gap-20 md:gap-32">
           {filteredProjects.map((project, index) => (
             <Link
               key={project.id}
