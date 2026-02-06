@@ -4,6 +4,28 @@ Last updated: 2026-02-06
 
 ## Completed and Landed
 
+### Docs Correction + Lightweight Admin Roadmap (2026-02-06)
+- Scope:
+  - documentation alignment only (`docs/NEXT_STEPS.md`, `docs/README_AGENT.md`, `docs/WORKLOG.md`, `docs/ARCHITECTURE.md`).
+  - no runtime/frontend/backend feature implementation in this pass.
+- Corrections applied:
+  - `NEXT_STEPS` CTA inventory corrected to match current code reality:
+    - removed `Order Free Sample` from open CTA gaps (`src/app/products/[slug]/page.tsx` already operational).
+    - removed navbar trolley/cart interaction from open CTA gaps (`src/app/components/Navbar.tsx` + sample-cart drawer already operational).
+- Roadmap additions (improvement, not bug):
+  - added `ADM-LITE-001` in `NEXT_STEPS` (`P2 / Backlog`):
+    - lightweight admin concept (`/admin`, single-account login).
+    - editable scope limited to display-layer overrides (no CSV structural editing in v1).
+    - GitHub PR-based save/publish flow (no direct `main` writes).
+  - added planned contract blocks in `NEXT_STEPS`:
+    - route/service/type contracts
+    - security baseline
+    - data flow and failure handling
+    - admin-specific acceptance scenarios
+- Constraint confirmation:
+  - this update is docs-only by decision.
+  - implementation phases remain sequenced in backlog and are not started.
+
 ### Responsive Squeeze Mitigation Extension (2026-02-06)
 - Scope implemented:
   - expanded route coverage:

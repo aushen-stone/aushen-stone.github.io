@@ -50,10 +50,12 @@ No open P0 blockers.
   - `src/app/components/CreativeHubSection.tsx` (`Book A Consultation`, `Book The Space`)
   - `src/app/services/page.tsx` (`Book a Consultation`, `Contact Us`, `Visit Showroom`)
   - `src/app/contact/page.tsx` (`Send Message` form submit)
-  - `src/app/products/[slug]/page.tsx` (`Order Free Sample`, `Enquire`, `Book Consultation`, `Call Us`)
+  - `src/app/products/[slug]/page.tsx` (`Enquire`, `Book Consultation`, `Call Us`)
   - `src/app/components/Footer.tsx` (newsletter submit)
   - `src/app/components/BestSellers.tsx` (`Quick View`)
-  - `src/app/components/Navbar.tsx` (trolley/cart interaction)
+- Implemented CTA baseline (already operational):
+  - `src/app/products/[slug]/page.tsx` (`Order Free Sample`) adds sample lines and opens the sample-cart drawer.
+  - `src/app/components/Navbar.tsx` trolley count + drawer open/close interaction.
 - Action: each primary CTA must either navigate, submit, or be explicitly disabled with clear copy.
 - Definition of Done: no ambiguous primary CTA states remain.
 
@@ -159,6 +161,31 @@ No open P0 blockers.
 - Action: add e2e checks for add/merge/limit/persist/handoff flow.
 - Definition of Done: CI validates core sample-cart scenarios listed below.
 
+### 4) ADM-LITE-001 - Lightweight Admin Portal (Improvement)
+- Problem:
+  - store staff cannot safely update display content without engineering support.
+  - current workflow requires code edits + deployment even for routine copy/image/tone updates.
+- v1 objective:
+  - provide a WordPress-style lightweight admin experience while keeping release control through GitHub PR flow.
+- Planned scope (v1):
+  - admin entry: `/admin` + `/admin/login`.
+  - authentication: single in-house username/password account.
+  - editable fields only:
+    - tone tags
+    - product description
+    - image URL
+    - homeowner/professional summaries and bullet notes
+    - CTA copy override text
+  - product structural data (`material/finish/application/size`) remains in CSV pipeline for this phase.
+  - editable data source planned as JSON:
+    - `src/data/product_overrides.editable.json`
+  - publish behavior:
+    - save action opens GitHub PR flow (branch + commit + PR).
+    - no direct write to `main`.
+- Definition of Done:
+  - store users can log in, edit display fields, submit a PR, and production reflects changes after merge.
+  - rollback remains available through standard GitHub revert workflow.
+
 ## Public APIs / Interfaces / Types (Target Contract; Docs-Only)
 
 ### Route Contract
@@ -181,6 +208,68 @@ No open P0 blockers.
 - Navbar trolley displays live count as number of unique finish lines.
 - `Ask for sample` action is initiated from cart only (single funnel).
 
+### Planned Admin Interfaces (P2 Target; Docs-Only)
+
+#### Planned Route Contract
+- `GET /admin/login`
+  - admin login screen.
+- `GET /admin`
+  - admin landing page (authenticated only).
+- `GET /admin/products`
+  - editable product display-field list.
+- `GET /admin/products/:slug`
+  - single-product display-field editor.
+
+#### Planned Service Contract
+- `POST /api/admin/login`
+  - validates username/password and issues session cookie.
+- `POST /api/admin/logout`
+  - clears session cookie.
+- `GET /api/admin/products`
+  - returns editable display fields.
+- `GET /api/admin/products/:slug`
+  - returns editable fields for one product.
+- `POST /api/admin/products/:slug/save-pr`
+  - validates payload, creates branch/commit/PR on GitHub.
+  - response includes:
+    - `prUrl`
+    - `branchName`
+    - `commitSha`
+
+#### Planned Type Contract
+- `AdminEditableOverride`
+- `AdminSavePrRequest`
+- `AdminSavePrResponse`
+- `AdminSessionUser`
+
+#### Planned Compatibility Contract
+- `src/data/product_overrides.ts` remains read-compatible during migration.
+- manual editing target shifts to `src/data/product_overrides.editable.json` when implemented.
+
+### Planned Security Baseline (Admin v1)
+- password storage: bcrypt hash only (no plaintext).
+- session cookie: HttpOnly + Secure + SameSite.
+- CSRF token required for write endpoints.
+- login rate limiting by account + source IP.
+- temporary lockout after repeated failed login attempts.
+- required env vars (target):
+  - `ADMIN_USERNAME`
+  - `ADMIN_PASSWORD_HASH`
+  - `ADMIN_SESSION_SECRET`
+  - `GITHUB_TOKEN`
+  - `GITHUB_REPO`
+  - `GITHUB_OWNER`
+
+### Planned Admin Data Flow / Failure Handling
+- flow:
+  - read editable JSON -> edit in admin UI -> server validation -> GitHub branch/commit/PR -> return PR link.
+- merge behavior:
+  - merged PR updates `main`, existing deploy pipeline publishes updated content.
+- failure behavior:
+  - GitHub API errors return actionable messages and retry-safe status.
+- concurrency behavior:
+  - save checks latest base SHA and returns conflict prompt if stale.
+
 ## Test Cases / Scenarios
 1. Add same product + same finish twice on detail page: cart remains one line.
 2. Add same product with different finishes: cart shows separate lines.
@@ -192,12 +281,24 @@ No open P0 blockers.
 8. Navbar has no logo/menu overlap at threshold widths (including ~1600 and ~1680).
 9. Release routes (`/`, `/products`, `/products/[slug]`, `/services`, `/contact`, `/about`, `/projects`, `/projects/[id]`, `/cart`) show no squeeze at 320/360/390/768/1024 and no low-height overlap at `height <= 430px`.
 10. `build -> tsc -> lint` command sequence reproduces expected health state.
+11. Admin login accepts valid credentials and rejects invalid credentials.
+12. Repeated failed login attempts trigger temporary lockout.
+13. Unauthenticated access to `/admin` and admin write APIs is denied.
+14. Admin can edit one product's display fields and submit `save-pr`.
+15. `save-pr` response includes `prUrl`, `branchName`, and `commitSha`.
+16. Merged content PR updates production display fields.
+17. GitHub conflict on stale base SHA returns refresh/retry instruction.
+18. Rollback path works via GitHub revert PR.
 
 ## Assumptions and Defaults
 1. No payment, pricing, inventory, or order lifecycle in current phase.
 2. Sample request is the only cart business objective in v1.
 3. Responsive issue tracking uses static audit first, then screenshot confirmation.
 4. Responsive squeeze mitigation is implemented for core and secondary release routes; remaining work is evidence collection and automation.
+5. Admin portal is an improvement backlog item (P2), not a current release blocker.
+6. Admin v1 targets low-frequency updates with a single maintained account.
+7. Audit-log persistence is out of scope for admin v1.
+8. Product structure source-of-truth remains CSV + generation pipeline in admin v1.
 
 ## Exit Criteria
 - P0 blockers (`UI-NAV-001`, `CART-SAMPLE-001`) are closed.

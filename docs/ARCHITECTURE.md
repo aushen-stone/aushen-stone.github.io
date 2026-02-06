@@ -6,6 +6,14 @@ Last updated: 2026-02-06
 - Next.js App Router project.
 - Frontend-only app with static data and generated TypeScript data files.
 
+## Planned Evolution (P2 Target; Not Implemented)
+- Current architecture remains frontend-only in runtime.
+- Planned improvement path (`ADM-LITE-001`):
+  - lightweight admin surface under `/admin` for display-content maintenance.
+  - single-account login with basic session hardening.
+  - GitHub PR-based publish flow (branch/commit/PR), no direct `main` write.
+  - product structural records remain CSV-driven in v1; admin scope is display-layer overrides only.
+
 ## Directory Structure (High Level)
 - `src/app/` contains routes and page-level UI.
 - `src/app/components/` contains reusable UI sections and layout components.
@@ -41,6 +49,7 @@ Last updated: 2026-02-06
   - `src/data/categories.generated.ts`
 - Manual override layer:
   - `src/data/product_overrides.ts` for tone tags, description, and image overrides.
+  - planned editable source (target, not active yet): `src/data/product_overrides.editable.json`
   - Audience-specific content fields for product detail:
     - `homeownerSummary`, `homeownerUseCases`
     - `professionalSummary`, `professionalNotes`
@@ -54,8 +63,30 @@ Last updated: 2026-02-06
 - **Write to**:
   - `docs/aushen_product_library.csv` for product inventory changes.
   - `src/data/product_overrides.ts` for tone tags, descriptions, and image mapping.
+  - planned (when `ADM-LITE-001` implementation starts): `src/data/product_overrides.editable.json` as admin-editable display source.
 - **Do not edit**:
   - `src/data/products.generated.ts` and `src/data/categories.generated.ts` (build artifacts; regenerate instead).
+
+## Planned Admin Contracts (P2 Target; Docs-Only)
+- Planned routes:
+  - `/admin/login`
+  - `/admin`
+  - `/admin/products`
+  - `/admin/products/:slug`
+- Planned APIs:
+  - `POST /api/admin/login`
+  - `POST /api/admin/logout`
+  - `GET /api/admin/products`
+  - `GET /api/admin/products/:slug`
+  - `POST /api/admin/products/:slug/save-pr`
+- Planned core types:
+  - `AdminEditableOverride`
+  - `AdminSavePrRequest`
+  - `AdminSavePrResponse`
+  - `AdminSessionUser`
+- Planned transition model:
+  - display overrides: admin-editable JSON target.
+  - product structure (`material/finish/application/size`): stays in CSV pipeline for v1.
 
 ## Core Data Types
 - `Product`

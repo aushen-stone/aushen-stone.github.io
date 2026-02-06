@@ -10,6 +10,7 @@ Last updated: 2026-02-06
   - image/lint warning reduction
   - placeholder asset replacement on release-critical routes
   - responsive QA evidence + automation follow-up after full-route squeeze hardening
+- Maintain a P2 lightweight-admin roadmap for non-engineering content updates (docs-only at this stage).
 - Update docs only on major changes (behavior/gates/contracts/priorities/risks).
 
 ## System Health Snapshot
@@ -23,8 +24,18 @@ Last updated: 2026-02-06
   - CTA behavior completion outside P0-critical paths
   - placeholder/mock visual asset replacement
   - automated e2e coverage
+  - content maintenance still depends on engineering workflow (CSV + code changes + deploy)
 
 ## What Changed Last
+- Docs correction + admin improvement planning landed (docs-only):
+  - corrected CTA inventory drift in `NEXT_STEPS`:
+    - removed false-open items for detail-page `Order Free Sample`
+    - removed false-open items for navbar trolley/drawer interaction
+  - added `ADM-LITE-001` roadmap to `NEXT_STEPS`:
+    - lightweight `/admin` concept
+    - single-account login baseline
+    - GitHub PR-based publish path
+    - planned interface/security/data-flow contract sections (docs target)
 - Responsive squeeze mitigation was expanded from core five routes to secondary routes and shared sections:
   - routes:
     - `/about`
