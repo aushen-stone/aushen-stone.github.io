@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack",
+    "build:pages": "next build --webpack && rm -rf dist && cp -R out dist",
     "start": "next start",
     "lint": "eslint"
   },
