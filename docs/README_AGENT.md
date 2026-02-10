@@ -30,101 +30,18 @@ Last updated: 2026-02-10
   - content maintenance still depends on engineering workflow (CSV + code changes + deploy)
 
 ## What Changed Last
-- Product detail audience-control reprioritization landed (2026-02-10):
-  - `View Mode` was moved out of the upper decision block to a low-priority section near page bottom (before footer).
-  - detail CTA stack is now fixed to homeowner-priority order for a stable sample-cart-first flow.
-  - audience switch now affects audience notes/copy only; it no longer changes CTA priority/order.
-  - `Technical Specifications` remains in the secondary technical card (post-primary decision block).
-  - validation snapshot for this UI pass:
-    - `npm run lint`: pass (`0 errors, 20 warnings`)
-    - `npm run build`: pass
-- Product UI density refresh landed (2026-02-10):
-  - `/products` moved from showroom-style hero + masonry to a compact finder layout:
-    - compact header + live result count
-    - top toolbar filters (search, material, application; tone auto-hidden when no data)
-    - regular 1/2/3/4-column product card grid with application chips
-  - `/products/[slug]` moved to an information-first detail layout:
-    - compressed top hero
-    - single left image with smaller visual footprint
-    - desktop ratio switched to `left 5 / right 7`
-    - `Application`, `Surface Finish`, and `Size` selectors migrated to native dropdowns
-  - validation snapshot for this UI pass:
-    - `npm run lint`: pass (`0 errors, 20 warnings`)
-    - `npm run build`: pass
-- GitHub Pages deployment integration + CI compatibility patch landed (2026-02-10):
-  - static export baseline added in `next.config.ts` (`output: "export"`, `trailingSlash`, `images.unoptimized`).
-  - dynamic-route split for static param generation:
-    - `src/app/products/[slug]/page.tsx` + `src/app/products/[slug]/ProductDetailClient.tsx`
-    - `src/app/projects/[id]/page.tsx` + `src/app/projects/[id]/ProjectDetailClient.tsx`
-  - build/deploy pipeline:
-    - `package.json` adds `build:pages` (`out` -> `dist`)
-    - `.github/workflows/deploy.yml` publishes `dist` to `gh-pages` on `main` push + `workflow_dispatch`
-  - CI install compatibility:
-    - workflow install uses `npm ci --legacy-peer-deps`
-    - repo `.npmrc` sets `legacy-peer-deps=true`
-  - lint scope hardening:
-    - `eslint.config.mjs` ignores `dist/**` to prevent generated static artifacts from being linted.
-- Docs correction + admin improvement planning landed (docs-only):
-  - corrected CTA inventory drift in `NEXT_STEPS`:
-    - removed false-open items for detail-page `Order Free Sample`
-    - removed false-open items for navbar trolley/drawer interaction
-  - added `ADM-LITE-001` roadmap to `NEXT_STEPS`:
-    - lightweight `/admin` concept
-    - single-account login baseline
-    - GitHub PR-based publish path
-    - planned interface/security/data-flow contract sections (docs target)
-- Responsive squeeze mitigation was expanded from core five routes to secondary routes and shared sections:
-  - routes:
-    - `/about`
-    - `/projects`
-    - `/projects/[id]`
-    - `/cart`
-  - shared/layout components:
-    - `src/app/components/PageOffset.tsx`
-    - `src/app/components/BrandBanner.tsx`
-    - `src/app/components/BestSellers.tsx`
-    - `src/app/components/ServicesSection.tsx`
-    - `src/app/components/CreativeHubSection.tsx`
-    - `src/app/components/Footer.tsx`
-    - `src/app/components/cart/SampleCartDrawer.tsx`
-- Current responsive baseline status:
-  - core and secondary release routes now use variable-driven spacing/typography/sticky offsets.
-  - low-height (`max-height: 430px`) rules are active via `src/app/globals.css`.
-- Responsive squeeze mitigation landed for the core five routes plus global navbar:
-  - unified responsive baseline variables in `src/app/globals.css` (fluid typography/spacing + low-height `max-height: 430px` rules)
-  - navbar anti-squeeze updates in `src/app/components/Navbar.tsx` (logo clamp, tighter mobile spacing, variable nav heights)
-  - content-driven low-height updates in:
-    - `src/app/components/Hero.tsx`
-    - `src/app/components/ProjectShowcase.tsx`
-  - products responsiveness updates in:
-    - `src/app/components/ProductSidebar.tsx` (desktop sidebar breakpoint moved to `lg`)
-    - `src/app/products/page.tsx`
-    - `src/app/products/[slug]/page.tsx`
-  - services/contact squeeze fixes in:
-    - `src/app/services/page.tsx`
-    - `src/app/contact/page.tsx`
-  - verification snapshot remained healthy (`build`/`tsc` pass, lint still `0 errors, 20 warnings`)
-- P0 implementation and sign-off are complete:
-  - `UI-NAV-001` closed (final navbar layout iteration removed overlap near ~1680px).
-  - `CART-SAMPLE-001` closed (sample-cart flow operational via detail add -> trolley drawer -> `/cart` -> contact handoff).
-- Docs-only release gap audit aligned active docs to current reality.
-- `NEXT_STEPS` now includes decision-complete `Sample Cart v1` contract:
-  - sample-cart-only scope
-  - detail-page entry
-  - `product + finish` dedup
-  - fixed sample size (`200x100mm`)
-  - `localStorage` persistence
-  - drawer + `/cart` flow
-  - cart-origin `Ask for sample` handoff to `/contact`
-- Canonical docs model was established with stable filenames.
-- Date-suffixed active docs were retired.
-- `HANDOVER_YYYY-MM-DD.md` was removed from active handoff flow and archived at:
-  - `docs/archive/HANDOVER_2026-02-06.md`
-- Active docs now:
-  - `docs/README_AGENT.md`
-  - `docs/ARCHITECTURE.md`
-  - `docs/NEXT_STEPS.md`
-  - `docs/WORKLOG.md`
+- Product UX refresh finalized (2026-02-10):
+  - `/products` now uses compact finder layout (top toolbar filters + fixed-density grid).
+  - `/products/[slug]` now keeps `View Mode` in a low-priority footer-adjacent section.
+  - audience switch affects audience notes only; CTA stack is fixed homeowner-priority.
+  - validation: `npm run lint` (`0 errors, 20 warnings`) and `npm run build` both pass.
+- GitHub Pages deployment baseline is active (2026-02-10):
+  - static export + dynamic route `generateStaticParams` wrappers are in place.
+  - publish path is `build:pages` -> `dist` -> `gh-pages`.
+  - CI install still relies on `legacy-peer-deps` fallback until dependency compatibility cleanup.
+- Documentation hygiene:
+  - `README_AGENT` keeps high-signal current-state summaries only.
+  - detailed implementation history remains in `docs/WORKLOG.md`.
 
 ## Where to Read Next
 - If implementing features or fixes:

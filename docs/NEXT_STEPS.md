@@ -45,19 +45,11 @@ No open P0 blockers.
 
 ### Product UI Density Refresh (Implemented 2026-02-10)
 - Delivered:
-  - `/products` now uses compact discovery layout:
-    - compact header + live result count
-    - top toolbar filters (search, material, application; tone hidden when no data)
-    - fixed-density responsive card grid (`1/2/3/4` columns) with application chips
-  - `/products/[slug]` now uses information-first detail layout:
-    - compressed hero region
-    - single left image with reduced footprint
-    - desktop ratio `left 5 / right 7`
-    - dropdown selectors for `Application`, `Surface Finish`, `Size`
-    - selector chaining reset (`application -> finish -> size`)
-    - `View Mode` moved to a low-priority section near page bottom (before footer)
-    - audience switch now affects audience notes copy only (CTA stack remains fixed homeowner-priority)
-    - `Technical Specifications` remains in the secondary technical card (post-primary decision block)
+  - `/products` now uses compact discovery layout (`search + material/application filters` + fixed-density grid).
+  - `/products/[slug]` now uses information-first detail layout with dropdown selectors and chained resets.
+  - `View Mode` is now low-priority (footer-adjacent) and affects audience notes copy only.
+  - CTA stack is fixed homeowner-priority; sample-cart flow contract is unchanged.
+  - `Technical Specifications` remains post-primary in the secondary technical card.
 - Validation:
   - `npm run lint`: pass (`0 errors, 20 warnings`)
   - `npm run build`: pass
