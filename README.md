@@ -75,3 +75,4 @@ Workflow steps:
 5. CI fails at install stage
    - Re-run workflow to rule out transient npm/network issue.
    - If persistent, inspect lockfile/dependency drift and ensure Node 20 compatibility.
+   - This repo currently uses `legacy-peer-deps=true` because `@studio-freight/react-lenis@0.0.47` does not declare React 19 peer support yet.
