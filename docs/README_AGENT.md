@@ -30,6 +30,27 @@ Last updated: 2026-02-10
   - content maintenance still depends on engineering workflow (CSV + code changes + deploy)
 
 ## What Changed Last
+- Product detail audience-control reprioritization landed (2026-02-10):
+  - `View Mode` was moved out of the upper decision block to a low-priority section near page bottom (before footer).
+  - detail CTA stack is now fixed to homeowner-priority order for a stable sample-cart-first flow.
+  - audience switch now affects audience notes/copy only; it no longer changes CTA priority/order.
+  - `Technical Specifications` remains in the secondary technical card (post-primary decision block).
+  - validation snapshot for this UI pass:
+    - `npm run lint`: pass (`0 errors, 20 warnings`)
+    - `npm run build`: pass
+- Product UI density refresh landed (2026-02-10):
+  - `/products` moved from showroom-style hero + masonry to a compact finder layout:
+    - compact header + live result count
+    - top toolbar filters (search, material, application; tone auto-hidden when no data)
+    - regular 1/2/3/4-column product card grid with application chips
+  - `/products/[slug]` moved to an information-first detail layout:
+    - compressed top hero
+    - single left image with smaller visual footprint
+    - desktop ratio switched to `left 5 / right 7`
+    - `Application`, `Surface Finish`, and `Size` selectors migrated to native dropdowns
+  - validation snapshot for this UI pass:
+    - `npm run lint`: pass (`0 errors, 20 warnings`)
+    - `npm run build`: pass
 - GitHub Pages deployment integration + CI compatibility patch landed (2026-02-10):
   - static export baseline added in `next.config.ts` (`output: "export"`, `trailingSlash`, `images.unoptimized`).
   - dynamic-route split for static param generation:

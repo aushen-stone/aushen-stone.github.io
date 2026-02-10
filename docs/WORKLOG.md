@@ -4,6 +4,53 @@ Last updated: 2026-02-10
 
 ## Completed and Landed
 
+### Product Detail Audience-Control Reprioritization (2026-02-10)
+- Scope implemented:
+  - retained `View Mode` but reduced its decision weight in product detail flow.
+  - kept technical data placement after the primary selection/CTA block.
+- Files updated:
+  - `src/app/products/[slug]/ProductDetailClient.tsx`
+  - `docs/ARCHITECTURE.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+  - `docs/NEXT_STEPS.md`
+- Behavior/contract changes:
+  - removed upper-card `View Mode` block from the detail decision area.
+  - fixed CTA stack to homeowner-priority sequence regardless of audience switch.
+  - moved audience summary/bullets + `View Mode` toggle into a low-priority section before footer.
+  - audience switch now updates audience notes copy only and no longer changes CTA order.
+  - `Technical Specifications` remains in the secondary technical card (`defaultOpen` unchanged).
+- Validation:
+  - `npm run lint`: pass (`0 errors, 20 warnings`)
+  - `npm run build`: pass
+
+### Product UI Density Refresh - List + Detail (2026-02-10)
+- Scope implemented:
+  - reduced "showroom" visual weight and increased information density for product discovery.
+  - aligned product list and detail interactions with one-page scanning + faster selection.
+- Files updated:
+  - `src/app/products/page.tsx`
+  - `src/app/products/[slug]/ProductDetailClient.tsx`
+- Behavior/contract changes:
+  - `/products`:
+    - removed artistic hero + masonry flow.
+    - added compact header with live result count.
+    - added top toolbar filters: keyword search (product/material/application text match), material dropdown, application dropdown.
+    - tone filter remains data-driven and is hidden automatically when no tone options exist.
+    - switched card layout to fixed-density responsive grid (`1/2/3/4` columns) with product name/material/application chips.
+  - `/products/[slug]`:
+    - compressed top hero section.
+    - changed desktop content ratio to `left 5 / right 7`.
+    - reduced left media footprint to a single product image.
+    - migrated `Application`, `Surface Finish`, and `Size` to native `<select>` controls.
+    - added selector reset chaining:
+      - application change resets finish + size to first valid options.
+      - finish change resets size to first valid option.
+    - sample-cart behavior remains unchanged (`product + finish` key).
+- Validation:
+  - `npm run lint`: pass (`0 errors, 20 warnings`)
+  - `npm run build`: pass
+
 ### GitHub Pages Deployment Integration + CI Compatibility Hotfix (2026-02-10)
 - Scope implemented:
   - static export deployment baseline for GitHub Pages root-path hosting.

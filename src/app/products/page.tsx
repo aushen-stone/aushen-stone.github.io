@@ -1,27 +1,24 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-// src/app/products/page.tsx
 import Link from "next/link";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Footer } from "@/app/components/Footer";
-import { ProductSidebar } from "@/app/components/ProductSidebar";
-import { ArrowUpRight, X } from "lucide-react";
 import { PRODUCTS } from "@/data/products.generated";
 import { PRODUCT_CATEGORIES } from "@/data/categories.generated";
 import {
   DEFAULT_PRODUCT_IMAGE,
   PRODUCT_OVERRIDES,
 } from "@/data/product_overrides";
+import type { Product } from "@/types/product";
 
 type FilterState = {
-  material: string[];
-  application: string[];
-  tone: string[];
+  query: string;
+  material: string;
+  application: string;
+  tone: string;
 };
-
-const CARD_ASPECTS = ["aspect-[3/4]", "aspect-square", "aspect-[4/3]", "aspect-[3/5]"];
 
 const slugifyTone = (value: string) =>
   value
@@ -44,323 +41,281 @@ const TONE_OPTIONS = (() => {
   return Array.from(tones.entries()).map(([slug, name]) => ({ slug, name }));
 })();
 
-const buildInitialSelected = (
+const buildInitialFilters = (
   category: string | null,
   materials: { name: string; slug: string }[],
   applications: { name: string; slug: string }[]
 ): FilterState => {
   const selected: FilterState = {
-    material: [],
-    application: [],
-    tone: [],
+    query: "",
+    material: "",
+    application: "",
+    tone: "",
   };
 
   if (!category) return selected;
 
   const isMaterial = materials.some((material) => material.slug === category);
-  const isApplication = applications.some((app) => app.slug === category);
+  const isApplication = applications.some((application) => application.slug === category);
+  const isTone = TONE_OPTIONS.some((tone) => tone.slug === category);
 
   if (isMaterial) {
-    selected.material = [category];
+    selected.material = category;
   } else if (isApplication) {
-    selected.application = [category];
+    selected.application = category;
+  } else if (isTone) {
+    selected.tone = category;
   }
 
   return selected;
 };
 
+const collectApplicationLabels = (product: Product): string[] => {
+  const seen = new Set<string>();
+  const labels: string[] = [];
+
+  product.applicationIndex.forEach((application) => {
+    if (seen.has(application.label)) return;
+    seen.add(application.label);
+    labels.push(application.label);
+  });
+
+  return labels;
+};
+
+const hasActiveFilters = (filters: FilterState) =>
+  Boolean(filters.query || filters.material || filters.application || filters.tone);
+
 function ProductsPageContent({ initialCategory }: { initialCategory: string | null }) {
   const materials = PRODUCT_CATEGORIES.materials;
-  const applications = PRODUCT_CATEGORIES.applications.map((app) => ({
-    name: app.name,
-    slug: app.slug,
+  const applications = PRODUCT_CATEGORIES.applications.map((application) => ({
+    name: application.name,
+    slug: application.slug,
   }));
-  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
-  const drawerRef = useRef<HTMLDivElement | null>(null);
-  const [selected, setSelected] = useState<FilterState>(() =>
-    buildInitialSelected(initialCategory, materials, applications)
+  const [filters, setFilters] = useState<FilterState>(() =>
+    buildInitialFilters(initialCategory, materials, applications)
   );
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-
-  const toggleFilter = (group: keyof FilterState, slug: string) => {
-    setSelected((prev) => {
-      const exists = prev[group].includes(slug);
-      const next = exists ? prev[group].filter((item) => item !== slug) : [...prev[group], slug];
-      return { ...prev, [group]: next };
-    });
-  };
-
-  const clearFilters = () =>
-    setSelected({
-      material: [],
-      application: [],
-      tone: [],
-    });
 
   const filteredProducts = useMemo(() => {
+    const normalizedQuery = filters.query.trim().toLowerCase();
+
     return PRODUCTS.filter((product) => {
-      if (selected.material.length > 0 && !selected.material.includes(product.materialId)) {
+      if (filters.material && product.materialId !== filters.material) {
         return false;
       }
 
-      if (selected.application.length > 0) {
-        const productApplications = new Set<string>();
-        product.finishes.forEach((finish) => {
-          finish.applications.forEach((app) => {
-            productApplications.add(app.categorySlug);
-          });
-        });
-        if (!selected.application.some((slug) => productApplications.has(slug))) {
+      if (filters.application) {
+        const hasApplication = product.applicationIndex.some(
+          (application) => application.categorySlug === filters.application
+        );
+        if (!hasApplication) {
           return false;
         }
       }
 
-      if (selected.tone.length > 0) {
+      if (filters.tone) {
         const override = PRODUCT_OVERRIDES[product.slug];
         const productTones = (override?.toneTags || []).map(slugifyTone);
-        if (!selected.tone.some((slug) => productTones.includes(slug))) {
+        if (!productTones.includes(filters.tone)) {
           return false;
         }
       }
 
-      return true;
+      if (!normalizedQuery) {
+        return true;
+      }
+
+      const searchable = [
+        product.name,
+        product.materialName,
+        ...collectApplicationLabels(product),
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      return searchable.includes(normalizedQuery);
     });
-  }, [selected]);
+  }, [filters]);
 
-  useEffect(() => {
-    if (!isFilterOpen) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [isFilterOpen]);
+  const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
 
-  useEffect(() => {
-    if (!isFilterOpen) return;
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsFilterOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleEscape);
-    return () => window.removeEventListener("keydown", handleEscape);
-  }, [isFilterOpen]);
-
-  useEffect(() => {
-    if (isFilterOpen) {
-      closeButtonRef.current?.focus();
-    }
-  }, [isFilterOpen]);
-
-  useEffect(() => {
-    if (!isFilterOpen) return;
-    const container = drawerRef.current;
-    if (!container) return;
-
-    const getFocusableElements = () =>
-      Array.from(
-        container.querySelectorAll<HTMLElement>(
-          "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])"
-        )
-      ).filter((element) => !element.hasAttribute("disabled"));
-
-    const handleTabLoop = (event: KeyboardEvent) => {
-      if (event.key !== "Tab") return;
-      const focusableElements = getFocusableElements();
-      if (focusableElements.length === 0) return;
-
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-
-      if (event.shiftKey && document.activeElement === firstElement) {
-        event.preventDefault();
-        lastElement.focus();
-      } else if (!event.shiftKey && document.activeElement === lastElement) {
-        event.preventDefault();
-        firstElement.focus();
-      }
-    };
-
-    container.addEventListener("keydown", handleTabLoop);
-    return () => container.removeEventListener("keydown", handleTabLoop);
-  }, [isFilterOpen]);
+  const clearFilters = () =>
+    setFilters({
+      query: "",
+      material: "",
+      application: "",
+      tone: "",
+    });
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
-      {/* --- 1. Page Header (Artistic & Textured) --- */}
-      <section className="relative pt-36 sm:pt-40 md:pt-44 pb-20 sm:pb-24 page-padding-x overflow-hidden bg-[#1a1c18]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_#2A2D28_0%,_#151614_100%)]"></div>
-
-        <div
-          className="absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
-            backgroundSize: "128px 128px",
-          }}
-        ></div>
-
-        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
-
-        <div className="max-w-[1600px] mx-auto relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
-          <div className="max-w-2xl">
-            <span className="inline-block py-1 px-3 border border-white/30 rounded-full text-xs uppercase tracking-[0.2em] text-white/90 mb-6 backdrop-blur-md bg-white/5">
-              Collection 2025
-            </span>
-            <h1 className="font-serif text-[clamp(2.25rem,7.2vw,4.75rem)] text-[#F0F2E4] leading-[0.9]">
-              The Stone <br /> <span className="italic text-white/40">Archive</span>
+      <section className="pt-28 sm:pt-32 lg:pt-36 pb-6 sm:pb-8 page-padding-x border-b border-[#E6E0D8]">
+        <div className="max-w-[1600px] mx-auto">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <h1 className="font-serif text-[clamp(1.7rem,4vw,2.75rem)] leading-[0.95] text-[#1D1D1B]">
+              Stone Products
             </h1>
+            <p className="text-[11px] sm:text-xs uppercase tracking-[0.16em] text-gray-500">
+              {filteredProducts.length} Results
+            </p>
           </div>
-
-          <p className="text-white/70 text-sm md:text-base font-light max-w-sm leading-relaxed border-l border-white/30 pl-6">
-            Curated from the world&apos;s finest quarries. A dialogue between raw nature and refined architecture.
+          <p className="mt-2 text-sm text-gray-600 max-w-2xl">
+            Quickly narrow by keyword, material, and application to find the right stone.
           </p>
         </div>
       </section>
 
-      {/* --- 2. Main Content (Masonry Layout) --- */}
-      <div className="max-w-[1800px] mx-auto page-padding-x py-16 sm:py-20">
-        {/* Mobile Filter Button */}
-        <div className="lg:hidden mb-8 sm:mb-10 sticky top-[var(--content-sticky-top)] z-30">
-          <button
-            className="w-full flex items-center justify-between bg-[#1a1c18] text-white px-6 py-4 shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
-            onClick={() => setIsFilterOpen(true)}
-            aria-haspopup="dialog"
-            aria-expanded={isFilterOpen}
-            aria-controls="mobile-product-filters"
-          >
-            <span className="uppercase tracking-widest text-xs font-medium">Filter Collection</span>
-            <span className="text-xs">+</span>
-          </button>
-        </div>
+      <section className="max-w-[1600px] mx-auto page-padding-x py-5 sm:py-6">
+        <div className="rounded-xl border border-[#E6E0D8] bg-white p-4 sm:p-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <label className="flex flex-col gap-1.5 lg:col-span-2">
+              <span className="text-[11px] uppercase tracking-[0.14em] text-gray-500">Search</span>
+              <input
+                type="text"
+                value={filters.query}
+                onChange={(event) => updateFilter("query", event.target.value)}
+                placeholder="Search by product or material"
+                className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                aria-label="Search products by name or material"
+              />
+            </label>
 
-        <div className="flex gap-8 lg:gap-12 xl:gap-16">
-          <ProductSidebar
-            materials={materials}
-            applications={applications}
-            tones={TONE_OPTIONS}
-            selected={selected}
-            onToggle={toggleFilter}
-            onClear={clearFilters}
-            idPrefix="desktop"
-          />
-
-          <div className="flex-1">
-            {/* Sort Bar */}
-            <div className="flex justify-end mb-12">
-              <div className="inline-flex items-center gap-3 text-xs uppercase tracking-widest text-gray-500 hover:text-gray-900 cursor-pointer transition-colors group">
-                <span>Sort by Newest</span>
-                <div className="w-1.5 h-1.5 bg-gray-300 rounded-full group-hover:bg-gray-900 transition-colors"></div>
-              </div>
-            </div>
-
-            {/* Masonry */}
-            {filteredProducts.length === 0 ? (
-              <div className="py-24 text-center text-sm text-gray-500">
-                No products match the current filters.{" "}
-                <button
-                  onClick={clearFilters}
-                  className="uppercase tracking-widest text-xs text-gray-900 underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
-                >
-                  Clear filters
-                </button>
-              </div>
-            ) : (
-              <div className="columns-1 sm:columns-2 2xl:columns-3 gap-8 space-y-8">
-                {filteredProducts.map((product, index) => {
-                  const override = PRODUCT_OVERRIDES[product.slug];
-                  const imageUrl = override?.imageUrl || DEFAULT_PRODUCT_IMAGE;
-                  const aspect = CARD_ASPECTS[index % CARD_ASPECTS.length];
-                  return (
-                    <Link
-                      key={product.id}
-                      href={`/products/${product.slug}`}
-                      className="group cursor-pointer break-inside-avoid block"
-                    >
-                      {/* Image Container */}
-                      <div className={`relative ${aspect} overflow-hidden bg-[#E5E5E5]`}>
-                        <img
-                          src={imageUrl}
-                          alt={product.name}
-                          className="w-full h-full object-cover transition-transform duration-[1.5s] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110"
-                        />
-
-                        {/* Hover Effect */}
-                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                          <div className="w-12 h-12 rounded-full bg-white/90 backdrop-blur flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-500 delay-100">
-                            <ArrowUpRight size={20} className="text-gray-900" />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Info */}
-                      <div className="pt-5 flex justify-between items-start">
-                        <div>
-                          <h3 className="font-serif text-xl sm:text-2xl text-gray-900 leading-tight group-hover:underline decoration-1 underline-offset-4 decoration-gray-300 transition-all">
-                            {product.name}
-                          </h3>
-                          <p className="text-xs uppercase tracking-[0.16em] sm:tracking-[0.2em] text-gray-500 mt-2">
-                            {product.materialName}
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Loader */}
-            <div className="mt-32 flex flex-col items-center justify-center opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
-              <span className="font-serif italic text-2xl mb-2">Discover More</span>
-              <div className="h-12 w-[1px] bg-gray-900"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {isFilterOpen && (
-        <div className="fixed inset-0 z-[70] lg:hidden">
-          <button
-            type="button"
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setIsFilterOpen(false)}
-            aria-label="Close product filters"
-          />
-          <div
-            id="mobile-product-filters"
-            ref={drawerRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Product filters"
-            className="absolute right-0 top-0 h-full w-[min(90vw,380px)] bg-[#F8F5F1] shadow-2xl p-6 overflow-y-auto"
-          >
-            <div className="flex items-center justify-end mb-6">
-              <button
-                ref={closeButtonRef}
-                type="button"
-                onClick={() => setIsFilterOpen(false)}
-                aria-label="Close filters panel"
-                className="p-2 border border-gray-300 text-gray-800 hover:border-gray-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+            <label className="flex flex-col gap-1.5">
+              <span className="text-[11px] uppercase tracking-[0.14em] text-gray-500">Material</span>
+              <select
+                value={filters.material}
+                onChange={(event) => updateFilter("material", event.target.value)}
+                className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                aria-label="Filter by material"
               >
-                <X size={16} />
-              </button>
-            </div>
-            <ProductSidebar
-              materials={materials}
-              applications={applications}
-              tones={TONE_OPTIONS}
-              selected={selected}
-              onToggle={toggleFilter}
-              onClear={clearFilters}
-              className="w-full"
-              sticky={false}
-              idPrefix="mobile"
-            />
+                <option value="">All Materials</option>
+                {materials.map((material) => (
+                  <option key={material.slug} value={material.slug}>
+                    {material.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="flex flex-col gap-1.5">
+              <span className="text-[11px] uppercase tracking-[0.14em] text-gray-500">Application</span>
+              <select
+                value={filters.application}
+                onChange={(event) => updateFilter("application", event.target.value)}
+                className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                aria-label="Filter by application"
+              >
+                <option value="">All Applications</option>
+                {applications.map((application) => (
+                  <option key={application.slug} value={application.slug}>
+                    {application.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            {TONE_OPTIONS.length > 0 && (
+              <label className="flex flex-col gap-1.5 sm:col-span-2 lg:col-span-1">
+                <span className="text-[11px] uppercase tracking-[0.14em] text-gray-500">Tone</span>
+                <select
+                  value={filters.tone}
+                  onChange={(event) => updateFilter("tone", event.target.value)}
+                  className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                  aria-label="Filter by tone"
+                >
+                  <option value="">All Tones</option>
+                  {TONE_OPTIONS.map((tone) => (
+                    <option key={tone.slug} value={tone.slug}>
+                      {tone.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+          </div>
+
+          <div className="mt-4 flex items-center justify-between gap-3">
+            <p className="text-xs text-gray-500">
+              {hasActiveFilters(filters) ? "Filters applied" : "No filters applied"}
+            </p>
+            <button
+              type="button"
+              onClick={clearFilters}
+              disabled={!hasActiveFilters(filters)}
+              className="inline-flex items-center gap-2 px-3 py-2 text-[11px] uppercase tracking-[0.14em] border border-[#D8D2C8] text-gray-700 hover:text-gray-900 hover:border-gray-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+            >
+              Clear Filters
+            </button>
           </div>
         </div>
-      )}
+
+        {filteredProducts.length === 0 ? (
+          <div className="py-20 text-center text-sm text-gray-600">
+            No products match current filters.{" "}
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="uppercase tracking-[0.14em] text-[11px] text-gray-900 underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+            >
+              Reset
+            </button>
+          </div>
+        ) : (
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+            {filteredProducts.map((product) => {
+              const override = PRODUCT_OVERRIDES[product.slug];
+              const imageUrl = override?.imageUrl || DEFAULT_PRODUCT_IMAGE;
+              const applicationLabels = collectApplicationLabels(product);
+              const visibleLabels = applicationLabels.slice(0, 2);
+              const remainingLabelCount = Math.max(applicationLabels.length - visibleLabels.length, 0);
+
+              return (
+                <Link
+                  key={product.id}
+                  href={`/products/${product.slug}`}
+                  className="group block overflow-hidden border border-[#E6E0D8] bg-white hover:border-[#CDC5BA] hover:shadow-[0_10px_30px_-20px_rgba(0,0,0,0.45)] transition-all"
+                >
+                  <div className="relative aspect-[5/4] bg-[#E5E5E5] overflow-hidden">
+                    <img
+                      src={imageUrl}
+                      alt={product.name}
+                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+                    />
+                  </div>
+
+                  <div className="p-4 sm:p-5">
+                    <h2 className="font-serif text-[1.1rem] leading-tight text-[#1D1D1B] min-h-[2.35rem]">
+                      {product.name}
+                    </h2>
+
+                    <p className="mt-1.5 text-[11px] uppercase tracking-[0.14em] text-gray-500">
+                      {product.materialName}
+                    </p>
+
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {visibleLabels.map((label) => (
+                        <span
+                          key={label}
+                          className="px-2 py-1 text-[10px] uppercase tracking-[0.08em] bg-[#F2EEE8] text-[#4D4A44]"
+                        >
+                          {label}
+                        </span>
+                      ))}
+                      {remainingLabelCount > 0 && (
+                        <span className="px-2 py-1 text-[10px] uppercase tracking-[0.08em] bg-[#F2EEE8] text-[#4D4A44]">
+                          +{remainingLabelCount}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </section>
 
       <Footer />
     </main>
@@ -372,12 +327,7 @@ function ProductsPageInner() {
   const initialCategory = searchParams.get("category");
   const searchKey = searchParams.toString() || "all";
 
-  return (
-    <ProductsPageContent
-      key={searchKey}
-      initialCategory={initialCategory}
-    />
-  );
+  return <ProductsPageContent key={searchKey} initialCategory={initialCategory} />;
 }
 
 export default function ProductsPage() {

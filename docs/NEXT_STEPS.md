@@ -43,6 +43,25 @@ No open P0 blockers.
 
 ## P1
 
+### Product UI Density Refresh (Implemented 2026-02-10)
+- Delivered:
+  - `/products` now uses compact discovery layout:
+    - compact header + live result count
+    - top toolbar filters (search, material, application; tone hidden when no data)
+    - fixed-density responsive card grid (`1/2/3/4` columns) with application chips
+  - `/products/[slug]` now uses information-first detail layout:
+    - compressed hero region
+    - single left image with reduced footprint
+    - desktop ratio `left 5 / right 7`
+    - dropdown selectors for `Application`, `Surface Finish`, `Size`
+    - selector chaining reset (`application -> finish -> size`)
+    - `View Mode` moved to a low-priority section near page bottom (before footer)
+    - audience switch now affects audience notes copy only (CTA stack remains fixed homeowner-priority)
+    - `Technical Specifications` remains in the secondary technical card (post-primary decision block)
+- Validation:
+  - `npm run lint`: pass (`0 errors, 20 warnings`)
+  - `npm run build`: pass
+
 ### 0) Harden GitHub Pages deployment baseline
 - Problem:
   - deployment now depends on static export contract (`output: "export"` + pre-generated dynamic route params).

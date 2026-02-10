@@ -135,9 +135,10 @@ Last updated: 2026-02-10
 - Product detail (`/products/[slug]`)
   - Application-first selector, then finish.
   - Sizes are shown for the selected application+finish.
-  - Audience toggle: Homeowner / Professional.
-  - CTA priority changes by audience mode.
-  - Description and audience copy from overrides, otherwise defaults.
+  - CTA stack is fixed (Homeowner-priority sequence) for stable sample-cart funnel behavior.
+  - Audience toggle remains available as a low-priority footer-adjacent control.
+  - Audience toggle affects audience copy only (not CTA order/priority).
+  - Description and audience copy come from overrides, otherwise defaults.
 
 ## Layout & Semantics
 - `src/app/layout.tsx` contains:
