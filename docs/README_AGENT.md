@@ -1,6 +1,6 @@
 # README_AGENT - Single Entry for All Agents
 
-Last updated: 2026-02-06
+Last updated: 2026-02-10
 
 ## Current Objective
 - Maintain a single-entry, low-overhead handoff workflow.
@@ -9,6 +9,7 @@ Last updated: 2026-02-06
   - primary CTA actionability
   - image/lint warning reduction
   - placeholder asset replacement on release-critical routes
+  - GitHub Pages deployment reproducibility and dependency-compat cleanup
   - responsive QA evidence + automation follow-up after full-route squeeze hardening
 - Maintain a P2 lightweight-admin roadmap for non-engineering content updates (docs-only at this stage).
 - Update docs only on major changes (behavior/gates/contracts/priorities/risks).
@@ -18,15 +19,30 @@ Last updated: 2026-02-06
   - `npm run build`: pass (`next build --webpack`)
   - `npx tsc --noEmit`: pass **after** build (`.next/types` must exist)
   - `npm run lint`: `0 errors, 20 warnings`
+  - `npm run build:pages`: pass (static export + `dist` output)
 - Current blocking gaps (`P0`): none.
 - Known non-blocking debt:
   - image optimization warnings (`@next/next/no-img-element`)
   - CTA behavior completion outside P0-critical paths
   - placeholder/mock visual asset replacement
   - automated e2e coverage
+  - temporary `legacy-peer-deps` fallback for `npm ci` (React 19 + `@studio-freight/react-lenis` peer declaration mismatch)
   - content maintenance still depends on engineering workflow (CSV + code changes + deploy)
 
 ## What Changed Last
+- GitHub Pages deployment integration + CI compatibility patch landed (2026-02-10):
+  - static export baseline added in `next.config.ts` (`output: "export"`, `trailingSlash`, `images.unoptimized`).
+  - dynamic-route split for static param generation:
+    - `src/app/products/[slug]/page.tsx` + `src/app/products/[slug]/ProductDetailClient.tsx`
+    - `src/app/projects/[id]/page.tsx` + `src/app/projects/[id]/ProjectDetailClient.tsx`
+  - build/deploy pipeline:
+    - `package.json` adds `build:pages` (`out` -> `dist`)
+    - `.github/workflows/deploy.yml` publishes `dist` to `gh-pages` on `main` push + `workflow_dispatch`
+  - CI install compatibility:
+    - workflow install uses `npm ci --legacy-peer-deps`
+    - repo `.npmrc` sets `legacy-peer-deps=true`
+  - lint scope hardening:
+    - `eslint.config.mjs` ignores `dist/**` to prevent generated static artifacts from being linted.
 - Docs correction + admin improvement planning landed (docs-only):
   - corrected CTA inventory drift in `NEXT_STEPS`:
     - removed false-open items for detail-page `Order Free Sample`

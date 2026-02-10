@@ -1,10 +1,27 @@
 # Aushen Web - Architecture Overview
 
-Last updated: 2026-02-06
+Last updated: 2026-02-10
 
 ## Project Type
 - Next.js App Router project.
 - Frontend-only app with static data and generated TypeScript data files.
+- Static-export deployment target on GitHub Pages (`aushen-stone.github.io`, root path mode).
+
+## Deployment Model
+- Build/export:
+  - Next config uses static export baseline:
+    - `output: "export"`
+    - `trailingSlash: true`
+    - `images.unoptimized: true`
+  - `npm run build:pages` runs `next build --webpack` and copies `out/` to `dist/`.
+- Publish:
+  - GitHub Actions workflow: `.github/workflows/deploy.yml`
+  - trigger: push to `main` + `workflow_dispatch`
+  - publish action: `peaceiris/actions-gh-pages@v4`
+  - target branch/folder: `gh-pages` / `dist`
+  - credentials: `secrets.GITHUB_TOKEN` only (no PAT).
+- Install compatibility:
+  - CI currently uses `npm ci --legacy-peer-deps` due peer declaration mismatch (`@studio-freight/react-lenis@0.0.47` vs React 19).
 
 ## Planned Evolution (P2 Target; Not Implemented)
 - Current architecture remains frontend-only in runtime.
@@ -38,9 +55,14 @@ Last updated: 2026-02-06
 ## Routing
 - `src/app/page.tsx` is the homepage composition.
 - Product list: `src/app/products/page.tsx`
-- Product detail: `src/app/products/[slug]/page.tsx`
+- Product detail:
+  - server wrapper: `src/app/products/[slug]/page.tsx`
+  - client implementation: `src/app/products/[slug]/ProductDetailClient.tsx`
 - Other routes: `about`, `contact`, `services`, `projects`
 - Global navbar is rendered in `src/app/layout.tsx` only.
+- Dynamic-route static export contract:
+  - `src/app/products/[slug]/page.tsx` uses `generateStaticParams()` from `PRODUCTS` and sets `dynamicParams = false`.
+  - `src/app/projects/[id]/page.tsx` uses fixed slug list and sets `dynamicParams = false`.
 
 ## Data Flow
 - Source of truth: `docs/aushen_product_library.csv` (outside app folder).
@@ -138,10 +160,12 @@ node /tmp/aushen-scripts/build-product-data.js
 ## Pitfalls & Gotchas
 - **CSV header format**: 3-row header + forward-filled product fields. Missing this yields wrong grouping.
 - **Size values are messy**: mixed formats (`600x400x20/60`, `Random Size x20-30mm`, parentheses). We keep `raw` and only parse clean values.
-- **Client components and params**: detail page uses `useParams()`; passing `params` props can be undefined in client components.
+- **Dynamic route split required for static export**: keep `generateStaticParams` in server `page.tsx`, and interactive UI in `*Client.tsx`.
 - **Generated files are overwritten** on regeneration.
 - **Strict lint rules**: `react/no-unescaped-entities`, `no-html-link-for-pages`, `react-hooks/set-state-in-effect` are common sources of dev errors.
 - **Build environment**: build command uses webpack mode (`next build --webpack`) in this environment for stability.
+- **Peer dependency mismatch**: current install relies on `legacy-peer-deps`; remove only after dependency compatibility is resolved.
+- **Lint scope**: generated `dist/` output must remain ignored by ESLint.
 
 ## Legacy / Unused
 - `src/data/categories.ts` is legacy; the app uses `src/data/categories.generated.ts`.

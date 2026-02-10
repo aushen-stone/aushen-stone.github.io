@@ -1,9 +1,9 @@
 # Next Steps - Aushen Web
 
-Last updated: 2026-02-06
+Last updated: 2026-02-10
 
 ## Current Release Goal
-Stabilize post-P0 quality by finishing primary CTA behavior, reducing image/lint debt, replacing placeholder assets, and extending responsive hardening beyond the newly-fixed core five routes while keeping engineering gates reproducible in this environment.
+Stabilize post-P0 quality by finishing primary CTA behavior, reducing image/lint debt, replacing placeholder assets, hardening GitHub Pages static deployment reproducibility, and extending responsive hardening beyond the newly-fixed core five routes while keeping engineering gates reproducible in this environment.
 
 ## P0 (Release Blockers)
 No open P0 blockers.
@@ -23,7 +23,7 @@ No open P0 blockers.
 
 ## Sample Cart v1 (Implemented Contract)
 - Business mode: sample cart only (no payment, pricing, stock, checkout).
-- Entry point: only product detail page can add samples (`src/app/products/[slug]/page.tsx`).
+- Entry point: only product detail page can add samples (`src/app/products/[slug]/ProductDetailClient.tsx`).
 - Variant key: `product + finish`.
 - Sample size: fixed `200x100mm`.
 - Dedup rule: same `productSlug + finishId` merges into one line.
@@ -43,6 +43,29 @@ No open P0 blockers.
 
 ## P1
 
+### 0) Harden GitHub Pages deployment baseline
+- Problem:
+  - deployment now depends on static export contract (`output: "export"` + pre-generated dynamic route params).
+  - CI install currently requires peer resolution fallback because `@studio-freight/react-lenis@0.0.47` does not declare React 19 peer support.
+- Implemented now:
+  - Next static export config in `next.config.ts` (`output`, `trailingSlash`, `images.unoptimized`).
+  - route wrappers + param generation:
+    - `src/app/products/[slug]/page.tsx` + `src/app/products/[slug]/ProductDetailClient.tsx`
+    - `src/app/projects/[id]/page.tsx` + `src/app/projects/[id]/ProjectDetailClient.tsx`
+  - Pages deployment workflow:
+    - `.github/workflows/deploy.yml` (`push main` + `workflow_dispatch`, publish `dist` to `gh-pages`).
+  - install compatibility fallback:
+    - `.npmrc` (`legacy-peer-deps=true`)
+    - workflow install step uses `npm ci --legacy-peer-deps`.
+- Action:
+  - replace or upgrade smooth-scroll dependency to React 19-compatible package/version.
+  - remove `legacy-peer-deps` fallback after compatibility is resolved.
+  - keep static route parameter sources explicit and version-controlled.
+- Definition of Done:
+  - `npm ci` passes without `legacy-peer-deps` in both local and CI.
+  - Pages workflow stays green for 3 consecutive pushes.
+  - dynamic route generation source is documented and tested.
+
 ### 1) Stabilize primary CTA behavior for production
 - Problem: several primary CTAs are visual-only.
 - Current unimplemented CTA inventory:
@@ -50,11 +73,11 @@ No open P0 blockers.
   - `src/app/components/CreativeHubSection.tsx` (`Book A Consultation`, `Book The Space`)
   - `src/app/services/page.tsx` (`Book a Consultation`, `Contact Us`, `Visit Showroom`)
   - `src/app/contact/page.tsx` (`Send Message` form submit)
-  - `src/app/products/[slug]/page.tsx` (`Enquire`, `Book Consultation`, `Call Us`)
+  - `src/app/products/[slug]/ProductDetailClient.tsx` (`Enquire`, `Book Consultation`, `Call Us`)
   - `src/app/components/Footer.tsx` (newsletter submit)
   - `src/app/components/BestSellers.tsx` (`Quick View`)
 - Implemented CTA baseline (already operational):
-  - `src/app/products/[slug]/page.tsx` (`Order Free Sample`) adds sample lines and opens the sample-cart drawer.
+  - `src/app/products/[slug]/ProductDetailClient.tsx` (`Order Free Sample`) adds sample lines and opens the sample-cart drawer.
   - `src/app/components/Navbar.tsx` trolley count + drawer open/close interaction.
 - Action: each primary CTA must either navigate, submit, or be explicitly disabled with clear copy.
 - Definition of Done: no ambiguous primary CTA states remain.
@@ -84,12 +107,12 @@ No open P0 blockers.
     - `src/app/components/ProjectShowcase.tsx`
     - `src/app/components/ProductSidebar.tsx`
     - `src/app/products/page.tsx`
-    - `src/app/products/[slug]/page.tsx`
+    - `src/app/products/[slug]/ProductDetailClient.tsx`
     - `src/app/services/page.tsx`
     - `src/app/contact/page.tsx`
     - `src/app/about/page.tsx`
     - `src/app/projects/page.tsx`
-    - `src/app/projects/[id]/page.tsx`
+    - `src/app/projects/[id]/ProjectDetailClient.tsx`
     - `src/app/cart/page.tsx`
   - shared-section updates in:
     - `src/app/components/PageOffset.tsx`
@@ -142,7 +165,7 @@ No open P0 blockers.
 ### 1) Replace mock project detail content with a typed data source
 - Problem: `/projects/[id]` route behavior is correct, but content remains hard-coded.
 - Files:
-  - `src/app/projects/[id]/page.tsx`
+  - `src/app/projects/[id]/ProjectDetailClient.tsx`
 - Action: move project detail content into typed data module or CMS source.
 - Definition of Done: content updates do not require editing route component logic.
 
@@ -152,7 +175,7 @@ No open P0 blockers.
   - `src/app/components/Navbar.tsx`
   - `src/app/products/page.tsx`
   - `src/app/services/page.tsx`
-  - `src/app/projects/[id]/page.tsx`
+  - `src/app/projects/[id]/ProjectDetailClient.tsx`
 - Action: add e2e coverage (Playwright or equivalent) for menu/drawer flow, routing, and key CTA paths.
 - Definition of Done: CI catches regressions for open/close behavior, focus flow, and route-driven rendering.
 
@@ -281,14 +304,16 @@ No open P0 blockers.
 8. Navbar has no logo/menu overlap at threshold widths (including ~1600 and ~1680).
 9. Release routes (`/`, `/products`, `/products/[slug]`, `/services`, `/contact`, `/about`, `/projects`, `/projects/[id]`, `/cart`) show no squeeze at 320/360/390/768/1024 and no low-height overlap at `height <= 430px`.
 10. `build -> tsc -> lint` command sequence reproduces expected health state.
-11. Admin login accepts valid credentials and rejects invalid credentials.
-12. Repeated failed login attempts trigger temporary lockout.
-13. Unauthenticated access to `/admin` and admin write APIs is denied.
-14. Admin can edit one product's display fields and submit `save-pr`.
-15. `save-pr` response includes `prUrl`, `branchName`, and `commitSha`.
-16. Merged content PR updates production display fields.
-17. GitHub conflict on stale base SHA returns refresh/retry instruction.
-18. Rollback path works via GitHub revert PR.
+11. `build:pages` creates `dist` with valid root entry and `_next` assets.
+12. unknown dynamic paths under `/products/*` and `/projects/*` return static 404 (non-generated params).
+13. Admin login accepts valid credentials and rejects invalid credentials.
+14. Repeated failed login attempts trigger temporary lockout.
+15. Unauthenticated access to `/admin` and admin write APIs is denied.
+16. Admin can edit one product's display fields and submit `save-pr`.
+17. `save-pr` response includes `prUrl`, `branchName`, and `commitSha`.
+18. Merged content PR updates production display fields.
+19. GitHub conflict on stale base SHA returns refresh/retry instruction.
+20. Rollback path works via GitHub revert PR.
 
 ## Assumptions and Defaults
 1. No payment, pricing, inventory, or order lifecycle in current phase.
@@ -299,6 +324,8 @@ No open P0 blockers.
 6. Admin v1 targets low-frequency updates with a single maintained account.
 7. Audit-log persistence is out of scope for admin v1.
 8. Product structure source-of-truth remains CSV + generation pipeline in admin v1.
+9. Deployment target is root-path GitHub Pages (`aushen-stone.github.io`) unless explicitly reconfigured.
+10. Current CI compatibility uses `legacy-peer-deps` as a temporary workaround.
 
 ## Exit Criteria
 - P0 blockers (`UI-NAV-001`, `CART-SAMPLE-001`) are closed.
@@ -306,13 +333,17 @@ No open P0 blockers.
 - `npm run build` passes.
 - `npx tsc --noEmit` passes after build (required for `.next/types` presence).
 - `npm run lint` reports no errors (warnings are tracked until resolved).
+- `npm run build:pages` produces `dist` for publish.
+- GitHub Pages deploy workflow publishes `dist` to `gh-pages` on `main` push.
 - Mobile/tablet widths (320/360/390/768/1024) and low-height landscape (`height <= 430px`) show no critical nav/overlay regressions on release routes.
 
 ## Verification Commands
 ```bash
+npm ci --legacy-peer-deps
 npm run build
 npx tsc --noEmit
 npm run lint
+npm run build:pages
 ```
 
 Manual smoke:

@@ -1,8 +1,36 @@
 # Worklog - Aushen Web
 
-Last updated: 2026-02-06
+Last updated: 2026-02-10
 
 ## Completed and Landed
+
+### GitHub Pages Deployment Integration + CI Compatibility Hotfix (2026-02-10)
+- Scope implemented:
+  - static export deployment baseline for GitHub Pages root-path hosting.
+  - dynamic route wrappers for export-safe param generation.
+  - CI install compatibility mitigation for peer dependency conflict.
+- Files updated:
+  - `.github/workflows/deploy.yml`
+  - `next.config.ts`
+  - `package.json`
+  - `.gitignore`
+  - `.npmrc`
+  - `eslint.config.mjs`
+  - `README.md`
+  - `src/app/products/[slug]/page.tsx`
+  - `src/app/products/[slug]/ProductDetailClient.tsx`
+  - `src/app/projects/[id]/page.tsx`
+  - `src/app/projects/[id]/ProjectDetailClient.tsx`
+- Behavior/contract changes:
+  - `build:pages` now outputs `dist` (`out` copied to `dist`) for publish.
+  - `/products/[slug]` and `/projects/[id]` are now statically generated via `generateStaticParams`.
+  - unknown dynamic params are no longer runtime-resolved (`dynamicParams = false`).
+  - deploy publishes `dist` to `gh-pages` on `main` push and manual dispatch.
+- Validation:
+  - `npm run build`: pass
+  - `npm run lint`: pass with existing warnings (`0 errors, 20 warnings`)
+  - `npm run build:pages`: pass
+  - `npm ci`: local environment may timeout; CI uses `--legacy-peer-deps` workaround.
 
 ### Docs Correction + Lightweight Admin Roadmap (2026-02-06)
 - Scope:
@@ -190,6 +218,7 @@ Last updated: 2026-02-06
 - `npm run build`: pass (`next build --webpack`)
 - `npx tsc --noEmit`: pass **after** build; cold start may fail if `.next/types` has not been generated.
 - `npm run lint`: `0 errors, 20 warnings`
+- `npm run build:pages`: pass (`out` -> `dist`)
 
 ## Decisions Made
 - Documentation model switched to stable canonical files:
