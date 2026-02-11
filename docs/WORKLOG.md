@@ -4,6 +4,28 @@ Last updated: 2026-02-10
 
 ## Completed and Landed
 
+### Navbar Desktop Visibility Rebalance (2026-02-10)
+- Scope implemented:
+  - changed desktop navbar visibility from `min-[1600px]` to `lg` (`1024px`) so standard desktop widths keep full navigation.
+  - replaced natural-wrap desktop nav behavior with deterministic split rows for mid desktop widths.
+  - aligned display behavior into three tiers:
+    - `<1024`: mobile drawer menu
+    - `1024-1535`: desktop two-row nav (`2+2`)
+    - `>=1536`: desktop single-row nav
+  - moved `Get in Touch` out of desktop left nav while retaining `Contact` on desktop right and preserving `Get in Touch` in mobile drawer.
+- Files updated:
+  - `src/app/components/Navbar.tsx`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Behavior/contract changes:
+  - desktop navigation now appears on common laptop/desktop widths without forcing hamburger fallback.
+  - deterministic row split removes the previous `4+1` orphan item behavior near threshold widths.
+  - mega menu and mobile-overlay visibility breakpoints are synchronized with `lg/2xl` desktop strategy.
+- Validation:
+  - `npm run lint`: pass (`0 errors, 20 warnings`)
+  - `npm run build`: pass
+
 ### Product UX Density + Audience-Flow Consolidation (2026-02-10)
 - Scope implemented:
   - reduced showroom-style visual weight and increased product discovery density.

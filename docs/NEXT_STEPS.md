@@ -11,8 +11,11 @@ No open P0 blockers.
 ### Closed P0 Items (2026-02-06)
 - `UI-NAV-001` closed:
   - navbar layout refactored to a reserved center-logo grid structure.
-  - desktop nav supports wrapping and now only appears from `min-[1600px]`; below that uses mobile menu.
-  - overlap around ~1680px and nearby widths was resolved via final UX-first iteration.
+  - desktop nav visibility now follows a three-tier layout:
+    - `<1024`: mobile menu
+    - `1024-1535`: deterministic two-row desktop nav split (`2+2`)
+    - `>=1536`: single-row desktop nav
+  - overlap at common desktop widths is resolved without relying on natural `flex-wrap` fallback.
 - `CART-SAMPLE-001` closed:
   - sample-cart flow implemented end-to-end:
     - product detail add sample
@@ -312,7 +315,7 @@ No open P0 blockers.
 5. Click trolley: drawer opens; drawer can navigate to `/cart`.
 6. Click `Ask for sample` in cart: navigates to `/contact` with message prefilled.
 7. `/products` list page has no direct sample add entry.
-8. Navbar has no logo/menu overlap at threshold widths (including ~1600 and ~1680).
+8. Navbar has no logo/menu overlap at threshold widths (including `1024`, `1366`, `1440`, `1536`, and `1680`).
 9. Release routes (`/`, `/products`, `/products/[slug]`, `/services`, `/contact`, `/about`, `/projects`, `/projects/[id]`, `/cart`) show no squeeze at 320/360/390/768/1024 and no low-height overlap at `height <= 430px`.
 10. `build -> tsc -> lint` command sequence reproduces expected health state.
 11. `build:pages` creates `dist` with valid root entry and `_next` assets.

@@ -30,6 +30,11 @@ Last updated: 2026-02-10
   - content maintenance still depends on engineering workflow (CSV + code changes + deploy)
 
 ## What Changed Last
+- Navbar desktop visibility rebalance finalized (2026-02-10):
+  - desktop nav now appears from `1024px` (`lg`) instead of waiting for ultra-wide screens.
+  - `1024-1535` uses deterministic two-row split navigation (`2+2`), and `>=1536` returns to single-row desktop nav.
+  - desktop left nav removes `Get in Touch`; right-side `Contact` remains; mobile drawer keeps `Get in Touch`.
+  - validation: `npm run lint` (`0 errors, 20 warnings`) and `npm run build` both pass.
 - Product UX refresh finalized (2026-02-10):
   - `/products` now uses compact finder layout (top toolbar filters + fixed-density grid).
   - `/products/[slug]` now keeps `View Mode` in a low-priority footer-adjacent section.

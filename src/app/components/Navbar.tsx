@@ -18,16 +18,29 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [isMediumNavTight, setIsMediumNavTight] = useState(false);
+  const desktopGridRef = useRef<HTMLDivElement | null>(null);
+  const logoColumnRef = useRef<HTMLDivElement | null>(null);
+  const rightClusterRef = useRef<HTMLDivElement | null>(null);
+  const desktopRowOneRef = useRef<HTMLDivElement | null>(null);
+  const desktopRowTwoRef = useRef<HTMLDivElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const mobileCloseButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  const menuItems = [
+  const desktopMenuItems = [
     { name: "Products", href: "/products", hasDropdown: true },
     { name: "Projects", href: "/projects", hasDropdown: false },
     { name: "Services", href: "/services", hasDropdown: false },
     { name: "Our Story", href: "/about", hasDropdown: false },
+  ];
+
+  const mobileMenuItems = [
+    ...desktopMenuItems,
     { name: "Get in Touch", href: "/contact", hasDropdown: false },
   ];
+  const desktopSplitIndex = Math.ceil(desktopMenuItems.length / 2);
+  const desktopMenuFirstRow = desktopMenuItems.slice(0, desktopSplitIndex);
+  const desktopMenuSecondRow = desktopMenuItems.slice(desktopSplitIndex);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -73,6 +86,102 @@ export function Navbar() {
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
+    const desktopMediaQuery = window.matchMedia("(min-width: 1024px)");
+
+    const handleViewportModeChange = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        setIsMobileMenuOpen(false);
+        return;
+      }
+
+      setActiveMenu(null);
+    };
+
+    desktopMediaQuery.addEventListener("change", handleViewportModeChange);
+    return () =>
+      desktopMediaQuery.removeEventListener("change", handleViewportModeChange);
+  }, []);
+
+  useEffect(() => {
+    const mediumDesktopQuery = window.matchMedia(
+      "(min-width: 1024px) and (max-width: 1535px)"
+    );
+    let rafId: number | null = null;
+
+    const evaluateMediumNavDensity = () => {
+      const gridEl = desktopGridRef.current;
+      const logoEl = logoColumnRef.current;
+      const rightEl = rightClusterRef.current;
+      const rowOneEl = desktopRowOneRef.current;
+      const rowTwoEl = desktopRowTwoRef.current;
+      if (!gridEl || !logoEl || !rightEl || !rowOneEl || !rowTwoEl) return;
+
+      const gridRect = gridEl.getBoundingClientRect();
+      const logoRect = logoEl.getBoundingClientRect();
+      const rightRect = rightEl.getBoundingClientRect();
+      const leftAvailable = Math.max(0, logoRect.left - gridRect.left - 16);
+      const rightAvailable = Math.max(0, gridRect.right - logoRect.right - 16);
+      const leftNeeded = Math.max(rowOneEl.scrollWidth, rowTwoEl.scrollWidth);
+      const rightNeeded = rightRect.width;
+      const leftOverflow = leftNeeded - leftAvailable;
+      const rightOverflow = rightNeeded - rightAvailable;
+
+      setIsMediumNavTight((current) => {
+        if (!current) {
+          // Tight mode should only kick in when there is a real collision risk.
+          return leftOverflow > 4 || rightOverflow > 14;
+        }
+        // Relax sooner once there is clear breathing room to avoid staying compact too long.
+        if (leftOverflow <= -10 && rightOverflow <= -6) {
+          return false;
+        }
+        return current;
+      });
+    };
+
+    const scheduleDensityCheck = () => {
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
+      rafId = window.requestAnimationFrame(() => {
+        if (mediumDesktopQuery.matches) {
+          evaluateMediumNavDensity();
+        } else {
+          setIsMediumNavTight((current) => (current ? false : current));
+        }
+      });
+    };
+
+    const observedElements = [
+      desktopGridRef.current,
+      logoColumnRef.current,
+      rightClusterRef.current,
+      desktopRowOneRef.current,
+      desktopRowTwoRef.current,
+    ];
+    const resizeObserver = new ResizeObserver(() => {
+      scheduleDensityCheck();
+    });
+
+    observedElements.forEach((el) => {
+      if (el) resizeObserver.observe(el);
+    });
+
+    window.addEventListener("resize", scheduleDensityCheck);
+    mediumDesktopQuery.addEventListener("change", scheduleDensityCheck);
+    scheduleDensityCheck();
+
+    return () => {
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", scheduleDensityCheck);
+      mediumDesktopQuery.removeEventListener("change", scheduleDensityCheck);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!isMobileMenuOpen) return;
     const container = mobileMenuRef.current;
     if (!container) return;
@@ -116,6 +225,51 @@ export function Navbar() {
   const logoClass = shouldBeSolid
     ? "h-[var(--nav-logo-h-solid)] opacity-90"
     : "h-[var(--nav-logo-h-transparent)] brightness-0 invert";
+  const desktopNavLinkSizingClass = isMediumNavTight
+    ? "text-[11px] xl:text-[12px] tracking-[0.11em] xl:tracking-[0.14em]"
+    : "text-[12px] xl:text-[13.5px] tracking-[0.13em] xl:tracking-[0.16em]";
+  const desktopRowGapClass = isMediumNavTight
+    ? "gap-x-4 xl:gap-x-5.5"
+    : "gap-x-6 xl:gap-x-7";
+  const desktopRowSpacingClass = isMediumNavTight ? "space-y-[3px]" : "space-y-[6px]";
+  const mediumLogoWidthClass = isMediumNavTight
+    ? "lg:w-[clamp(104px,15vw,170px)]"
+    : "lg:w-[clamp(114px,17vw,188px)]";
+  const rightClusterSizingClass = isMediumNavTight
+    ? "gap-2.5 sm:gap-3 lg:gap-3.5 text-[10px] sm:text-[11px] tracking-[0.1em] sm:tracking-[0.12em]"
+    : "gap-2.5 sm:gap-3 lg:gap-4.5 text-[10px] sm:text-[11px] lg:text-xs tracking-[0.1em] sm:tracking-[0.13em]";
+
+  const renderDesktopNavItem = (item: {
+    name: string;
+    href: string;
+    hasDropdown: boolean;
+  }) => (
+    <div
+      key={item.name}
+      className="flex items-center relative py-0.5"
+      onMouseEnter={() =>
+        item.hasDropdown ? setActiveMenu(item.name) : setActiveMenu(null)
+      }
+    >
+      <Link
+        href={item.href}
+        className={`group relative whitespace-nowrap font-medium uppercase transition-colors flex items-center gap-1 ${desktopNavLinkSizingClass} ${textColorClass}`}
+      >
+        {item.name}
+        {item.hasDropdown && (
+          <ChevronDown
+            size={14}
+            className={`transition-transform duration-300 ${
+              activeMenu === item.name ? "rotate-180" : ""
+            }`}
+          />
+        )}
+        <span
+          className={`absolute -bottom-2 left-1/2 w-0 h-[1px] transition-all duration-300 ease-out group-hover:w-full group-hover:left-0 ${underlineColorClass}`}
+        />
+      </Link>
+    </div>
+  );
 
   return (
     <>
@@ -125,11 +279,14 @@ export function Navbar() {
         }`}
         onMouseLeave={() => setActiveMenu(null)}
       >
-        <div className="h-full page-padding-x grid grid-cols-[auto_minmax(0,1fr)_auto] min-[1600px]:grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-3 md:gap-4 relative z-50">
+        <div
+          ref={desktopGridRef}
+          className="h-full page-padding-x grid grid-cols-[auto_minmax(0,1fr)_auto] lg:grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-3 md:gap-4 relative z-50"
+        >
           <div className="min-w-0 flex items-center">
             {/* --- Mobile Menu Button --- */}
             <button
-              className={`min-[1600px]:hidden z-10 p-1.5 sm:p-2 transition-colors shrink-0 ${textColorClass}`}
+              className={`lg:hidden z-10 p-1.5 sm:p-2 transition-colors shrink-0 ${textColorClass}`}
               onClick={() => {
                 setActiveMenu(null);
                 closeDrawer();
@@ -143,57 +300,43 @@ export function Navbar() {
             </button>
 
             {/* --- Desktop Nav --- */}
-            <nav className="hidden min-[1600px]:flex min-[1600px]:flex-wrap min-[1600px]:items-center gap-x-8 gap-y-1 min-w-0 pr-6">
-              {menuItems.map((item) => (
-                <div
-                  key={item.name}
-                  className="flex items-center relative py-1"
-                  onMouseEnter={() =>
-                    item.hasDropdown
-                      ? setActiveMenu(item.name)
-                      : setActiveMenu(null)
-                  }
-                >
-                  <Link
-                    href={item.href}
-                    className={`group relative text-xs font-medium uppercase tracking-[0.15em] transition-colors flex items-center gap-1 ${textColorClass}`}
-                  >
-                    {item.name}
-                    {item.hasDropdown && (
-                      <ChevronDown
-                        size={14}
-                        className={`transition-transform duration-300 ${
-                          activeMenu === item.name ? "rotate-180" : ""
-                        }`}
-                      />
-                    )}
-                    <span
-                      className={`absolute -bottom-2 left-1/2 w-0 h-[1px] transition-all duration-300 ease-out group-hover:w-full group-hover:left-0 ${underlineColorClass}`}
-                    />
-                  </Link>
+            <nav className="hidden lg:block min-w-0 pr-2 xl:pr-4 2xl:pr-6">
+              <div className={`2xl:hidden ${desktopRowSpacingClass}`}>
+                <div ref={desktopRowOneRef} className={`flex items-center ${desktopRowGapClass}`}>
+                  {desktopMenuFirstRow.map(renderDesktopNavItem)}
                 </div>
-              ))}
+                <div ref={desktopRowTwoRef} className={`flex items-center ${desktopRowGapClass}`}>
+                  {desktopMenuSecondRow.map(renderDesktopNavItem)}
+                </div>
+              </div>
+              <div className="hidden 2xl:flex items-center gap-x-6">
+                {desktopMenuItems.map(renderDesktopNavItem)}
+              </div>
             </nav>
           </div>
 
           {/* --- Logo (reserved center column) --- */}
-          <div className="min-w-0 flex justify-center transition-all duration-500 z-0">
+          <div
+            ref={logoColumnRef}
+            className="min-w-0 flex justify-center transition-all duration-500 z-0"
+          >
             <Link href="/" className="block cursor-pointer">
               <img
                 src="/AushenLogo.webp"
                 alt="Aushen"
-                className={`w-[clamp(96px,28vw,180px)] md:w-[clamp(120px,20vw,240px)] max-w-full object-contain transition-all duration-500 ${logoClass}`}
+                className={`w-[clamp(96px,28vw,180px)] md:w-[clamp(110px,18vw,190px)] ${mediumLogoWidthClass} 2xl:w-[clamp(120px,20vw,240px)] max-w-full object-contain transition-all duration-500 ${logoClass}`}
               />
             </Link>
           </div>
 
           {/* --- Right Icons --- */}
           <div
-            className={`flex items-center justify-end gap-3 sm:gap-4 md:gap-6 text-[11px] sm:text-xs font-medium uppercase tracking-[0.14em] sm:tracking-[0.18em] z-10 transition-colors ${textColorClass}`}
+            ref={rightClusterRef}
+            className={`flex items-center justify-end ${rightClusterSizingClass} 2xl:gap-6 2xl:text-xs font-medium uppercase 2xl:tracking-[0.18em] z-10 transition-colors ${textColorClass}`}
           >
             <Link
               href="/contact"
-              className="hidden min-[1600px]:block hover:opacity-70 transition-opacity"
+              className="hidden lg:block hover:opacity-70 transition-opacity"
             >
               Contact
             </Link>
@@ -227,7 +370,7 @@ export function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 w-full bg-[#F8F5F1] border-b border-gray-200/50 shadow-xl py-12 px-6 md:px-16 hidden min-[1600px]:block"
+              className="absolute top-full left-0 w-full bg-[#F8F5F1] border-b border-gray-200/50 shadow-xl py-12 px-6 md:px-16 hidden lg:block"
               onMouseEnter={() => setActiveMenu("Products")}
               onMouseLeave={() => setActiveMenu(null)}
             >
@@ -319,7 +462,7 @@ export function Navbar() {
 
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <div className="fixed inset-0 z-[120] min-[1600px]:hidden">
+          <div className="fixed inset-0 z-[120] lg:hidden">
             <motion.button
               type="button"
               aria-label="Close menu overlay"
@@ -361,7 +504,7 @@ export function Navbar() {
               </div>
 
               <nav className="space-y-1 mb-8" aria-label="Main">
-                {menuItems.map((item) => (
+                {mobileMenuItems.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
