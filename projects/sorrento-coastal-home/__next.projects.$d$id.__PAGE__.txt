@@ -2,5 +2,5 @@
 2:I[2477,["227","static/chunks/227-ff25dc53511f4fad.js","72","static/chunks/72-b33a07b274a3d20e.js","801","static/chunks/app/projects/%5Bid%5D/page-bca4d8623d32a8bb.js"],"default"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"buildId":"ajjKjbV_TjEMiXeFzX-6N","rsc":["$","$1","c",{"children":[["$","$L2",null,{"id":"sorrento-coastal-home"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
+0:{"buildId":"tnOr9E4RRsdrEi1h8qtyB","rsc":["$","$1","c",{"children":[["$","$L2",null,{"id":"sorrento-coastal-home"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
 5:null
