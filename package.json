@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build --webpack",
     "build:pages": "next build --webpack && rm -rf dist && cp -R out dist",
+    "prepare:product-photos": "python3 scripts/prepare-product-photos.py",
     "start": "next start",
     "lint": "eslint"
   },

@@ -3,7 +3,7 @@
 
 import React, { useMemo, useState } from "react";
 import { Footer } from "@/app/components/Footer";
-import { ArrowDownLeft, ArrowRight, Plus, Minus } from "lucide-react";
+import { ArrowDownLeft, ArrowRight, ChevronLeft, ChevronRight, Plus, Minus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
 import { PRODUCTS } from "@/data/products.generated";
@@ -161,7 +161,12 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
   const { addSample, openDrawer } = useSampleCart();
   const override = PRODUCT_OVERRIDES[product.slug];
   const description = override?.description || DEFAULT_PRODUCT_DESCRIPTION;
-  const imageUrl = override?.imageUrl || DEFAULT_PRODUCT_IMAGE;
+  const imageGallery =
+    override?.imageUrls?.length && override.imageUrls.length > 0
+      ? override.imageUrls
+      : override?.imageUrl
+      ? [override.imageUrl]
+      : [DEFAULT_PRODUCT_IMAGE];
 
   const homeownerSummary = override?.homeownerSummary || DEFAULT_HOMEOWNER_SUMMARY;
   const homeownerUseCases = override?.homeownerUseCases || DEFAULT_HOMEOWNER_USE_CASES;
@@ -186,6 +191,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
   );
   const [audienceMode, setAudienceMode] = useState<AudienceMode>("homeowner");
   const [sampleFeedback, setSampleFeedback] = useState<SampleFeedback | null>(null);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const selectedApplication =
     product.applicationIndex.find((application) => application.id === selectedApplicationId) ||
@@ -294,6 +300,25 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
       : sampleFeedback === "unavailable"
       ? "Select a finish before adding a sample."
       : null;
+  const hasMultipleImages = imageGallery.length > 1;
+  const currentImageIndex =
+    imageGallery.length > 0 ? activeImageIndex % imageGallery.length : 0;
+  const currentImageUrl = imageGallery[currentImageIndex] || DEFAULT_PRODUCT_IMAGE;
+  const currentImageAlt = hasMultipleImages
+    ? `${product.name} image ${currentImageIndex + 1} of ${imageGallery.length}`
+    : product.name;
+
+  const handlePrevImage = () => {
+    if (!hasMultipleImages) return;
+    setActiveImageIndex((previous) =>
+      previous === 0 ? imageGallery.length - 1 : previous - 1
+    );
+  };
+
+  const handleNextImage = () => {
+    if (!hasMultipleImages) return;
+    setActiveImageIndex((previous) => (previous + 1) % imageGallery.length);
+  };
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
@@ -320,7 +345,40 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
           <div className="lg:col-span-5">
             <div className="lg:sticky top-[var(--content-sticky-top)]">
               <div className="relative w-full overflow-hidden border border-[#E6E0D8] bg-[#E5E5E5] aspect-[5/4] max-h-[430px]">
-                <img src={imageUrl} alt={product.name} className="w-full h-full object-cover" />
+                <img src={currentImageUrl} alt={currentImageAlt} className="w-full h-full object-cover" />
+                {hasMultipleImages && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handlePrevImage}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/55 text-white p-2 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                      aria-label={`Previous image for ${product.name}`}
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNextImage}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/55 text-white p-2 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                      aria-label={`Next image for ${product.name}`}
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+                      {imageGallery.map((_, index) => (
+                        <button
+                          key={`${product.slug}-image-dot-${index + 1}`}
+                          type="button"
+                          onClick={() => setActiveImageIndex(index)}
+                          className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                            index === currentImageIndex ? "bg-white" : "bg-white/55"
+                          }`}
+                          aria-label={`View image ${index + 1} of ${imageGallery.length} for ${product.name}`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

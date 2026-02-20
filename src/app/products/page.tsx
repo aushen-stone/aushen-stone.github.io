@@ -266,7 +266,8 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
           <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
             {filteredProducts.map((product) => {
               const override = PRODUCT_OVERRIDES[product.slug];
-              const imageUrl = override?.imageUrl || DEFAULT_PRODUCT_IMAGE;
+              const imageUrl =
+                override?.imageUrls?.[0] || override?.imageUrl || DEFAULT_PRODUCT_IMAGE;
               const applicationLabels = collectApplicationLabels(product);
               const visibleLabels = applicationLabels.slice(0, 2);
               const remainingLabelCount = Math.max(applicationLabels.length - visibleLabels.length, 0);

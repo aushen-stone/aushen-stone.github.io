@@ -1,0 +1,103 @@
+status,product_slug,product_name,image_path,match_method,confidence,best_guess_product_slug,best_guess_product_name,best_guess_score
+mapped,antarctica,Antarctica,SAI/Antarctica White.jpg,manual_confirmed_by_user,high,,,
+mapped,antline,Antline,SAI/Antline.jpg,exact_name,high,,,
+mapped,ash-grey,Ash Grey,SAI/Ash Grey.jpg,exact_name,high,,,
+mapped,atlantic-grey,Atlantic Grey,Atlantic Grey.jpg,exact_name,high,,,
+mapped,beachport,Beachport,Beachport.jpg,exact_name,high,,,
+mapped,beige-travertine-sai,Beige Travertine (SAI),SAI/Beige Travertine.jpg,exact_name,high,,,
+mapped,belgium-blue,Belgium Blue,SAI/Belgium Blue.jpg,exact_name,high,,,
+mapped,beloka,Beloka,Beloka.jpg,exact_name,high,,,
+mapped,bianca-chiaro,Bianca Chiaro,Bianca Chiaro.jpg,exact_name,high,,,
+mapped,black-ochre-blend,Black Ochre Blend,SAI/Black Ochre Blend.jpg,exact_name,high,,,
+mapped,blue-ridge,Blue Ridge,Blue Ridge Ledge.jpg,name_alias,high,,,
+mapped,blueocean,Blueocean,SAI/Blueocean Honed.jpg,base_name_plus_variant,medium,,,
+mapped,blueocean,Blueocean,SAI/Blueocean Sawn.jpg,base_name_plus_variant,medium,,,
+mapped,buffalo,Buffalo,Buffalo.jpg,exact_name,high,,,
+mapped,charlotte,Charlotte,Charlotte.jpg,exact_name,high,,,
+mapped,classic-travertine-sai,Classic Travertine (SAI),Classic Travertine Vien Cut.jpg,base_name_plus_variant,medium,,,
+mapped,classic-travertine-sai,Classic Travertine (SAI),SAI/Classic Travertine_Honed and filled.jpg,name_alias,high,,,
+mapped,classic-travertine-sai,Classic Travertine (SAI),SAI/Classic Travertine_Tumbled and Unfilled.jpg,name_alias,high,,,
+mapped,classic-travertine-sai,Classic Travertine (SAI),Standard Classic Travertine.jpg,name_alias,high,,,
+mapped,classic-travertine-sai,Classic Travertine (SAI),Standard Classic Travertine_2.jpg,name_alias,high,,,
+mapped,crema-siena,Crema Siena,Crema Siena.jpg,exact_name,high,,,
+mapped,frozen-blue,Frozen Blue,SAI/Frozen Blue.jpg,exact_name,high,,,
+mapped,glacier,Glacier,Glacier.jpg,exact_name,high,,,
+mapped,grey-apricot,Grey Apricot,SAI/Grey Apricot.jpg,exact_name,high,,,
+mapped,grey-permeable-paver,Grey Permeable Paver,SAI/Permeable Paver.jpg,manual_confirmed_by_user,high,,,
+mapped,honey-limestone,Honey Limestone,Honey Limestone.jpg,exact_name,high,,,
+mapped,hotham,Hotham,Hotham.jpg,exact_name,high,,,
+mapped,jamieson,Jamieson,Jamieson.jpg,exact_name,high,,,
+mapped,ken-black,Ken Black,SAI/Ken Black.jpg,exact_name,high,,,
+mapped,lux-black,Lux Black,SAI/Lux Black.jpg,exact_name,high,,,
+mapped,moonlight-grey,Moonlight Grey,SAI/Moonlight Grey.jpg,exact_name,high,,,
+mapped,multicolor-ochre-blend,MultiColor Ochre Blend,SAI/Multicolor Ochre Blend..jpg,exact_name,high,,,
+mapped,new-grey,New Grey,SAI/New Grey.jpg,exact_name,high,,,
+mapped,nimbus-white,Nimbus White,Nimbus White.jpg,exact_name,high,,,
+mapped,pearl-grey,Pearl Grey,Pearl Grey.jpg,exact_name,high,,,
+mapped,philadelphia-silver-travertine-vien-cut,Philadelphia Silver Travertine Vien Cut,Philadelphia Silver Travertine Vien Cut.jpg,exact_name,high,,,
+mapped,philadelphia-silver-travertine-vien-cut,Philadelphia Silver Travertine Vien Cut,Philadelphia Silver Travertine.jpg,manual_confirmed_by_user,high,,,
+mapped,premium-classic-travertine-artma,Premium Classic Travertine (Artma),Premium Classic Travertine.jpg,exact_name,high,,,
+mapped,red-ochre-blend,Red Ochre Blend,SAI/Red Ochre Blend..jpg,exact_name,high,,,
+mapped,reefstone-creamy-white,Reefstone Creamy White,SAI/Reefstone Creamy White.jpg,exact_name,high,,,
+mapped,reefstone-dark-grey,Reefstone Dark Grey,SAI/Reefstone Dark Grey.jpg,exact_name,high,,,
+mapped,reefstone-neutral-grey,Reefstone Neutral Grey,SAI/Reefstone Neutral Grey.jpg,exact_name,high,,,
+mapped,reefstone-warm-grey,Reefstone Warm Grey,SAI/Reefstone Warm Grey.jpg,exact_name,high,,,
+mapped,seagrass,Seagrass,Seagrass.jpg,exact_name,high,,,
+mapped,sesame-white,Sesame White,SAI/Seame White.jpg,name_alias,high,,,
+mapped,siena-earth,Siena Earth,Siena Earth.jpg,exact_name,high,,,
+mapped,siena-grey,Siena Grey,Siena Grey(London Grey).jpg,name_alias,high,,,
+mapped,siena-grey,Siena Grey,Siena Grey(London Grey)_2.jpg,name_alias,high,,,
+mapped,siena-pearl,Siena Pearl,SAI/Siena Pearl.jpg,exact_name,high,,,
+mapped,siena-taupe,Siena Taupe,Siena Taupe.jpg,exact_name,high,,,
+mapped,silver-ash,Silver Ash,SAI/Silver Ash.jpg,exact_name,high,,,
+mapped,silver-lighht-travertine-veincut,Silver Lighht Travertine Veincut,Silver Lighht Travertine Veincut.jpg,exact_name,high,,,
+mapped,silver-travertine-artma,Silver Travertine (Artma),Silver Travertine Raw Cut.jpg,base_name_plus_variant,medium,,,
+mapped,silver-travertine-artma,Silver Travertine (Artma),Silver Travertine.jpg,exact_name,high,,,
+mapped,steal-blue,Steal Blue,SAI/Steel Blue.jpg,name_alias,high,,,
+mapped,stormy-grey,Stormy Grey,SAI/Stormy Grey-2.jpg,exact_name,high,,,
+mapped,stormy-grey,Stormy Grey,SAI/Stormy Grey.jpg,exact_name,high,,,
+mapped,toros-black,Toros Black,Toros Black.jpg,exact_name,high,,,
+mapped,tundra-blue,Tundra Blue,Tundra Blue.jpg,exact_name,high,,,
+mapped,tundra-grey,Tundra Grey,Tundra Grey.jpg,exact_name,high,,,
+mapped,white-ochre-blend,White Ochre Blend,SAI/White Ochre Blend.jpg,exact_name,high,,,
+mapped,wilderness-grey,Wilderness Grey,Wildness Grey.jpg,name_alias,high,,,
+mapped,zen-grey,Zen Grey,SAI/Zen Grey.jpg,exact_name,high,,,
+missing_product_image,angola-black,Angola Black,,,,,,
+missing_product_image,barwon,Barwon,,,,,,
+missing_product_image,classic-light-travertine-artmar,Classic Light Travertine(Artmar),,,,,,
+missing_product_image,jasper,Jasper,,,,,,
+missing_product_image,kakadu,Kakadu,,,,,,
+missing_product_image,philadelphia-silver-travertine-cross-cut-tumbled,Philadelphia Silver Travertine Cross Cut Tumbled,,,,,,
+missing_product_image,roman,Roman,,,,,,
+missing_product_image,turkish-carrara-aqua-blue,Turkish Carrara(Aqua Blue),,,,,,
+unclear_or_extra,,,Baltic Eclipse.jpg,,,atlantic-grey,Atlantic Grey,0.52
+unclear_or_extra,,,Black Granite.jpg,,,atlantic-grey,Atlantic Grey,0.54
+unclear_or_extra,,,Black Pearl.jpg,,,siena-pearl,Siena Pearl,0.64
+unclear_or_extra,,,Cannons Grey.jpg,,,ash-grey,Ash Grey,0.70
+unclear_or_extra,,,Charcoal Quartz.jpg,,,charlotte,Charlotte,0.50
+unclear_or_extra,,,DSCF1137.jpg,,,toros-black,Toros Black,0.21
+unclear_or_extra,,,DSCF1140.jpg,,,toros-black,Toros Black,0.21
+unclear_or_extra,,,DSCF1156.jpg,,,toros-black,Toros Black,0.21
+unclear_or_extra,,,DSCF1163.jpg,,,toros-black,Toros Black,0.21
+unclear_or_extra,,,DSCF1166.jpg,,,toros-black,Toros Black,0.21
+unclear_or_extra,,,Dark Bluestone.jpg,,,tundra-blue,Tundra Blue,0.56
+unclear_or_extra,,,Electron Limestone.jpg,,,honey-limestone,Honey Limestone,0.73
+unclear_or_extra,,,Grey Limestone.jpg,,,honey-limestone,Honey Limestone,0.83
+unclear_or_extra,,,Grigio Storm.jpg,,,stormy-grey,Stormy Grey,0.43
+unclear_or_extra,,,Heath.jpg,,,hotham,Hotham,0.55
+unclear_or_extra,,,Kota Honey.jpg,,,tundra-grey,Tundra Grey,0.48
+unclear_or_extra,,,Light Bluestone.jpg,,,honey-limestone,Honey Limestone,0.53
+unclear_or_extra,,,Milkyway.jpg,,,beloka,Beloka,0.43
+unclear_or_extra,,,Monte Carlo .jpg,,,bianca-chiaro,Bianca Chiaro,0.50
+unclear_or_extra,,,SAI/Galala.jpg,,,angola-black,Angola Black,0.56
+unclear_or_extra,,,SAI/Sunny-Menia.jpg,,,honey-limestone,Honey Limestone,0.46
+unclear_or_extra,,,Sahara Beige.jpg,,,steal-blue,Steal Blue,0.45
+unclear_or_extra,,,Sahara.jpg,,,seagrass,Seagrass,0.57
+unclear_or_extra,,,Sea Shell.jpg,,,sesame-white,Sesame White,0.57
+unclear_or_extra,,,Tanabee.jpg,,,steal-blue,Steal Blue,0.47
+unclear_or_extra,,,Teakwood.jpg,,,barwon,Barwon,0.43
+unclear_or_extra,,,Tuscany Classic.jpg,,,toros-black,Toros Black,0.46
+unclear_or_extra,,,Tuscany White.jpg,,,nimbus-white,Nimbus White,0.64
+unclear_or_extra,,,Vintage Oyster.jpg,,,siena-grey,Siena Grey,0.50
+unclear_or_extra,,,White Sands.jpg,,,white-ochre-blend,White Ochre Blend,0.57
+unclear_or_extra,,,Windsor Grey.jpg,,,stormy-grey,Stormy Grey,0.70

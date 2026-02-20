@@ -83,6 +83,7 @@ export type ProductOverride = {
   toneTags?: string[];
   description?: string;
   imageUrl?: string;
+  imageUrls?: string[];
   homeownerSummary?: string;
   homeownerUseCases?: string[];
   professionalSummary?: string;

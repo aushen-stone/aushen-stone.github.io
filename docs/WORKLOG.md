@@ -1,8 +1,62 @@
 # Worklog - Aushen Web
 
-Last updated: 2026-02-10
+Last updated: 2026-02-20
 
 ## Completed and Landed
+
+### Product Photo Population Phase 1 (2026-02-20)
+- Scope implemented:
+  - delivered mapped-product image rollout from audit source:
+    - input: `docs/photo_audit_2026-02-17/photo_audit_all_in_one.csv` (`status=mapped` rows only)
+    - output web assets: `public/product-photos/*.webp`
+    - output mapping data: `src/data/product_images.generated.ts`
+    - output publish summary: `docs/photo_audit_2026-02-17/summary_after_publish.txt`
+  - added deterministic image-prep pipeline:
+    - new script `scripts/prepare-product-photos.py`
+    - conversion target: `max-side=1600`, `quality=80` (WEBP)
+    - naming: `/product-photos/{slug}-{index}.webp`
+    - ordering rule for multi-image products:
+      - `manual_confirmed_by_user` > `exact_name` > `name_alias` > `base_name_plus_variant` > `image_path` lexical
+  - extended product override contract for gallery support:
+    - `ProductOverride.imageUrls?: string[]` added
+    - `src/data/product_overrides.ts` now merges:
+      - generated image overrides (`imageUrl` + `imageUrls`)
+      - manual override layer (tone/copy/cta and optional image overrides)
+  - product UI behavior updates:
+    - `/products` card image source now uses:
+      - `override.imageUrls[0]` -> `override.imageUrl` -> placeholder
+    - `/products/[slug]` now supports detail-image carousel:
+      - arrows + dot navigation
+      - no autoplay
+      - placeholder fallback preserved
+- Files updated:
+  - `scripts/prepare-product-photos.py`
+  - `src/data/product_images.generated.ts`
+  - `src/data/product_overrides.ts`
+  - `src/types/product.ts`
+  - `src/app/products/page.tsx`
+  - `src/app/products/[slug]/ProductDetailClient.tsx`
+  - `public/product-photos/` (generated assets)
+  - `docs/photo_audit_2026-02-17/summary_after_publish.txt`
+  - `package.json`
+- Data/result snapshot:
+  - mapped rows processed: `63`
+  - generated web images: `63`
+  - covered product slugs: `54`
+  - missing source files during publish prep: `0`
+  - products without mapped image remain on placeholder (current known gap set from audit):
+    - `angola-black`
+    - `barwon`
+    - `classic-light-travertine-artmar`
+    - `jasper`
+    - `kakadu`
+    - `philadelphia-silver-travertine-cross-cut-tumbled`
+    - `roman`
+    - `turkish-carrara-aqua-blue`
+- Validation:
+  - `npm run lint`: pass (`0 errors, 20 warnings`)
+  - `npm run build`: pass
+  - `npm run build:pages`: pass
 
 ### Navbar Desktop Visibility Rebalance (2026-02-10)
 - Scope implemented:

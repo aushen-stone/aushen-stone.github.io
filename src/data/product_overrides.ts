@@ -1,3 +1,7 @@
+import {
+  PRODUCT_COVER_IMAGES,
+  PRODUCT_IMAGE_GALLERIES,
+} from "@/data/product_images.generated";
 import type { ProductOverride } from "@/types/product";
 
 export const DEFAULT_PRODUCT_IMAGE = "/Application001.webp";
@@ -23,7 +27,17 @@ export const DEFAULT_PROFESSIONAL_NOTES = [
   "Coordinate lead times for matching pieces across adjoining zones.",
 ];
 
-export const PRODUCT_OVERRIDES: Record<string, ProductOverride> = {
+const GENERATED_IMAGE_OVERRIDES: Record<string, ProductOverride> = Object.fromEntries(
+  Object.entries(PRODUCT_IMAGE_GALLERIES).map(([slug, imageUrls]) => [
+    slug,
+    {
+      imageUrl: PRODUCT_COVER_IMAGES[slug] || imageUrls[0],
+      imageUrls,
+    },
+  ])
+);
+
+const MANUAL_PRODUCT_OVERRIDES: Record<string, ProductOverride> = {
   // Example:
   // "blueocean": {
   //   toneTags: ["Medium", "Cool"],
@@ -31,3 +45,22 @@ export const PRODUCT_OVERRIDES: Record<string, ProductOverride> = {
   //   imageUrl: "/Application001.webp",
   // },
 };
+
+const buildProductOverrides = (): Record<string, ProductOverride> => {
+  const slugs = new Set([
+    ...Object.keys(GENERATED_IMAGE_OVERRIDES),
+    ...Object.keys(MANUAL_PRODUCT_OVERRIDES),
+  ]);
+  const result: Record<string, ProductOverride> = {};
+
+  slugs.forEach((slug) => {
+    result[slug] = {
+      ...(GENERATED_IMAGE_OVERRIDES[slug] || {}),
+      ...(MANUAL_PRODUCT_OVERRIDES[slug] || {}),
+    };
+  });
+
+  return result;
+};
+
+export const PRODUCT_OVERRIDES: Record<string, ProductOverride> = buildProductOverrides();

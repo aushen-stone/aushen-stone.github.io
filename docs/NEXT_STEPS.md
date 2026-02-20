@@ -1,6 +1,6 @@
 # Next Steps - Aushen Web
 
-Last updated: 2026-02-10
+Last updated: 2026-02-20
 
 ## Current Release Goal
 Stabilize post-P0 quality by finishing primary CTA behavior, reducing image/lint debt, replacing placeholder assets, hardening GitHub Pages static deployment reproducibility, and extending responsive hardening beyond the newly-fixed core five routes while keeping engineering gates reproducible in this environment.
@@ -57,6 +57,30 @@ No open P0 blockers.
   - `npm run lint`: pass (`0 errors, 20 warnings`)
   - `npm run build`: pass
 
+### Product Photo Population Phase 1 (Implemented 2026-02-20)
+- Delivered:
+  - mapped product images are now prepared and served as web assets:
+    - source audit: `docs/photo_audit_2026-02-17/photo_audit_all_in_one.csv` (`status=mapped` only)
+    - generated assets: `public/product-photos/*.webp`
+    - generated mapping source: `src/data/product_images.generated.ts`
+    - publish validation summary: `docs/photo_audit_2026-02-17/summary_after_publish.txt`
+  - image-prep automation added:
+    - `scripts/prepare-product-photos.py`
+    - quality profile: `max-side=1600`, `quality=80` (WEBP)
+    - deterministic multi-image ordering and `{slug}-{index}.webp` output naming
+  - product UI image behavior updated:
+    - `/products` uses cover fallback chain:
+      - `imageUrls[0]` -> `imageUrl` -> `/Application001.webp`
+    - `/products/[slug]` supports detail-only multi-image carousel (arrow + dot controls, no autoplay)
+  - override/type contract update:
+    - `ProductOverride.imageUrls?: string[]` introduced
+    - generated image overrides are merged with manual overrides in `src/data/product_overrides.ts`
+- Snapshot:
+  - mapped rows published: `63`
+  - product slugs with mapped images: `54`
+  - source-file misses during prep: `0`
+  - unresolved missing-image products (still placeholder): `8`
+
 ### 0) Harden GitHub Pages deployment baseline
 - Problem:
   - deployment now depends on static export contract (`output: "export"` + pre-generated dynamic route params).
@@ -103,11 +127,19 @@ No open P0 blockers.
 
 ### 3) Replace placeholder and mock visual assets on release-critical routes
 - Problem:
-  - default product image fallback (`/Application001.webp`) is heavily used.
-  - `src/data/product_overrides.ts` currently has no active product override entries.
+  - mapped product photos are now landed for 54 products, but 8 products still rely on `/Application001.webp`.
   - multiple routes still rely on generic Unsplash placeholders.
 - Action:
-  - prioritize real assets for `/products`, `/products/[slug]`, `/projects`, `/projects/[id]`, `/services`, `/about`, `/contact`.
+  - close remaining product-photo gaps for unresolved slugs:
+    - `angola-black`
+    - `barwon`
+    - `classic-light-travertine-artmar`
+    - `jasper`
+    - `kakadu`
+    - `philadelphia-silver-travertine-cross-cut-tumbled`
+    - `roman`
+    - `turkish-carrara-aqua-blue`
+  - continue placeholder replacement for `/projects`, `/projects/[id]`, `/services`, `/about`, `/contact`.
   - track unresolved placeholders in docs until replaced.
 - Definition of Done: release-critical pages no longer depend on obvious placeholder imagery.
 
