@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Instagram, Facebook, Linkedin, Twitter } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
+import { CONTACT_INFO } from "@/data/contact";
 
 export function Footer() {
 
@@ -36,10 +37,35 @@ export function Footer() {
             className="h-10 w-auto brightness-0 invert opacity-90"
           />
           <div className="text-sm leading-relaxed text-white/60 pt-2">
-            <p>123 Architectural Ave,</p>
-            <p>Melbourne, VIC 3000</p>
-            <p className="mt-4">+61 (03) 9000 0000</p>
-            <p>hello@aushen.com.au</p>
+            <a
+              href={CONTACT_INFO.mapDirectionsUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`Open directions to ${CONTACT_INFO.addressLabel}`}
+              className="inline-block rounded-sm hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
+            >
+              <span>{CONTACT_INFO.addressLine1}</span>
+              <br />
+              <span>{CONTACT_INFO.addressLine2}</span>
+            </a>
+            <p className="mt-4">
+              <a
+                href={CONTACT_INFO.phoneLink}
+                aria-label={`Call ${CONTACT_INFO.phoneDisplay}`}
+                className="rounded-sm hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
+              >
+                {CONTACT_INFO.phoneDisplay}
+              </a>
+            </p>
+            <p>
+              <a
+                href={`mailto:${CONTACT_INFO.email}`}
+                aria-label={`Email ${CONTACT_INFO.email}`}
+                className="rounded-sm hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
+              >
+                {CONTACT_INFO.email}
+              </a>
+            </p>
           </div>
         </motion.div>
 
@@ -74,7 +100,7 @@ export function Footer() {
             </li>
             <li>
               <a
-                href="mailto:hello@aushen.com.au?subject=Careers%20at%20Aushen"
+                href={CONTACT_INFO.careersMailto}
                 className="hover:text-white transition-colors block w-max"
               >
                 Careers

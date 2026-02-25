@@ -4,6 +4,47 @@ Last updated: 2026-02-25
 
 ## Completed and Landed
 
+### Task B Round 2 - Actionable Contact Links (2026-02-25)
+- Scope:
+  - converted contact-critical text fields into actionable links on Contact + Footer.
+  - introduced single-source contact constants to prevent value drift.
+  - kept social homepage links and legal on-request placeholders unchanged.
+- Behavior landed:
+  - address links now open Google Maps directions target.
+  - Contact map visual block is now clickable to the same directions target.
+  - phone links now use `tel:+61430799906` while displaying `0430 799 906`.
+  - email links now use `mailto:info@aushenstone.com.au`.
+  - careers mailto now reuses the same source-of-truth value.
+- Files updated:
+  - `src/data/contact.ts`
+  - `src/app/contact/page.tsx`
+  - `src/app/components/Footer.tsx`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+
+### Task B Round 1 - Contact Field Unification (2026-02-25)
+- Scope:
+  - unified contact-critical values across Footer + Contact surfaces.
+  - updated map destination and careers mailto target.
+  - intentionally did not change social homepage links or legal on-request placeholders in this round.
+- Final values landed:
+  - address: `16a/347 Bay Rd, Cheltenham VIC 3192`
+  - phone: `0430 799 906`
+  - email: `info@aushenstone.com.au`
+  - business hours: `Mon-Fri 8:30am-4:30pm`, `Sat 10:00am-3:00pm`, `Sun Closed`
+- Files updated:
+  - `src/app/contact/page.tsx`
+  - `src/app/components/Footer.tsx`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Remaining owner-input blockers:
+  - social profile destination URLs:
+    - `src/app/components/Footer.tsx` (`130`, `131`, `132`, `133`)
+  - legal policy published destinations:
+    - `src/app/components/Footer.tsx` (`84`, `87`)
+
 ### Task A Round 1 - In-Scope Image Replacement (2026-02-25)
 - Scope:
   - replaced placeholder visuals for in-scope Task A surfaces only:

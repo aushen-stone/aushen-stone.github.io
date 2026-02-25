@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Footer } from "@/app/components/Footer";
 import { MapPin, Phone, Clock, ArrowRight, Check } from "lucide-react";
 import { SAMPLE_CART_CONTACT_HANDOFF_KEY } from "@/types/cart";
+import { CONTACT_INFO } from "@/data/contact";
 
 // === 组件: 身份切换器 (The Identity Toggle) ===
 function IdentityToggle({ active, onChange }: { active: 'homeowner' | 'pro', onChange: (val: 'homeowner' | 'pro') => void }) {
@@ -102,18 +103,27 @@ export default function ContactPage() {
                       <MapPin size={18} />
                       <span className="text-xs font-bold uppercase tracking-widest">Showroom</span>
                    </div>
-                   <p className="font-serif text-xl text-gray-800 leading-relaxed">
-                     123 Architectural Avenue,<br/>
-                     Bayside, Melbourne VIC 3186
-                   </p>
-                   <a
-                     href="https://maps.google.com/?q=123+Architectural+Avenue,+Bayside,+Melbourne+VIC+3186"
-                     target="_blank"
-                     rel="noreferrer"
-                     className="inline-block mt-4 text-xs uppercase tracking-widest text-gray-400 border-b border-gray-300 pb-1 hover:text-[#1a1c18] hover:border-[#1a1c18] transition-all"
-                   >
-                      Get Directions
-                   </a>
+                   <div className="flex flex-col items-start gap-5">
+                     <a
+                       href={CONTACT_INFO.mapDirectionsUrl}
+                       target="_blank"
+                       rel="noreferrer"
+                       aria-label={`Open directions to ${CONTACT_INFO.addressLabel}`}
+                       className="inline-block font-serif text-xl text-gray-800 leading-relaxed hover:text-[#1a1c18] transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+                     >
+                       {CONTACT_INFO.addressLine1}<br/>
+                       {CONTACT_INFO.addressLine2}
+                     </a>
+                     <a
+                       href={CONTACT_INFO.mapDirectionsUrl}
+                       target="_blank"
+                       rel="noreferrer"
+                       aria-label={`Get directions to ${CONTACT_INFO.addressLabel}`}
+                       className="inline-flex items-center rounded-full border border-gray-300 px-4 py-2 text-[11px] uppercase tracking-[0.14em] text-gray-500 hover:text-[#1a1c18] hover:border-[#1a1c18] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+                     >
+                        Get Directions
+                     </a>
+                   </div>
                 </div>
 
                 <div>
@@ -122,9 +132,9 @@ export default function ContactPage() {
                       <span className="text-xs font-bold uppercase tracking-widest">Open Hours</span>
                    </div>
                    <p className="text-sm text-gray-600 leading-loose">
-                     Mon — Fri: 9:00am — 5:00pm<br/>
-                     Sat: 10:00am — 4:00pm<br/>
-                     Sun: By Appointment
+                     Mon - Fri: 8:30am - 4:30pm<br/>
+                     Sat: 10:00am - 3:00pm<br/>
+                     Sun: Closed
                    </p>
                 </div>
 
@@ -134,14 +144,33 @@ export default function ContactPage() {
                       <span className="text-xs font-bold uppercase tracking-widest">Contact</span>
                    </div>
                    <p className="text-sm text-gray-600 leading-loose">
-                     (03) 9555 1234<br/>
-                     hello@aushenstone.com.au
+                     <a
+                       href={CONTACT_INFO.phoneLink}
+                       className="hover:text-[#1a1c18] transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+                       aria-label={`Call ${CONTACT_INFO.phoneDisplay}`}
+                     >
+                       {CONTACT_INFO.phoneDisplay}
+                     </a>
+                     <br/>
+                     <a
+                       href={`mailto:${CONTACT_INFO.email}`}
+                       className="hover:text-[#1a1c18] transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+                       aria-label={`Email ${CONTACT_INFO.email}`}
+                     >
+                       {CONTACT_INFO.email}
+                     </a>
                    </p>
                 </div>
              </div>
 
              {/* The "Map" Visual (Stylized Abstract Block) */}
-             <div className="mt-16 w-full aspect-square bg-gray-200 grayscale opacity-80 overflow-hidden relative group cursor-pointer">
+             <a
+               href={CONTACT_INFO.mapDirectionsUrl}
+               target="_blank"
+               rel="noreferrer"
+               aria-label={`Open map directions to ${CONTACT_INFO.addressLabel}`}
+               className="mt-16 block w-full aspect-square bg-gray-200 grayscale opacity-80 overflow-hidden relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+             >
                 {/* Placeholder Map Image */}
                 <img 
                   src="/task-a-2026-02-24/contact-map-aerial.webp" 
@@ -154,7 +183,7 @@ export default function ContactPage() {
                       <ArrowRight size={20} className="text-[#1a1c18] group-hover:-rotate-45 transition-transform duration-300" />
                    </div>
                 </div>
-             </div>
+             </a>
           </div>
 
           {/* === RIGHT COLUMN: The Letter (Form) === */}

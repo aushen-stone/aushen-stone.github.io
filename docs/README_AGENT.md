@@ -26,12 +26,30 @@ Last updated: 2026-02-25
   - image optimization warnings (`@next/next/no-img-element`)
   - CTA behavior completion outside P0-critical paths
   - non-project/non-product placeholder visual inventory replacement (Task A in `NEXT_STEPS`)
-  - contact-critical value inconsistency across Footer/Contact + map/social destination cleanup (Task B in `NEXT_STEPS`)
+  - contact-critical follow-ups: real social-profile destinations + published legal-policy links (Task B in `NEXT_STEPS`)
   - automated e2e coverage
   - temporary `legacy-peer-deps` fallback for `npm ci` (React 19 + `@studio-freight/react-lenis` peer declaration mismatch)
   - content maintenance still depends on engineering workflow (CSV + code changes + deploy)
 
 ## What Changed Last
+- Task B round 2 actionable contact links landed (2026-02-25):
+  - introduced single-source contact constants in `src/data/contact.ts`.
+  - Contact + Footer address/phone/email are now actionable links:
+    - address -> Google Maps directions
+    - phone -> `tel:+61430799906`
+    - email -> `mailto:info@aushenstone.com.au`
+  - Contact map visual is now clickable and routes to the same directions target.
+  - careers `mailto` now reuses the same contact source-of-truth.
+  - intentionally kept social homepage links and legal on-request placeholders unchanged.
+- Task B round 1 contact unification landed (2026-02-25):
+  - unified contact-critical values across Footer and Contact:
+    - address: `16a/347 Bay Rd, Cheltenham VIC 3192`
+    - phone: `0430 799 906`
+    - email: `info@aushenstone.com.au`
+    - business hours: `Mon-Fri 8:30am-4:30pm`, `Sat 10:00am-3:00pm`, `Sun Closed`
+  - updated Contact map link to the same address target.
+  - updated Footer careers mailto destination to `info@aushenstone.com.au`.
+  - intentionally kept social homepage links and legal on-request placeholders unchanged pending owner-provided destinations.
 - Task A round 1 image replacement landed (2026-02-25):
   - replaced `9` in-scope placeholders on `/services`, `/about`, and `/contact` using local assets in `public/task-a-2026-02-24/`.
   - deferred `5` placeholder slots remain tracked in `NEXT_STEPS` (`Navbar`, `BestSellers`, `ServicesSection`).

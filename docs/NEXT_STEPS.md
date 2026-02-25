@@ -158,28 +158,38 @@ No open P0 blockers.
 
 ### 4) Task B - Unify contact-critical information (address/phone/email/hours/map/social)
 - Problem:
-  - contact-critical values are inconsistent or unconfirmed across Footer and Contact sections.
-  - map and social links currently include placeholder-style targets.
+  - contact-critical values were inconsistent across Footer and Contact sections; core fields are now unified.
+  - social links and legal-policy destinations still lack business-owned final targets.
 - Scope:
   - fields: address, phone, email, business hours, map link, social profile links.
   - coverage: all in-scope route/component surfaces where these values appear.
 - Current inconsistency inventory (inputs):
-  - Footer vs Contact mismatches:
-    - `src/app/components/Footer.tsx` (`39`, `41`, `42`)
-    - `src/app/contact/page.tsx` (`106`, `137`, `138`)
-  - map link/map visual placeholders:
-    - `src/app/contact/page.tsx` (`110`, `147`)
-  - social links currently pointing to platform homepages:
-    - `src/app/components/Footer.tsx` (`130`, `131`, `132`, `133`)
-  - business hours currently present only in Contact:
-    - `src/app/contact/page.tsx` (`125`)
+  - Resolved (2026-02-25):
+    - unified contact-critical values across Footer + Contact:
+      - address: `16a/347 Bay Rd, Cheltenham VIC 3192`
+      - phone: `0430 799 906`
+      - email: `info@aushenstone.com.au`
+      - business hours: `Mon-Fri 8:30am-4:30pm`, `Sat 10:00am-3:00pm`, `Sun Closed`
+    - actionable contact links landed across Contact + Footer:
+      - address links use Google Maps directions URL
+      - phone links use `tel:+61430799906`
+      - email links use `mailto:info@aushenstone.com.au`
+    - map link/map visual and careers mailto aligned to the same contact source:
+      - `src/app/contact/page.tsx` (`110`, `146`)
+      - `src/app/components/Footer.tsx` (`77`)
+  - Remaining (owner input required):
+    - social links currently pointing to platform homepages:
+      - `src/app/components/Footer.tsx` (`130`, `131`, `132`, `133`)
+    - legal policy pages still shown as request-only placeholders:
+      - `src/app/components/Footer.tsx` (`84`, `87`)
 - Action:
-  - define a single source-of-truth for contact-critical values and map each value to every display slot.
-  - resolve conflicts (`Footer` vs `Contact`) and standardize formatting.
-  - replace placeholder map/social targets with real destination links.
+  - maintain the unified source-of-truth values now landed in Footer + Contact.
+  - collect business-owned social profile URLs and replace platform-homepage placeholders.
+  - collect final privacy-policy and terms destinations, then replace request-only placeholders.
 - Definition of Done:
   - address/phone/email/hours are consistent and verified across all in-scope surfaces.
   - map and social links resolve to real business destinations.
+  - privacy-policy and terms links resolve to published destinations.
   - any unresolved value is explicitly documented with blocker owner/status.
 
 ### 5) Consolidate responsive QA baseline
