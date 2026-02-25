@@ -1,6 +1,6 @@
 # README_AGENT - Single Entry for All Agents
 
-Last updated: 2026-02-10
+Last updated: 2026-02-25
 
 ## Current Objective
 - Maintain a single-entry, low-overhead handoff workflow.
@@ -8,7 +8,8 @@ Last updated: 2026-02-10
 - P0 closure is complete; prioritize P1 quality scope:
   - primary CTA actionability
   - image/lint warning reduction
-  - placeholder asset replacement on release-critical routes
+  - Task A: placeholder visual cleanup on non-Project/Product routes/components (`/`, `/services`, `/about`, `/contact`)
+  - Task B: contact-critical information unification (address/phone/email/hours/map/social)
   - GitHub Pages deployment reproducibility and dependency-compat cleanup
   - responsive QA evidence + automation follow-up after full-route squeeze hardening
 - Maintain a P2 lightweight-admin roadmap for non-engineering content updates (docs-only at this stage).
@@ -24,12 +25,22 @@ Last updated: 2026-02-10
 - Known non-blocking debt:
   - image optimization warnings (`@next/next/no-img-element`)
   - CTA behavior completion outside P0-critical paths
-  - placeholder/mock visual asset replacement
+  - non-project/non-product placeholder visual inventory replacement (Task A in `NEXT_STEPS`)
+  - contact-critical value inconsistency across Footer/Contact + map/social destination cleanup (Task B in `NEXT_STEPS`)
   - automated e2e coverage
   - temporary `legacy-peer-deps` fallback for `npm ci` (React 19 + `@studio-freight/react-lenis` peer declaration mismatch)
   - content maintenance still depends on engineering workflow (CSV + code changes + deploy)
 
 ## What Changed Last
+- Task A round 1 image replacement landed (2026-02-25):
+  - replaced `9` in-scope placeholders on `/services`, `/about`, and `/contact` using local assets in `public/task-a-2026-02-24/`.
+  - deferred `5` placeholder slots remain tracked in `NEXT_STEPS` (`Navbar`, `BestSellers`, `ServicesSection`).
+  - temporary policy applied this round: source images were published without watermark cleanup.
+- Docs convergence finalized (2026-02-23):
+  - placeholder and information-cleanup work in `NEXT_STEPS` is now consolidated into two explicit tasks:
+    - Task A: non-Project/Product placeholder visuals.
+    - Task B: contact-critical information unification.
+  - all other roadmap items remain in place; this change is docs-only.
 - Navbar desktop visibility rebalance finalized (2026-02-10):
   - desktop nav now appears from `1024px` (`lg`) instead of waiting for ultra-wide screens.
   - `1024-1535` uses deterministic two-row split navigation (`2+2`), and `>=1536` returns to single-row desktop nav.

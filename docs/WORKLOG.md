@@ -1,8 +1,70 @@
 # Worklog - Aushen Web
 
-Last updated: 2026-02-20
+Last updated: 2026-02-25
 
 ## Completed and Landed
+
+### Task A Round 1 - In-Scope Image Replacement (2026-02-25)
+- Scope:
+  - replaced placeholder visuals for in-scope Task A surfaces only:
+    - `/services`, `/about`, `/contact`
+  - intentionally not touched in this round:
+    - `/projects`, `/projects/[id]`, `/products`, `/products/[slug]`
+    - deferred shared placeholders in `Navbar`, `BestSellers`, `ServicesSection`
+- Source and outputs:
+  - source set provided by user:
+    - `/Users/lee/Downloads/aushen-web-photo/{SVC-01..04,ABT-01..04,CNT-01}.png`
+  - generated web assets:
+    - `public/task-a-2026-02-24/svc-profiling.webp`
+    - `public/task-a-2026-02-24/svc-curved.webp`
+    - `public/task-a-2026-02-24/svc-bespoke.webp`
+    - `public/task-a-2026-02-24/svc-consultation.webp`
+    - `public/task-a-2026-02-24/about-hero-quarry.webp`
+    - `public/task-a-2026-02-24/about-origin-sourcing.webp`
+    - `public/task-a-2026-02-24/about-standard-qc.webp`
+    - `public/task-a-2026-02-24/about-place-showroom.webp`
+    - `public/task-a-2026-02-24/contact-map-aerial.webp`
+  - crop ratios used:
+    - services core: `3:2`
+    - services consultation: `4:3`
+    - about story images: `4:5`
+    - contact map visual: `1:1`
+- Files updated:
+  - `src/app/services/page.tsx`
+  - `src/app/about/page.tsx`
+  - `src/app/contact/page.tsx`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+- Result snapshot:
+  - replaced slots this round: `9`
+  - remaining placeholder slots tracked for next pass: `5`
+    - `src/app/components/Navbar.tsx` (`443`)
+    - `src/app/components/BestSellers.tsx` (`15`, `21`, `27`)
+    - `src/app/components/ServicesSection.tsx` (`13`)
+- Policy note:
+  - user-approved temporary policy was applied: source images were published without watermark cleanup in this round.
+
+### Docs Convergence - Placeholder Visuals + Contact-Critical Information (2026-02-23)
+- Scope:
+  - documentation alignment only (`docs/NEXT_STEPS.md`, `docs/README_AGENT.md`, `docs/WORKLOG.md`).
+  - no runtime/frontend/backend implementation changes in this pass.
+- Why this convergence:
+  - placeholder-asset cleanup tasks were previously mixed with wider release-critical scope.
+  - contact-critical information cleanup (address/phone/email/hours/map/social) was not represented as a dedicated execution task.
+- Changes applied:
+  - `NEXT_STEPS` placeholder-related work is now consolidated into two explicit tasks while keeping other tasks unchanged:
+    - Task A: non-Project/Product placeholder visual cleanup.
+    - Task B: contact-critical information unification.
+  - Task boundaries are now explicit:
+    - include: `/`, `/services`, `/about`, `/contact` and shared components used by those routes.
+    - exclude: `/projects`, `/projects/[id]`, `/products`, `/products/[slug]`.
+  - `README_AGENT` objective/debt sections were updated to mirror these two tasks exactly.
+- Files updated:
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Behavior/contract impact:
+  - none (docs-only restructuring).
 
 ### Product Photo Population Phase 1 (2026-02-20)
 - Scope implemented:

@@ -46,7 +46,7 @@ function EditorialHero() {
            className="w-full h-full overflow-hidden shadow-2xl relative"
          >
             <img
-              src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1600&auto=format&fit=crop"
+              src="/task-a-2026-02-24/about-hero-quarry.webp"
               alt="Raw Nature"
               className="w-full h-full object-cover"
             />
@@ -90,21 +90,21 @@ function TimelineSection() {
       year: "The Origin",
       title: "Global Sourcing",
       desc: "It started with a trip to Europe's ancient quarries. We realized that true quality can't be ordered from a catalog; it must be touched.",
-      image: "https://images.unsplash.com/photo-1461360370896-922624d12aa1?q=80&w=800&auto=format&fit=crop",
+      image: "/task-a-2026-02-24/about-origin-sourcing.webp",
       align: "left"
     },
     {
       year: "The Standard",
       title: "The 10% Rule",
       desc: "We established our strict selection criteria early on. Consistency in tone, durability in texture. If we wouldn't use it, we don't sell it.",
-      image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop", // 岩石纹理
+      image: "/task-a-2026-02-24/about-standard-qc.webp", // 岩石纹理
       align: "right"
     },
     {
       year: "The Place",
       title: "Bayside Roots",
       desc: "We planted our roots in Melbourne's Bayside. A showroom built not to display products, but to spark conversations.",
-      image: "https://images.unsplash.com/photo-1631679706909-1e44ddd2a96b?q=80&w=800&auto=format&fit=crop", // 展厅
+      image: "/task-a-2026-02-24/about-place-showroom.webp", // 展厅
       align: "left"
     }
   ];

@@ -12,21 +12,21 @@ const FABRICATION_SERVICES = [
     title: "Edge Profiling",
     description: "From classic pencil rounds to complex drop-face coping. We shape the stone to fit your design language, ensuring every edge is smooth, safe, and aesthetically perfect.",
     features: ["Bullnose & Pencil Edge", "Drop Face Coping", "Mitred Aprons"],
-    image: "https://images.unsplash.com/photo-1620626012053-93f2685048d6?q=80&w=1200&auto=format&fit=crop"
+    image: "/task-a-2026-02-24/svc-profiling.webp"
   },
   {
     id: "curved",
     title: "Curved Cutting",
     description: "Standard pavers don't fit curved pools. Our specialized waterjet and bridge saw technology allows us to cut precise radii, creating a seamless flow for organic shapes.",
     features: ["Radius Cutting", "Template Matching", "Zero-tolerance Fit"],
-    image: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=1200&auto=format&fit=crop"
+    image: "/task-a-2026-02-24/svc-curved.webp"
   },
   {
     id: "bespoke",
     title: "Bespoke Custom",
     description: "Need a hole for a light fixture? A specific drain cutout? Or a custom-engraved piece? We handle all technical modifications in-house to save you time on site.",
     features: ["Core Drilling", "Skimmer Box Lids", "Custom Grates"],
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop"
+    image: "/task-a-2026-02-24/svc-bespoke.webp"
   }
 ];
 
@@ -198,7 +198,7 @@ export default function ServicesPage() {
             <div className="lg:col-span-7 relative -mt-24 md:-mt-48 z-20">
               <div className="relative aspect-[4/3] bg-gray-200 overflow-hidden shadow-2xl">
                  <img
-                   src="https://images.unsplash.com/photo-1596178060671-7a80dc8059ea?q=80&w=1600&auto=format&fit=crop"
+                   src="/task-a-2026-02-24/svc-consultation.webp"
                    alt="Showroom Consultation"
                    className="w-full h-full object-cover"
                  />

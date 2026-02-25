@@ -144,7 +144,7 @@ export default function ContactPage() {
              <div className="mt-16 w-full aspect-square bg-gray-200 grayscale opacity-80 overflow-hidden relative group cursor-pointer">
                 {/* Placeholder Map Image */}
                 <img 
-                  src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=800&auto=format&fit=crop" 
+                  src="/task-a-2026-02-24/contact-map-aerial.webp" 
                   alt="Map Location" 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                 />

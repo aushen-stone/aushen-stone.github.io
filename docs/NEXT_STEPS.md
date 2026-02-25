@@ -1,9 +1,9 @@
 # Next Steps - Aushen Web
 
-Last updated: 2026-02-20
+Last updated: 2026-02-25
 
 ## Current Release Goal
-Stabilize post-P0 quality by finishing primary CTA behavior, reducing image/lint debt, replacing placeholder assets, hardening GitHub Pages static deployment reproducibility, and extending responsive hardening beyond the newly-fixed core five routes while keeping engineering gates reproducible in this environment.
+Stabilize post-P0 quality by finishing primary CTA behavior, reducing image/lint debt, clearing non-project/non-product placeholder visuals, unifying contact-critical information, hardening GitHub Pages static deployment reproducibility, and extending responsive hardening beyond the newly-fixed core five routes while keeping engineering gates reproducible in this environment.
 
 ## P0 (Release Blockers)
 No open P0 blockers.
@@ -125,25 +125,64 @@ No open P0 blockers.
 - Action: migrate high-impact visual assets from `<img>` to `next/image`, then configure image host policy in `next.config.ts`.
 - Definition of Done: warnings are cleared or explicitly documented with rationale.
 
-### 3) Replace placeholder and mock visual assets on release-critical routes
+### 3) Task A - Clear placeholder visuals on non-Project/Product surfaces
 - Problem:
-  - mapped product photos are now landed for 54 products, but 8 products still rely on `/Application001.webp`.
-  - multiple routes still rely on generic Unsplash placeholders.
+  - multiple non-project/non-product routes still rely on obvious placeholders (mainly Unsplash sources and explicit placeholder map visual).
+- Scope:
+  - include: `/`, `/services`, `/about`, `/contact` and shared components rendered on these routes.
+  - exclude: `/projects`, `/projects/[id]`, `/products`, `/products/[slug]`.
+- Current placeholder inventory (inputs):
+  - `src/app/services/page.tsx` (line-level image slots around `15`, `22`, `29`, `201`)
+  - `src/app/about/page.tsx` (line-level image slots around `49`, `93`, `100`, `107`)
+  - `src/app/contact/page.tsx` (placeholder map block around `145`, `147`)
+  - `src/app/components/Navbar.tsx` (mega-menu feature image around `443`)
+  - `src/app/components/BestSellers.tsx` (product card images around `15`, `21`, `27`)
+  - `src/app/components/ServicesSection.tsx` (service image around `13`)
 - Action:
-  - close remaining product-photo gaps for unresolved slugs:
-    - `angola-black`
-    - `barwon`
-    - `classic-light-travertine-artmar`
-    - `jasper`
-    - `kakadu`
-    - `philadelphia-silver-travertine-cross-cut-tumbled`
-    - `roman`
-    - `turkish-carrara-aqua-blue`
-  - continue placeholder replacement for `/projects`, `/projects/[id]`, `/services`, `/about`, `/contact`.
-  - track unresolved placeholders in docs until replaced.
-- Definition of Done: release-critical pages no longer depend on obvious placeholder imagery.
+  - build and maintain a replacement tracker per image slot (`source file + slot + target asset + status`).
+  - track status using `Replaced / Waiting for Asset / Blocked`.
+  - keep unresolved slots visible in docs until closed.
+- Current progress (2026-02-25):
+  - Replaced `9` in-scope slots with local assets under `public/task-a-2026-02-24/`:
+    - `src/app/services/page.tsx` (`15`, `22`, `29`, `201`)
+    - `src/app/about/page.tsx` (`49`, `93`, `100`, `107`)
+    - `src/app/contact/page.tsx` (`147`)
+  - Remaining placeholder slots (`5`, intentionally deferred this round):
+    - `src/app/components/Navbar.tsx` (`443`)
+    - `src/app/components/BestSellers.tsx` (`15`, `21`, `27`)
+    - `src/app/components/ServicesSection.tsx` (`13`)
+  - Temporary policy for this round: provided source images are published as-is (including visible watermark marks) and queued for a later clean-asset pass.
+- Definition of Done:
+  - in-scope routes/components no longer depend on obvious placeholder imagery (`images.unsplash.com` or explicit placeholder markers).
+  - tracker status is fully up to date for all in-scope slots.
 
-### 4) Consolidate responsive QA baseline
+### 4) Task B - Unify contact-critical information (address/phone/email/hours/map/social)
+- Problem:
+  - contact-critical values are inconsistent or unconfirmed across Footer and Contact sections.
+  - map and social links currently include placeholder-style targets.
+- Scope:
+  - fields: address, phone, email, business hours, map link, social profile links.
+  - coverage: all in-scope route/component surfaces where these values appear.
+- Current inconsistency inventory (inputs):
+  - Footer vs Contact mismatches:
+    - `src/app/components/Footer.tsx` (`39`, `41`, `42`)
+    - `src/app/contact/page.tsx` (`106`, `137`, `138`)
+  - map link/map visual placeholders:
+    - `src/app/contact/page.tsx` (`110`, `147`)
+  - social links currently pointing to platform homepages:
+    - `src/app/components/Footer.tsx` (`130`, `131`, `132`, `133`)
+  - business hours currently present only in Contact:
+    - `src/app/contact/page.tsx` (`125`)
+- Action:
+  - define a single source-of-truth for contact-critical values and map each value to every display slot.
+  - resolve conflicts (`Footer` vs `Contact`) and standardize formatting.
+  - replace placeholder map/social targets with real destination links.
+- Definition of Done:
+  - address/phone/email/hours are consistent and verified across all in-scope surfaces.
+  - map and social links resolve to real business destinations.
+  - any unresolved value is explicitly documented with blocker owner/status.
+
+### 5) Consolidate responsive QA baseline
 - Problem: route-level squeeze fixes are now broadly landed, but visual evidence and automated regression coverage are still incomplete.
 - Implemented now:
   - responsive baseline variables + low-height rule (`max-height: 430px`) in `src/app/globals.css`
@@ -178,7 +217,7 @@ No open P0 blockers.
   - 320/360/390/768/1024 checks plus horizontal low-height checks (`height <= 430px`) show no horizontal overflow and no sticky overlap regressions across release routes.
   - static-risk items are either confirmed or closed.
 
-### 5) Add Playwright responsive smoke regression (deferred to next cycle)
+### 6) Add Playwright responsive smoke regression (deferred to next cycle)
 - Problem: responsive squeeze fixes are code-complete, but regression protection still relies on manual checks.
 - Scope (routes):
   - `/`
@@ -360,6 +399,8 @@ No open P0 blockers.
 18. Merged content PR updates production display fields.
 19. GitHub conflict on stale base SHA returns refresh/retry instruction.
 20. Rollback path works via GitHub revert PR.
+21. In-scope non-project/non-product routes/components (`/`, `/services`, `/about`, `/contact`) do not reference obvious placeholder imagery (`images.unsplash.com` or explicit placeholder markers).
+22. Contact-critical values (address/phone/email/hours/map/social) are consistent between Footer and Contact surfaces and resolve to real business destinations.
 
 ## Assumptions and Defaults
 1. No payment, pricing, inventory, or order lifecycle in current phase.
@@ -372,10 +413,14 @@ No open P0 blockers.
 8. Product structure source-of-truth remains CSV + generation pipeline in admin v1.
 9. Deployment target is root-path GitHub Pages (`aushen-stone.github.io`) unless explicitly reconfigured.
 10. Current CI compatibility uses `legacy-peer-deps` as a temporary workaround.
+11. Placeholder-visual cleanup scope in this cycle excludes `/projects`, `/projects/[id]`, `/products`, and `/products/[slug]`.
+12. Contact-critical information scope in this cycle is limited to address/phone/email/hours/map/social (CTA semantics are out of scope here).
 
 ## Exit Criteria
 - P0 blockers (`UI-NAV-001`, `CART-SAMPLE-001`) are closed.
 - Primary CTAs are actionable, or explicitly marked unavailable with clear copy.
+- In-scope non-project/non-product routes/components (`/`, `/services`, `/about`, `/contact`) no longer depend on obvious placeholder imagery.
+- Contact-critical values are unified across display surfaces (Footer/Contact), and map/social links point to real destinations.
 - `npm run build` passes.
 - `npx tsc --noEmit` passes after build (required for `.next/types` presence).
 - `npm run lint` reports no errors (warnings are tracked until resolved).
