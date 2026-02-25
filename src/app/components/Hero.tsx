@@ -35,7 +35,7 @@ export function Hero() {
       </motion.div>
 
       {/* 2. 内容层 */}
-      <div className="relative z-10 h-full max-w-[1920px] mx-auto page-padding-x py-16 sm:py-20 md:py-24 flex flex-col justify-center">
+      <div className="relative z-10 h-full max-w-[1920px] mx-auto page-padding-x pt-[calc(var(--nav-h-expanded)+var(--nav-logo-h-transparent)+env(safe-area-inset-top)+1rem)] pb-16 sm:pt-[calc(var(--nav-h-expanded)+var(--nav-logo-h-transparent)+env(safe-area-inset-top)+1.25rem)] sm:pb-20 md:pt-[calc(var(--nav-h-expanded)+var(--nav-logo-h-transparent)+env(safe-area-inset-top)+1.5rem)] md:pb-24 lg:pt-24 lg:pb-24 flex flex-col justify-start lg:justify-center">
 
         {/* 标题区域 */}
         <div className="max-w-2xl">
