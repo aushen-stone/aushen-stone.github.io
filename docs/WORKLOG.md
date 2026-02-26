@@ -4,6 +4,32 @@ Last updated: 2026-02-26
 
 ## Completed and Landed
 
+### Sample Cart Ask-for-Sample Autofill Completion (首尾, 2026-02-26)
+- 首:
+  - cart-to-contact handoff prefill was partial: content existed, but lifecycle was fragile.
+  - prefill message was generic and first-read consumed session value immediately, creating refresh/re-entry inconsistency.
+- 尾:
+  - `Ask for sample` prefill now uses a fixed polite template:
+    - `Can I please get ...`
+    - numbered sample list
+    - project suburb/timing/contact-time placeholders
+  - prefill lifecycle is now explicit:
+    - no remove on first read
+    - refresh-safe before submit
+    - clear only after successful submit for `source=sample-cart`
+  - fallback autofill now uses current sample-cart lines when needed, and avoids overriding user-edited message content.
+  - prefill-cleared marker key is introduced to prevent stale prefill resurfacing after successful submit.
+- Files updated:
+  - `src/app/components/cart/SampleCartProvider.tsx`
+  - `src/app/contact/ContactPageClient.tsx`
+  - `src/app/cart/CartPageClient.tsx`
+  - `src/types/cart.ts`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npx eslint src/app/components/cart/SampleCartProvider.tsx src/app/cart/CartPageClient.tsx src/app/contact/ContactPageClient.tsx src/types/cart.ts`: pass (`0 errors, 1 warning`)
+
 ### Homepage Best Sellers Real Product Wiring (首尾, 2026-02-26)
 - 首:
   - homepage `Best sellers` section was still using three fake cards (Unsplash images + non-catalog names/prices).

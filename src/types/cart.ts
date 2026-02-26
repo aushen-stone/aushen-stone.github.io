@@ -4,6 +4,8 @@ export const MAX_SAMPLE_LINES = 10;
 export const SAMPLE_CART_STORAGE_KEY = "aushen_sample_cart_v1";
 export const SAMPLE_CART_CONTACT_HANDOFF_KEY =
   "aushen_sample_cart_contact_prefill_v1";
+export const SAMPLE_CART_CONTACT_PREFILL_CLEARED_KEY =
+  "aushen_sample_cart_contact_prefill_cleared_v1";
 
 export type SampleCartLine = {
   productSlug: string;

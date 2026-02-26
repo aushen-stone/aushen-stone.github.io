@@ -66,6 +66,8 @@ Launch `aushenstone.com.au` quickly on the current Next.js static site while pro
 - Submit action:
   - `Ask for sample` is initiated only from cart.
   - cart -> `/contact` handoff pre-fills message field only.
+  - prefill template uses polite request copy with numbered sample lines and follow-up placeholders.
+  - prefill content persists across refresh and is cleared only after successful contact submit.
 - Explicitly out of scope for v1:
   - direct add from `/products` list page.
   - any payment/checkout flow.
@@ -349,6 +351,8 @@ Launch `aushenstone.com.au` quickly on the current Next.js static site while pro
 
 ### Client Storage Contract
 - Storage key: `aushen_sample_cart_v1`
+- Prefill handoff key: `aushen_sample_cart_contact_prefill_v1`
+- Prefill-cleared marker key: `aushen_sample_cart_contact_prefill_cleared_v1`
 - Item shape:
   - `productSlug`
   - `productName`
@@ -456,6 +460,10 @@ Launch `aushenstone.com.au` quickly on the current Next.js static site while pro
 20. Rollback path works via GitHub revert PR.
 21. In-scope non-project/non-product routes/components (`/`, `/services`, `/about`, `/contact`) do not reference obvious placeholder imagery (`images.unsplash.com` or explicit placeholder markers).
 22. Contact-critical values (address/phone/email/hours/map/social) are consistent between Footer and Contact surfaces and resolve to real business destinations.
+23. For `source=sample-cart`, message prefill uses polite request template and correct numbered sample list.
+24. Contact page refresh keeps sample-cart prefill intact before successful submit.
+25. Manual edits to message are never overwritten by fallback prefill logic.
+26. After successful submit from `source=sample-cart`, prefill storage is cleared and stale prefill does not reappear by direct reload.
 
 ## Assumptions and Defaults
 1. No payment, pricing, inventory, or order lifecycle in current phase.

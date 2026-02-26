@@ -139,6 +139,7 @@ export function SampleCartProvider({ children }: { children: React.ReactNode }) 
 
   const buildContactPrefillMessage = useCallback(() => {
     if (linesRef.current.length === 0) return "";
+    const sampleLabel = linesRef.current.length === 1 ? "a sample" : "samples";
 
     const rows = linesRef.current
       .map(
@@ -150,8 +151,12 @@ export function SampleCartProvider({ children }: { children: React.ReactNode }) 
     return [
       "Hi Aushen team,",
       "",
-      "I'd like to request the following samples:",
+      `Can I please get ${sampleLabel} for the following:`,
       rows,
+      "",
+      "Project suburb/address:",
+      "Preferred delivery or consultation timing:",
+      "Best contact time:",
       "",
       "Thank you.",
     ].join("\n");

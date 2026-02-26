@@ -43,6 +43,11 @@ Last updated: 2026-02-26
   - content maintenance still depends on engineering workflow (CSV + code changes + deploy)
 
 ## What Changed Last
+- Sample-cart prefill lifecycle and template were completed (2026-02-26):
+  - `Ask for sample` handoff message now uses polite request copy with numbered sample lines and context placeholders.
+  - contact prefill is no longer removed on first read, and is now refresh-safe before submit.
+  - prefill storage is cleared only after successful submit for `source=sample-cart`.
+  - fallback prefill from sample-cart lines is enabled when handoff key is missing, without overriding user-edited message.
 - Homepage best-seller cards now use real products (2026-02-26):
   - `src/app/components/BestSellers.tsx` no longer uses fake Unsplash cards.
   - cards are now sourced from real generated product data + mapped product images and link to product detail routes.

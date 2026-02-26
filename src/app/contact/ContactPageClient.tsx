@@ -1,9 +1,13 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Footer } from "@/app/components/Footer";
 import { MapPin, Phone, Clock, ArrowRight, Check } from "lucide-react";
-import { SAMPLE_CART_CONTACT_HANDOFF_KEY } from "@/types/cart";
+import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
+import {
+  SAMPLE_CART_CONTACT_HANDOFF_KEY,
+  SAMPLE_CART_CONTACT_PREFILL_CLEARED_KEY,
+} from "@/types/cart";
 import { CONTACT_INFO } from "@/data/contact";
 
 type UserType = "homeowner" | "pro";
@@ -25,6 +29,50 @@ type SubmitState =
 
 const CONTACT_API_URL = process.env.NEXT_PUBLIC_CONTACT_API_URL?.trim() ?? "";
 
+function readSampleCartPrefill(): string {
+  if (typeof window === "undefined") return "";
+
+  try {
+    return window.sessionStorage.getItem(SAMPLE_CART_CONTACT_HANDOFF_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+
+function isSampleCartPrefillCleared(): boolean {
+  if (typeof window === "undefined") return false;
+
+  try {
+    return (
+      window.sessionStorage.getItem(SAMPLE_CART_CONTACT_PREFILL_CLEARED_KEY) === "1"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function persistSampleCartPrefill(message: string): void {
+  if (typeof window === "undefined" || !message.trim()) return;
+
+  try {
+    window.sessionStorage.setItem(SAMPLE_CART_CONTACT_HANDOFF_KEY, message);
+    window.sessionStorage.removeItem(SAMPLE_CART_CONTACT_PREFILL_CLEARED_KEY);
+  } catch {
+    // Ignore storage failures and continue without persistence.
+  }
+}
+
+function clearSampleCartPrefill(): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.sessionStorage.removeItem(SAMPLE_CART_CONTACT_HANDOFF_KEY);
+    window.sessionStorage.setItem(SAMPLE_CART_CONTACT_PREFILL_CLEARED_KEY, "1");
+  } catch {
+    // Ignore storage failures and continue.
+  }
+}
+
 function getInitialMessageAndSource() {
   if (typeof window === "undefined") {
     return { message: "", source: "website-contact" };
@@ -35,16 +83,9 @@ function getInitialMessageAndSource() {
     return { message: "", source: "website-contact" };
   }
 
-  try {
-    const prefillMessage = window.sessionStorage.getItem(
-      SAMPLE_CART_CONTACT_HANDOFF_KEY
-    );
-    if (prefillMessage) {
-      window.sessionStorage.removeItem(SAMPLE_CART_CONTACT_HANDOFF_KEY);
-      return { message: prefillMessage, source: "sample-cart" };
-    }
-  } catch {
-    // Ignore sessionStorage failures and keep default message state.
+  const prefillMessage = readSampleCartPrefill();
+  if (prefillMessage) {
+    return { message: prefillMessage, source: "sample-cart" };
   }
 
   return { message: "", source: "sample-cart" };
@@ -150,12 +191,14 @@ function InputField({
 }
 
 export default function ContactPage() {
+  const { buildContactPrefillMessage } = useSampleCart();
   const [userType, setUserType] = useState<UserType>("homeowner");
   const [submitState, setSubmitState] = useState<SubmitState>({
     kind: "idle",
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isMessageTouched, setIsMessageTouched] = useState(false);
   const [formState, setFormState] = useState<ContactFormState>(() => {
     const { message, source } = getInitialMessageAndSource();
     return {
@@ -169,9 +212,43 @@ export default function ContactPage() {
     };
   });
 
+  useEffect(() => {
+    if (formState.source !== "sample-cart") return;
+    if (formState.message.trim().length > 0) return;
+    if (isMessageTouched) return;
+    if (isSampleCartPrefillCleared()) return;
+
+    const sessionPrefill = readSampleCartPrefill();
+    const fallbackMessage = sessionPrefill || buildContactPrefillMessage();
+    if (!fallbackMessage.trim()) return;
+
+    setFormState((prev) => {
+      if (
+        prev.source !== "sample-cart" ||
+        prev.message.trim().length > 0 ||
+        isMessageTouched
+      ) {
+        return prev;
+      }
+      return { ...prev, message: fallbackMessage };
+    });
+
+    if (!sessionPrefill) {
+      persistSampleCartPrefill(fallbackMessage);
+    }
+  }, [
+    buildContactPrefillMessage,
+    formState.message,
+    formState.source,
+    isMessageTouched,
+  ]);
+
   const updateField =
     (field: keyof ContactFormState) =>
     (value: string): void => {
+      if (field === "message") {
+        setIsMessageTouched(true);
+      }
       setFormState((prev) => ({ ...prev, [field]: value }));
       if (submitState.kind !== "idle") {
         setSubmitState({ kind: "idle", message: "" });
@@ -227,6 +304,11 @@ export default function ContactPage() {
         message:
           "Thanks, your message has been sent. Our team will contact you shortly.",
       });
+
+      if (formState.source === "sample-cart") {
+        clearSampleCartPrefill();
+      }
+      setIsMessageTouched(false);
 
       setFormState((prev) => ({
         ...prev,

@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Trash2 } from "lucide-react";
 import { Footer } from "@/app/components/Footer";
 import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
-import { SAMPLE_CART_CONTACT_HANDOFF_KEY } from "@/types/cart";
+import {
+  SAMPLE_CART_CONTACT_HANDOFF_KEY,
+  SAMPLE_CART_CONTACT_PREFILL_CLEARED_KEY,
+} from "@/types/cart";
 
 export default function CartPage() {
   const router = useRouter();
@@ -25,6 +28,7 @@ export default function CartPage() {
 
     try {
       window.sessionStorage.setItem(SAMPLE_CART_CONTACT_HANDOFF_KEY, message);
+      window.sessionStorage.removeItem(SAMPLE_CART_CONTACT_PREFILL_CLEARED_KEY);
     } catch {
       // Ignore sessionStorage failures and still continue to contact page.
     }
