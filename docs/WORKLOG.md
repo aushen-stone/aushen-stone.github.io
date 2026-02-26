@@ -1,8 +1,57 @@
 # Worklog - Aushen Web
 
-Last updated: 2026-02-25
+Last updated: 2026-02-26
 
 ## Completed and Landed
+
+### Contact Form API Wiring (2026-02-26)
+- Scope:
+  - turned `/contact` from visual-only CTA into a real API submit flow.
+  - added deployment-facing configuration path for static export builds.
+- Behavior landed:
+  - `/contact` form now posts to `NEXT_PUBLIC_CONTACT_API_URL`.
+  - payload includes `firstName`, `lastName`, `email`, `phone`, `message`, `userType`, `source`, and honeypot field `website`.
+  - submit lifecycle is visible to user (`Sending...`, success, error fallback message).
+  - when API URL is missing, page shows explicit misconfiguration feedback.
+- Deployment/config support landed:
+  - added `.env.example` with `NEXT_PUBLIC_CONTACT_API_URL` placeholder.
+  - GitHub Pages workflow now injects `NEXT_PUBLIC_CONTACT_API_URL` from repository Actions variable.
+  - README now documents local + CI setup for contact API endpoint.
+- Files updated:
+  - `src/app/contact/page.tsx`
+  - `.github/workflows/deploy.yml`
+  - `.env.example`
+  - `README.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run lint`: pass (`0 errors, 20 warnings`)
+  - `npm run build:pages`: pass
+- Remaining launch dependency:
+  - `LAUNCH-P0-001` remains open until production Worker/Resend endpoint is verified on live domain.
+
+### Launch Cutover Docs Realignment (2026-02-25)
+- Scope:
+  - documentation alignment only for immediate go-live requirements.
+  - no runtime/frontend/backend implementation changes in this pass.
+- Why this update:
+  - previous docs treated `P0` as fully closed, which conflicts with the new objective (rapid primary-domain cutover from WordPress to current static site).
+  - launch-critical tasks (lead capture, redirect migration, SEO baseline, telemetry, rollback) were either missing or mixed into non-blocking quality debt.
+- Changes applied:
+  - `NEXT_STEPS`:
+    - replaced `P0 closed` state with explicit launch blockers (`LAUNCH-P0-001`..`LAUNCH-P0-005`).
+    - added overlap dedup rules between launch P0 and existing P1 items.
+    - added launch-specific test cases and updated exit criteria.
+  - `README_AGENT`:
+    - updated objective and blocking-gap snapshot to match launch-cutover P0.
+    - clarified that non-contact CTA completion remains P1 after cutover.
+- Files updated:
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Behavior/contract impact:
+  - none (docs-only planning and prioritization realignment).
 
 ### Task B Round 2 - Actionable Contact Links (2026-02-25)
 - Scope:

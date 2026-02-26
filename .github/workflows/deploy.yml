@@ -29,6 +29,8 @@ jobs:
         run: npm run lint
 
       - name: Build static export
+        env:
+          NEXT_PUBLIC_CONTACT_API_URL: ${{ vars.NEXT_PUBLIC_CONTACT_API_URL }}
         run: npm run build:pages
 
       - name: Deploy to gh-pages

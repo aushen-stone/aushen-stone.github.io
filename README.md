@@ -21,6 +21,28 @@ npm run build:pages
 
 `build:pages` performs a static export and copies `out/` to `dist/` for GitHub Pages deployment.
 
+## Contact form API configuration
+
+The `/contact` form submits to `NEXT_PUBLIC_CONTACT_API_URL`.
+
+Local development:
+
+```bash
+cp .env.example .env.local
+```
+
+Set:
+
+```bash
+NEXT_PUBLIC_CONTACT_API_URL=https://<your-worker>.<your-subdomain>.workers.dev/contact
+```
+
+GitHub Pages workflow build:
+
+1. Go to `Settings -> Secrets and variables -> Actions -> Variables`.
+2. Add repository variable `NEXT_PUBLIC_CONTACT_API_URL`.
+3. Use the full endpoint URL including `/contact`.
+
 ## GitHub Pages deployment
 
 This repository is configured for **root-path Pages hosting** on `aushen-stone.github.io`.

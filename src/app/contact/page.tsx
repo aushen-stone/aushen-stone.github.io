@@ -1,33 +1,101 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { Footer } from "@/app/components/Footer";
 import { MapPin, Phone, Clock, ArrowRight, Check } from "lucide-react";
 import { SAMPLE_CART_CONTACT_HANDOFF_KEY } from "@/types/cart";
 import { CONTACT_INFO } from "@/data/contact";
 
+type UserType = "homeowner" | "pro";
+
+type ContactFormState = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  message: string;
+  website: string;
+  source: string;
+};
+
+type SubmitState =
+  | { kind: "idle"; message: "" }
+  | { kind: "success"; message: string }
+  | { kind: "error"; message: string };
+
+const CONTACT_API_URL = process.env.NEXT_PUBLIC_CONTACT_API_URL?.trim() ?? "";
+
+function getInitialMessageAndSource() {
+  if (typeof window === "undefined") {
+    return { message: "", source: "website-contact" };
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("source") !== "sample-cart") {
+    return { message: "", source: "website-contact" };
+  }
+
+  try {
+    const prefillMessage = window.sessionStorage.getItem(
+      SAMPLE_CART_CONTACT_HANDOFF_KEY
+    );
+    if (prefillMessage) {
+      window.sessionStorage.removeItem(SAMPLE_CART_CONTACT_HANDOFF_KEY);
+      return { message: prefillMessage, source: "sample-cart" };
+    }
+  } catch {
+    // Ignore sessionStorage failures and keep default message state.
+  }
+
+  return { message: "", source: "sample-cart" };
+}
+
 // === 组件: 身份切换器 (The Identity Toggle) ===
-function IdentityToggle({ active, onChange }: { active: 'homeowner' | 'pro', onChange: (val: 'homeowner' | 'pro') => void }) {
+function IdentityToggle({
+  active,
+  onChange,
+}: {
+  active: UserType;
+  onChange: (val: UserType) => void;
+}) {
   return (
     <div className="flex flex-col gap-4 mb-12">
       <span className="text-xs uppercase tracking-widest text-gray-500">I am a...</span>
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-        <button 
-          onClick={() => onChange('homeowner')}
-          className={`group w-full sm:w-auto flex items-center gap-3 text-base sm:text-lg md:text-2xl font-serif transition-colors ${active === 'homeowner' ? 'text-[#1a1c18]' : 'text-gray-300 hover:text-gray-500'}`}
+        <button
+          type="button"
+          onClick={() => onChange("homeowner")}
+          className={`group w-full sm:w-auto flex items-center gap-3 text-base sm:text-lg md:text-2xl font-serif transition-colors ${
+            active === "homeowner"
+              ? "text-[#1a1c18]"
+              : "text-gray-300 hover:text-gray-500"
+          }`}
         >
-          <span className={`w-6 h-6 rounded-full border flex items-center justify-center ${active === 'homeowner' ? 'border-[#1a1c18] bg-[#1a1c18] text-white' : 'border-gray-300'}`}>
-            {active === 'homeowner' && <Check size={14} />}
+          <span
+            className={`w-6 h-6 rounded-full border flex items-center justify-center ${
+              active === "homeowner"
+                ? "border-[#1a1c18] bg-[#1a1c18] text-white"
+                : "border-gray-300"
+            }`}
+          >
+            {active === "homeowner" && <Check size={14} />}
           </span>
           Homeowner
         </button>
 
-        <button 
-          onClick={() => onChange('pro')}
-          className={`group w-full sm:w-auto flex items-center gap-3 text-base sm:text-lg md:text-2xl font-serif transition-colors ${active === 'pro' ? 'text-[#1a1c18]' : 'text-gray-300 hover:text-gray-500'}`}
+        <button
+          type="button"
+          onClick={() => onChange("pro")}
+          className={`group w-full sm:w-auto flex items-center gap-3 text-base sm:text-lg md:text-2xl font-serif transition-colors ${
+            active === "pro" ? "text-[#1a1c18]" : "text-gray-300 hover:text-gray-500"
+          }`}
         >
-          <span className={`w-6 h-6 rounded-full border flex items-center justify-center ${active === 'pro' ? 'border-[#1a1c18] bg-[#1a1c18] text-white' : 'border-gray-300'}`}>
-             {active === 'pro' && <Check size={14} />}
+          <span
+            className={`w-6 h-6 rounded-full border flex items-center justify-center ${
+              active === "pro" ? "border-[#1a1c18] bg-[#1a1c18] text-white" : "border-gray-300"
+            }`}
+          >
+            {active === "pro" && <Check size={14} />}
           </span>
           Architect / Builder
         </button>
@@ -37,15 +105,44 @@ function IdentityToggle({ active, onChange }: { active: 'homeowner' | 'pro', onC
 }
 
 // === 组件: 极简输入框 (Underline Input) ===
-function InputField({ label, type = "text", placeholder }: { label: string, type?: string, placeholder?: string }) {
+function InputField({
+  label,
+  name,
+  type = "text",
+  placeholder,
+  value,
+  onChange,
+  required = false,
+  autoComplete,
+}: {
+  label: string;
+  name: string;
+  type?: string;
+  placeholder?: string;
+  value: string;
+  onChange: (value: string) => void;
+  required?: boolean;
+  autoComplete?: string;
+}) {
+  const id = `contact-${name}`;
+
   return (
     <div className="group relative">
-      <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-2 group-focus-within:text-[#1a1c18] transition-colors">
+      <label
+        htmlFor={id}
+        className="block text-[10px] uppercase tracking-widest text-gray-400 mb-2 group-focus-within:text-[#1a1c18] transition-colors"
+      >
         {label}
       </label>
-      <input 
-        type={type} 
+      <input
+        id={id}
+        name={name}
+        type={type}
         placeholder={placeholder}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        required={required}
+        autoComplete={autoComplete}
         className="w-full bg-transparent border-b border-gray-200 py-4 text-lg text-[#1a1c18] placeholder:text-gray-200 focus:outline-none focus:border-[#1a1c18] transition-colors font-serif"
       />
     </div>
@@ -53,27 +150,103 @@ function InputField({ label, type = "text", placeholder }: { label: string, type
 }
 
 export default function ContactPage() {
-  const [userType, setUserType] = useState<'homeowner' | 'pro'>('homeowner');
-  const [message, setMessage] = useState(() => {
-    if (typeof window === "undefined") return "";
+  const [userType, setUserType] = useState<UserType>("homeowner");
+  const [submitState, setSubmitState] = useState<SubmitState>({
+    kind: "idle",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formState, setFormState] = useState<ContactFormState>(() => {
+    const { message, source } = getInitialMessageAndSource();
+    return {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      message,
+      website: "",
+      source,
+    };
+  });
 
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("source") !== "sample-cart") return "";
-
-    try {
-      const prefillMessage = window.sessionStorage.getItem(
-        SAMPLE_CART_CONTACT_HANDOFF_KEY
-      );
-      if (prefillMessage) {
-        window.sessionStorage.removeItem(SAMPLE_CART_CONTACT_HANDOFF_KEY);
-        return prefillMessage;
+  const updateField =
+    (field: keyof ContactFormState) =>
+    (value: string): void => {
+      setFormState((prev) => ({ ...prev, [field]: value }));
+      if (submitState.kind !== "idle") {
+        setSubmitState({ kind: "idle", message: "" });
       }
-    } catch {
-      // Ignore sessionStorage failures and keep default message state.
+    };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!CONTACT_API_URL) {
+      setSubmitState({
+        kind: "error",
+        message:
+          "Contact endpoint is not configured. Set NEXT_PUBLIC_CONTACT_API_URL before deployment.",
+      });
+      return;
     }
 
-    return "";
-  });
+    setIsSubmitting(true);
+    setSubmitState({ kind: "idle", message: "" });
+
+    try {
+      const response = await fetch(CONTACT_API_URL, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: formState.firstName.trim(),
+          lastName: formState.lastName.trim(),
+          email: formState.email.trim(),
+          phone: formState.phone.trim(),
+          message: formState.message.trim(),
+          userType,
+          source: formState.source,
+          website: formState.website.trim(),
+        }),
+      });
+
+      let payload: { ok?: boolean; error?: string } | null = null;
+      try {
+        payload = await response.json();
+      } catch {
+        // Ignore JSON parse failures and fallback to generic error handling.
+      }
+
+      if (!response.ok || payload?.ok !== true) {
+        throw new Error(payload?.error || "submit_failed");
+      }
+
+      setSubmitState({
+        kind: "success",
+        message:
+          "Thanks, your message has been sent. Our team will contact you shortly.",
+      });
+
+      setFormState((prev) => ({
+        ...prev,
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        message: "",
+        website: "",
+      }));
+    } catch {
+      setSubmitState({
+        kind: "error",
+        message:
+          "We could not send your message right now. Please call or email us directly.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen selection:bg-[#1a1c18] selection:text-white">
@@ -193,34 +366,101 @@ export default function ContactPage() {
              <IdentityToggle active={userType} onChange={setUserType} />
 
              {/* 2. The Form Fields */}
-             <form className="space-y-8 sm:space-y-12 mt-10 sm:mt-12">
+             <form className="space-y-8 sm:space-y-12 mt-10 sm:mt-12" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
-                   <InputField label="First Name" placeholder="John" />
-                   <InputField label="Last Name" placeholder="Doe" />
+                   <InputField
+                     label="First Name"
+                     name="first-name"
+                     placeholder="John"
+                     value={formState.firstName}
+                     onChange={updateField("firstName")}
+                     autoComplete="given-name"
+                     required
+                   />
+                   <InputField
+                     label="Last Name"
+                     name="last-name"
+                     placeholder="Doe"
+                     value={formState.lastName}
+                     onChange={updateField("lastName")}
+                     autoComplete="family-name"
+                   />
                 </div>
                 
-                <InputField label="Email Address" type="email" placeholder="john@example.com" />
+                <InputField
+                  label="Email Address"
+                  name="email"
+                  type="email"
+                  placeholder="john@example.com"
+                  value={formState.email}
+                  onChange={updateField("email")}
+                  autoComplete="email"
+                  required
+                />
                 
-                <InputField label="Phone Number" type="tel" placeholder="0400 000 000" />
+                <InputField
+                  label="Phone Number"
+                  name="phone"
+                  type="tel"
+                  placeholder="0400 000 000"
+                  value={formState.phone}
+                  onChange={updateField("phone")}
+                  autoComplete="tel"
+                />
+
+                <div className="sr-only" aria-hidden="true">
+                  <label htmlFor="contact-website">Website</label>
+                  <input
+                    id="contact-website"
+                    name="website"
+                    type="text"
+                    value={formState.website}
+                    onChange={(event) => updateField("website")(event.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
 
                 {/* Conditional Field based on user type */}
                 <div className="group relative">
                    <label className="block text-[10px] uppercase tracking-widest text-gray-400 mb-2">
-                     {userType === 'homeowner' ? 'Tell us about your dream project' : 'Project Scope / Estimated Volume'}
+                     {userType === "homeowner"
+                       ? "Tell us about your dream project"
+                       : "Project Scope / Estimated Volume"}
                    </label>
                    <textarea 
                      rows={4}
+                     required
                      className="w-full bg-transparent border-b border-gray-200 py-4 text-lg text-[#1a1c18] placeholder:text-gray-200 focus:outline-none focus:border-[#1a1c18] transition-colors font-serif resize-none"
-                     value={message}
-                     onChange={(event) => setMessage(event.target.value)}
-                     placeholder={userType === 'homeowner' ? "I'm looking for bluestone pavers for my new pool area..." : "Commercial project in CBD, approx 500m2..."}
+                     value={formState.message}
+                     onChange={(event) => updateField("message")(event.target.value)}
+                     placeholder={
+                       userType === "homeowner"
+                         ? "I'm looking for bluestone pavers for my new pool area..."
+                         : "Commercial project in CBD, approx 500m2..."
+                     }
                    ></textarea>
                 </div>
 
+                {submitState.kind !== "idle" && (
+                  <p
+                    className={`text-sm ${
+                      submitState.kind === "success" ? "text-green-700" : "text-red-700"
+                    }`}
+                    role={submitState.kind === "error" ? "alert" : "status"}
+                  >
+                    {submitState.message}
+                  </p>
+                )}
+
                 {/* 3. Submit Button */}
                 <div className="pt-4 sm:pt-8 flex justify-stretch sm:justify-end">
-                   <button className="w-full sm:w-auto justify-center sm:justify-start bg-[#1a1c18] text-white px-[var(--btn-px)] py-[var(--btn-py)] uppercase tracking-[0.16em] sm:tracking-[0.25em] text-[11px] sm:text-xs hover:bg-[#3B4034] transition-colors shadow-xl shadow-gray-900/10 flex items-center gap-4 group">
-                      Send Message
+                   <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full sm:w-auto justify-center sm:justify-start bg-[#1a1c18] text-white px-[var(--btn-px)] py-[var(--btn-py)] uppercase tracking-[0.16em] sm:tracking-[0.25em] text-[11px] sm:text-xs hover:bg-[#3B4034] transition-colors shadow-xl shadow-gray-900/10 flex items-center gap-4 group disabled:opacity-60 disabled:cursor-not-allowed"
+                   >
+                      {isSubmitting ? "Sending..." : "Send Message"}
                       <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                    </button>
                 </div>

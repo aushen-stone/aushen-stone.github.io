@@ -1,14 +1,39 @@
 # Next Steps - Aushen Web
 
-Last updated: 2026-02-25
+Last updated: 2026-02-26
 
 ## Current Release Goal
-Stabilize post-P0 quality by finishing primary CTA behavior, reducing image/lint debt, clearing non-project/non-product placeholder visuals, unifying contact-critical information, hardening GitHub Pages static deployment reproducibility, and extending responsive hardening beyond the newly-fixed core five routes while keeping engineering gates reproducible in this environment.
+Launch `aushenstone.com.au` quickly on the current Next.js static site while protecting lead capture and minimizing SEO loss during WordPress -> GitHub Pages cutover.
 
-## P0 (Release Blockers)
-No open P0 blockers.
+## P0 (Launch Cutover Blockers)
 
-### Closed P0 Items (2026-02-06)
+### Open P0 blockers
+- `LAUNCH-P0-001` - Contact form delivery must work end-to-end.
+  - status update (2026-02-26): `/contact` now submits JSON to `NEXT_PUBLIC_CONTACT_API_URL` with submit-state feedback and honeypot field.
+  - current risk: production endpoint/config validation is still pending (Worker/Resend + environment wiring + live submit verification).
+  - required before cutover: successful submit path (email/API/form backend) with user feedback and error handling.
+- `LAUNCH-P0-002` - Legacy URL migration with 301 redirects.
+  - current risk: old WordPress URLs will 404 after domain switch without redirect mapping.
+  - required before cutover: prioritized old->new redirect map (at minimum high-traffic and high-ranking legacy URLs).
+- `LAUNCH-P0-003` - SEO crawl/index baseline for new stack.
+  - current risk: no generated `robots.txt` or `sitemap.xml`, and key routes share generic metadata.
+  - required before cutover: route-level title/description/canonical for key pages + generated robots/sitemap.
+- `LAUNCH-P0-004` - Launch telemetry for conversion and SEO monitoring.
+  - current risk: no validated analytics/search-console launch instrumentation for post-cutover diagnostics.
+  - required before cutover: GA4 page view + `form_submit` event checks, Search Console property/sitemap submission.
+- `LAUNCH-P0-005` - Domain cutover and rollback runbook.
+  - current risk: DNS switch without rollback procedure increases outage/revenue risk.
+  - required before cutover: documented cutover steps, owner, rollback trigger thresholds, and fast rollback path.
+
+### Overlap map (deduplicated tracking)
+- `LAUNCH-P0-001` overlaps existing CTA work in `P1 -> 1) Stabilize primary CTA behavior for production`.
+  - rule: track `/contact` submit implementation under `LAUNCH-P0-001` only (do not track this specific item as P1 debt).
+- `LAUNCH-P0-003` overlaps metadata quality concerns implied by generic SEO defaults.
+  - rule: route-level SEO baseline for launch is P0; rich schema and deeper SEO enhancements stay in P1/P2.
+- `LAUNCH-P0-005` depends on static export baseline already documented in `P1 -> 0) Harden GitHub Pages deployment baseline`.
+  - rule: keep export/CI hardening in P1; domain cutover operational readiness is P0.
+
+### Historical feature P0 items (closed 2026-02-06)
 - `UI-NAV-001` closed:
   - navbar layout refactored to a reserved center-logo grid structure.
   - desktop nav visibility now follows a three-tier layout:
@@ -110,10 +135,11 @@ No open P0 blockers.
   - `src/app/components/Hero.tsx` (`Make Appointments`)
   - `src/app/components/CreativeHubSection.tsx` (`Book A Consultation`, `Book The Space`)
   - `src/app/services/page.tsx` (`Book a Consultation`, `Contact Us`, `Visit Showroom`)
-  - `src/app/contact/page.tsx` (`Send Message` form submit)
   - `src/app/products/[slug]/ProductDetailClient.tsx` (`Enquire`, `Book Consultation`, `Call Us`)
   - `src/app/components/Footer.tsx` (newsletter submit)
   - `src/app/components/BestSellers.tsx` (`Quick View`)
+- Overlap note:
+  - `/contact` "Send Message" submit is elevated to `LAUNCH-P0-001` and should be tracked there, not as non-blocking P1 debt.
 - Implemented CTA baseline (already operational):
   - `src/app/products/[slug]/ProductDetailClient.tsx` (`Order Free Sample`) adds sample lines and opens the sample-cart drawer.
   - `src/app/components/Navbar.tsx` trolley count + drawer open/close interaction.
@@ -389,6 +415,16 @@ No open P0 blockers.
   - save checks latest base SHA and returns conflict prompt if stale.
 
 ## Test Cases / Scenarios
+
+### Launch Cutover P0 checks
+1. Contact form submit on `/contact` reaches configured delivery target and user sees success/failure feedback.
+2. Redirect map validation: representative high-priority legacy URLs return `301` and land on intended new destinations.
+3. Export output contains crawl baseline files (`robots.txt`, `sitemap.xml`) and they are accessible on target domain.
+4. Key routes (`/`, `/products`, `/products/[slug]`, `/projects`, `/services`, `/contact`, `/about`) have non-generic route-level title/description/canonical metadata.
+5. GA4 receives page view and `form_submit` events from production; Search Console property is verified and sitemap is submitted.
+6. DNS cutover runbook and rollback runbook are tested (dry-run acceptable) with owner and decision thresholds recorded.
+
+### Functional and regression checks
 1. Add same product + same finish twice on detail page: cart remains one line.
 2. Add same product with different finishes: cart shows separate lines.
 3. Add over limit (`>10` lines): addition is blocked with user-facing feedback.
@@ -425,9 +461,15 @@ No open P0 blockers.
 10. Current CI compatibility uses `legacy-peer-deps` as a temporary workaround.
 11. Placeholder-visual cleanup scope in this cycle excludes `/projects`, `/projects/[id]`, `/products`, and `/products/[slug]`.
 12. Contact-critical information scope in this cycle is limited to address/phone/email/hours/map/social (CTA semantics are out of scope here).
+13. For WordPress -> new-site cutover, a redirect execution layer is required (Cloudflare rules, legacy host rules, or equivalent) before switching primary domain.
 
 ## Exit Criteria
-- P0 blockers (`UI-NAV-001`, `CART-SAMPLE-001`) are closed.
+- Launch P0 blockers (`LAUNCH-P0-001`..`LAUNCH-P0-005`) are closed with evidence.
+- Historical feature P0 blockers (`UI-NAV-001`, `CART-SAMPLE-001`) remain closed.
+- Contact form submit reaches business-owned destination reliably in production.
+- Legacy high-priority URL set has validated 301 redirects to mapped new routes.
+- `robots.txt` and `sitemap.xml` are generated and served on the production domain.
+- GA4 + Search Console launch instrumentation is validated.
 - Primary CTAs are actionable, or explicitly marked unavailable with clear copy.
 - In-scope non-project/non-product routes/components (`/`, `/services`, `/about`, `/contact`) no longer depend on obvious placeholder imagery.
 - Contact-critical values are unified across display surfaces (Footer/Contact), and map/social links point to real destinations.

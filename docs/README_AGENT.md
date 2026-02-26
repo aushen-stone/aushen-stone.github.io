@@ -1,12 +1,18 @@
 # README_AGENT - Single Entry for All Agents
 
-Last updated: 2026-02-25
+Last updated: 2026-02-26
 
 ## Current Objective
 - Maintain a single-entry, low-overhead handoff workflow.
 - Keep execution focused on `docs/NEXT_STEPS.md`.
-- P0 closure is complete; prioritize P1 quality scope:
-  - primary CTA actionability
+- P0 is now reopened for domain cutover readiness:
+  - `LAUNCH-P0-001`: `/contact` form submit delivery
+  - `LAUNCH-P0-002`: legacy WordPress URL -> new URL 301 redirect mapping
+  - `LAUNCH-P0-003`: launch SEO crawl/index baseline (`robots.txt`, `sitemap.xml`, route-level metadata)
+  - `LAUNCH-P0-004`: GA4 + Search Console launch telemetry validation
+  - `LAUNCH-P0-005`: domain cutover + rollback runbook
+- P1 remains post-cutover quality scope:
+  - non-contact CTA actionability completion
   - image/lint warning reduction
   - Task A: placeholder visual cleanup on non-Project/Product routes/components (`/`, `/services`, `/about`, `/contact`)
   - Task B: contact-critical information unification (address/phone/email/hours/map/social)
@@ -21,10 +27,15 @@ Last updated: 2026-02-25
   - `npx tsc --noEmit`: pass **after** build (`.next/types` must exist)
   - `npm run lint`: `0 errors, 20 warnings`
   - `npm run build:pages`: pass (static export + `dist` output)
-- Current blocking gaps (`P0`): none.
+- Current blocking gaps (`P0`):
+  - `LAUNCH-P0-001`: client submit flow is implemented, but production endpoint/config validation is still pending.
+  - `LAUNCH-P0-002`: redirect map for legacy WordPress URLs is not defined/executed.
+  - `LAUNCH-P0-003`: launch SEO crawl/index baseline is incomplete.
+  - `LAUNCH-P0-004`: launch telemetry checks are not verified.
+  - `LAUNCH-P0-005`: domain cutover and rollback runbook not yet validated.
 - Known non-blocking debt:
   - image optimization warnings (`@next/next/no-img-element`)
-  - CTA behavior completion outside P0-critical paths
+  - non-contact CTA behavior completion outside P0-critical paths
   - non-project/non-product placeholder visual inventory replacement (Task A in `NEXT_STEPS`)
   - contact-critical follow-ups: real social-profile destinations + published legal-policy links (Task B in `NEXT_STEPS`)
   - automated e2e coverage
@@ -32,6 +43,14 @@ Last updated: 2026-02-25
   - content maintenance still depends on engineering workflow (CSV + code changes + deploy)
 
 ## What Changed Last
+- Contact form API wiring landed (2026-02-26):
+  - `/contact` now submits to `NEXT_PUBLIC_CONTACT_API_URL` with loading/success/error states.
+  - honeypot field and API-misconfiguration guard are in place.
+  - deployment docs/workflow now include `NEXT_PUBLIC_CONTACT_API_URL` build-time wiring.
+- Launch cutover docs realignment (2026-02-25):
+  - reopened `P0` for WordPress -> new-site domain cutover readiness.
+  - added overlap-dedup rules so the same work item is not tracked twice across P0/P1.
+  - updated `NEXT_STEPS` test/exit criteria to include launch migration gates.
 - Task B round 2 actionable contact links landed (2026-02-25):
   - introduced single-source contact constants in `src/data/contact.ts`.
   - Contact + Footer address/phone/email are now actionable links:
@@ -79,7 +98,7 @@ Last updated: 2026-02-25
 
 ## Where to Read Next
 - If implementing features or fixes:
-  - read `docs/NEXT_STEPS.md` first (start with `P1`)
+  - read `docs/NEXT_STEPS.md` first (start with `P0` launch-cutover blockers)
   - then read `docs/WORKLOG.md` for recent context
 - If changing data/model/contracts:
   - read `docs/ARCHITECTURE.md` first
