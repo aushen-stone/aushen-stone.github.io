@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+Disallow: /cart
+
+Sitemap: https://aushenstone.com.au/sitemap.xml
