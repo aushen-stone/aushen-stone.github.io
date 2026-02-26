@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { Footer } from "@/app/components/Footer";
 import { MoveDown, CheckCircle2, ArrowUpRight } from "lucide-react";
@@ -218,10 +219,13 @@ export default function ServicesPage() {
                <p className="text-gray-600 leading-loose mb-8 font-light">
                  Navigating natural stone options can be overwhelming. Our experienced team is here to guide you through color palettes, finishes, and technical suitability for your specific project.
                </p>
-               <button className="group w-full sm:w-auto inline-flex items-center justify-center gap-4 bg-[#1a1c18] text-white px-6 sm:px-8 py-4 uppercase tracking-[0.14em] sm:tracking-[0.2em] text-[11px] sm:text-xs hover:bg-[#3B4034] transition-colors shadow-xl shadow-gray-900/10">
+               <Link
+                 href="/contact"
+                 className="group w-full sm:w-auto inline-flex items-center justify-center gap-4 bg-[#1a1c18] text-white px-6 sm:px-8 py-4 uppercase tracking-[0.14em] sm:tracking-[0.2em] text-[11px] sm:text-xs hover:bg-[#3B4034] transition-colors shadow-xl shadow-gray-900/10"
+               >
                  Book a Consultation
                  <ArrowUpRight size={16} className="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
-               </button>
+               </Link>
             </div>
 
           </div>
@@ -289,12 +293,18 @@ export default function ServicesPage() {
                <p className="text-white/40 font-light">Let&apos;s discuss your project over coffee.</p>
             </div>
             <div className="flex w-full sm:w-auto flex-col sm:flex-row gap-3 sm:gap-4">
-               <button className="w-full sm:w-auto border border-white/20 px-6 sm:px-8 py-4 text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] hover:bg-white hover:text-[#1a1c18] transition-colors">
+               <Link
+                 href="/contact"
+                 className="w-full sm:w-auto border border-white/20 px-6 sm:px-8 py-4 text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] hover:bg-white hover:text-[#1a1c18] transition-colors"
+               >
                   Contact Us
-               </button>
-               <button className="w-full sm:w-auto bg-white text-[#1a1c18] px-6 sm:px-8 py-4 text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] hover:bg-[#F0F2E4] transition-colors">
+               </Link>
+               <Link
+                 href="/contact"
+                 className="w-full sm:w-auto bg-white text-[#1a1c18] px-6 sm:px-8 py-4 text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] hover:bg-[#F0F2E4] transition-colors"
+               >
                   Visit Showroom
-               </button>
+               </Link>
             </div>
          </div>
       </section>

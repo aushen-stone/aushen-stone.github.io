@@ -2,11 +2,13 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowUpRight, Instagram, Facebook, Linkedin, Twitter } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { CONTACT_INFO } from "@/data/contact";
 
 export function Footer() {
+  const router = useRouter();
 
   // Footer 元素专用的微动效果
   const smoothEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -126,15 +128,22 @@ export function Footer() {
             </p>
           </div>
 
-          <form className="group relative">
+          <form
+            className="group relative"
+            onSubmit={(event) => {
+              event.preventDefault();
+              router.push("/contact");
+            }}
+          >
             <input
               type="email"
               placeholder="Email Address"
               className="w-full bg-transparent border-b border-white/20 py-4 text-base sm:text-lg text-white placeholder:text-white/20 focus:outline-none focus:border-white transition-colors"
             />
             <button
-              type="button"
+              type="submit"
               className="absolute right-0 top-1/2 -translate-y-1/2 p-2 hover:bg-white hover:text-black rounded-full transition-all duration-300"
+              aria-label="Go to contact page"
             >
               <ArrowUpRight size={20} />
             </button>

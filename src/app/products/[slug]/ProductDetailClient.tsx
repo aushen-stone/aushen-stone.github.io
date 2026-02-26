@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import Link from "next/link";
 import React, { useMemo, useState } from "react";
 import { Footer } from "@/app/components/Footer";
 import { ArrowDownLeft, ArrowRight, ChevronLeft, ChevronRight, Plus, Minus } from "lucide-react";
@@ -438,20 +439,20 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                   </button>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <button
-                      type="button"
+                    <Link
+                      href="/contact"
                       className="border border-gray-300 text-gray-900 py-3 px-4 sm:px-5 flex items-center justify-center gap-2.5 hover:border-gray-900 transition-all uppercase tracking-[0.12em] text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                       aria-label={consultLabel}
                     >
                       {consultLabel}
-                    </button>
-                    <button
-                      type="button"
+                    </Link>
+                    <Link
+                      href="/contact"
                       className="border border-gray-300 text-gray-900 py-3 px-4 sm:px-5 flex items-center justify-center gap-2.5 hover:border-gray-900 transition-all uppercase tracking-[0.12em] text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                       aria-label={enquireLabel}
                     >
                       <ArrowDownLeft size={14} /> {enquireLabel}
-                    </button>
+                    </Link>
                   </div>
                 </div>
 

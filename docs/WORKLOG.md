@@ -4,6 +4,33 @@ Last updated: 2026-02-26
 
 ## Completed and Landed
 
+### Primary CTA Contact Routing Sweep (首尾, 2026-02-26)
+- 首:
+  - multiple primary CTA buttons were still visual-only and had no action binding.
+  - this included high-visibility homepage/services/product-detail/footer intent buttons.
+- 尾:
+  - all tracked unbound primary CTA buttons are now routed to `/contact`.
+  - scope completed in this pass:
+    - `Make Appointments` (`Hero`)
+    - `Book A Consultation`, `Book The Space` (`CreativeHubSection`)
+    - `Book a Consultation`, `Contact Us`, `Visit Showroom` (`ServicesPageClient`)
+    - `Book Consultation`, `Enquire` (+ override label variants like `Call Us`) (`ProductDetailClient`)
+    - newsletter arrow submit intent routes to `/contact` (`Footer`)
+  - sample-cart CTA flow remains unchanged:
+    - `Order Free Sample` still adds to cart
+    - cart `Ask for sample` still hands off to `/contact?source=sample-cart`
+- Files updated:
+  - `src/app/components/Hero.tsx`
+  - `src/app/components/CreativeHubSection.tsx`
+  - `src/app/services/ServicesPageClient.tsx`
+  - `src/app/products/[slug]/ProductDetailClient.tsx`
+  - `src/app/components/Footer.tsx`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npx eslint src/app/components/Hero.tsx src/app/components/CreativeHubSection.tsx src/app/services/ServicesPageClient.tsx src/app/products/[slug]/ProductDetailClient.tsx src/app/components/Footer.tsx`: pass (`0 errors, 6 warnings`)
+
 ### Sample Cart Ask-for-Sample Autofill Completion (首尾, 2026-02-26)
 - 首:
   - cart-to-contact handoff prefill was partial: content existed, but lifecycle was fragile.

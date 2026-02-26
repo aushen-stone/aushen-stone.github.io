@@ -134,12 +134,14 @@ Launch `aushenstone.com.au` quickly on the current Next.js static site while pro
 
 ### 1) Stabilize primary CTA behavior for production
 - Problem: several primary CTAs are visual-only.
-- Current unimplemented CTA inventory:
-  - `src/app/components/Hero.tsx` (`Make Appointments`)
-  - `src/app/components/CreativeHubSection.tsx` (`Book A Consultation`, `Book The Space`)
-  - `src/app/services/page.tsx` (`Book a Consultation`, `Contact Us`, `Visit Showroom`)
-  - `src/app/products/[slug]/ProductDetailClient.tsx` (`Enquire`, `Book Consultation`, `Call Us`)
-  - `src/app/components/Footer.tsx` (newsletter submit)
+- Status update (2026-02-26):
+  - previously unbound primary CTA buttons are now routed to `/contact`:
+    - `src/app/components/Hero.tsx` (`Make Appointments`)
+    - `src/app/components/CreativeHubSection.tsx` (`Book A Consultation`, `Book The Space`)
+    - `src/app/services/ServicesPageClient.tsx` (`Book a Consultation`, `Contact Us`, `Visit Showroom`)
+    - `src/app/products/[slug]/ProductDetailClient.tsx` (`Enquire`, `Book Consultation`, dynamic CTA override labels such as `Call Us`)
+    - `src/app/components/Footer.tsx` (newsletter arrow submit intent)
+  - tracked inventory in this bucket is now cleared.
 - Overlap note:
   - `/contact` "Send Message" submit is elevated to `LAUNCH-P0-001` and should be tracked there, not as non-blocking P1 debt.
 - Implemented CTA baseline (already operational):

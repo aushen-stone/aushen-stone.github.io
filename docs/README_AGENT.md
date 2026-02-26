@@ -43,6 +43,10 @@ Last updated: 2026-02-26
   - content maintenance still depends on engineering workflow (CSV + code changes + deploy)
 
 ## What Changed Last
+- Primary CTA routing sweep landed (2026-02-26):
+  - tracked visual-only primary CTA buttons are now bound to `/contact` across Hero, Creative Hub, Services, Product Detail secondary CTA row, and Footer newsletter submit intent.
+  - dynamic product-detail secondary CTA label variants (for example `Call Us`) now also route to `/contact`.
+  - sample-cart funnel behavior is unchanged (`Order Free Sample` + cart-origin handoff remain intact).
 - Sample-cart prefill lifecycle and template were completed (2026-02-26):
   - `Ask for sample` handoff message now uses polite request copy with numbered sample lines and context placeholders.
   - contact prefill is no longer removed on first read, and is now refresh-safe before submit.

@@ -1,6 +1,7 @@
 // components/CreativeHubSection.tsx
 "use client";
 
+import Link from "next/link";
 import Marquee from "react-fast-marquee";
 import { motion, type Variants } from "framer-motion";
 
@@ -90,9 +91,12 @@ export function CreativeHubSection() {
             <p className="text-white/60 text-sm leading-relaxed max-w-md">
               Our experienced garden design team is here ready to guide you through the material selection process, ensuring your vision comes to life effortlessly.
             </p>
-            <button className="mt-4 w-full sm:w-auto px-6 sm:px-8 py-3 border border-white/30 text-[11px] sm:text-xs uppercase tracking-[0.14em] sm:tracking-[0.2em] hover:bg-[#F8F5F1] hover:text-[#3B4034] hover:border-[#F8F5F1] transition-all duration-300">
+            <Link
+              href="/contact"
+              className="mt-4 w-full sm:w-auto px-6 sm:px-8 py-3 border border-white/30 text-[11px] sm:text-xs uppercase tracking-[0.14em] sm:tracking-[0.2em] hover:bg-[#F8F5F1] hover:text-[#3B4034] hover:border-[#F8F5F1] transition-all duration-300"
+            >
               Book A Consultation
-            </button>
+            </Link>
           </motion.div>
 
           {/* 右侧：Professionals */}
@@ -106,9 +110,12 @@ export function CreativeHubSection() {
             <p className="text-white/60 text-sm leading-relaxed max-w-md">
               Whether you are a builder, landscaper, or designer, we are committed to offering a space free of charge, with coffee on us.
             </p>
-            <button className="mt-4 w-full sm:w-auto px-6 sm:px-8 py-3 border border-white/30 text-[11px] sm:text-xs uppercase tracking-[0.14em] sm:tracking-[0.2em] hover:bg-[#F8F5F1] hover:text-[#3B4034] hover:border-[#F8F5F1] transition-all duration-300">
+            <Link
+              href="/contact"
+              className="mt-4 w-full sm:w-auto px-6 sm:px-8 py-3 border border-white/30 text-[11px] sm:text-xs uppercase tracking-[0.14em] sm:tracking-[0.2em] hover:bg-[#F8F5F1] hover:text-[#3B4034] hover:border-[#F8F5F1] transition-all duration-300"
+            >
               Book The Space
-            </button>
+            </Link>
           </motion.div>
 
         </motion.div>

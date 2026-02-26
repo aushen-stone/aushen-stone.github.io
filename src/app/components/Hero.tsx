@@ -1,6 +1,7 @@
 // components/Hero.tsx
 "use client"; // 动效组件必须在客户端运行
 
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -53,10 +54,13 @@ export function Hero() {
 
           {/* 按钮：延迟 0.6s 最后浮现 */}
           <FadeIn delay={0.6} className="mt-8 sm:mt-10 md:mt-12">
-            <button className="group w-full sm:w-auto border border-white/80 px-[var(--btn-px)] py-[var(--btn-py)] text-white text-[11px] sm:text-sm uppercase tracking-[0.16em] sm:tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-3">
+            <Link
+              href="/contact"
+              className="group w-full sm:w-auto border border-white/80 px-[var(--btn-px)] py-[var(--btn-py)] text-white text-[11px] sm:text-sm uppercase tracking-[0.16em] sm:tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-3"
+            >
               Make Appointments
               <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-            </button>
+            </Link>
           </FadeIn>
         </div>
 
