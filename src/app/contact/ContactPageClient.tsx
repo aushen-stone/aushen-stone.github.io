@@ -513,7 +513,8 @@ export default function ContactPage() {
                    <textarea 
                      rows={4}
                      required
-                     className="w-full bg-transparent border-b border-gray-200 py-4 text-lg text-[#1a1c18] placeholder:text-gray-200 focus:outline-none focus:border-[#1a1c18] transition-colors font-serif resize-none"
+                     data-lenis-prevent-wheel
+                     className="w-full bg-transparent border-b border-gray-200 py-4 text-lg text-[#1a1c18] placeholder:text-gray-200 focus:outline-none focus:border-[#1a1c18] transition-colors font-serif resize-none overflow-y-auto"
                      value={formState.message}
                      onChange={(event) => updateField("message")(event.target.value)}
                      placeholder={
