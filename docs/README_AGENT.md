@@ -30,7 +30,7 @@ Last updated: 2026-02-26
 - Current blocking gaps (`P0`):
   - `LAUNCH-P0-001`: client submit flow is implemented, but production endpoint/config validation is still pending.
   - `LAUNCH-P0-002`: redirect map for legacy WordPress URLs is not defined/executed.
-  - `LAUNCH-P0-003`: launch SEO crawl/index baseline is incomplete.
+  - `LAUNCH-P0-003`: code-side SEO baseline is implemented; production crawl/index validation is still pending.
   - `LAUNCH-P0-004`: launch telemetry checks are not verified.
   - `LAUNCH-P0-005`: domain cutover and rollback runbook not yet validated.
 - Known non-blocking debt:
@@ -43,6 +43,16 @@ Last updated: 2026-02-26
   - content maintenance still depends on engineering workflow (CSV + code changes + deploy)
 
 ## What Changed Last
+- SEO baseline wiring landed (2026-02-26):
+  - route-level metadata/canonical now implemented for core routes plus product/project detail routes.
+  - static-export metadata routes added:
+    - `GET /robots.txt` (`Allow: /`, `Disallow: /cart`)
+    - `GET /sitemap.xml` (core index routes + all `/products/[slug]`).
+  - indexing policy landed:
+    - `/cart`: `noindex,follow`
+    - `/projects/[id]`: `noindex,follow`
+    - `/products/[slug]`: indexable and included in sitemap.
+  - client routes were split into `Server page.tsx + *PageClient.tsx` to support route-level metadata under App Router.
 - Contact form API wiring landed (2026-02-26):
   - `/contact` now submits to `NEXT_PUBLIC_CONTACT_API_URL` with loading/success/error states.
   - honeypot field and API-misconfiguration guard are in place.

@@ -16,8 +16,9 @@ Launch `aushenstone.com.au` quickly on the current Next.js static site while pro
   - current risk: old WordPress URLs will 404 after domain switch without redirect mapping.
   - required before cutover: prioritized old->new redirect map (at minimum high-traffic and high-ranking legacy URLs).
 - `LAUNCH-P0-003` - SEO crawl/index baseline for new stack.
-  - current risk: no generated `robots.txt` or `sitemap.xml`, and key routes share generic metadata.
-  - required before cutover: route-level title/description/canonical for key pages + generated robots/sitemap.
+  - status update (2026-02-26): route-level title/description/canonical is now wired for key routes; generated `robots.txt` and `sitemap.xml` are now emitted in static export.
+  - current risk: production-domain verification is still pending (GSC inspection + sitemap submission + crawl/index checks).
+  - required before cutover: verify production `robots.txt` and `sitemap.xml` accessibility, and confirm indexing behavior for `index` routes vs `noindex` routes (`/cart`, `/projects/[id]`).
 - `LAUNCH-P0-004` - Launch telemetry for conversion and SEO monitoring.
   - current risk: no validated analytics/search-console launch instrumentation for post-cutover diagnostics.
   - required before cutover: GA4 page view + `form_submit` event checks, Search Console property/sitemap submission.

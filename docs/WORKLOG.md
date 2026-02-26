@@ -4,6 +4,66 @@ Last updated: 2026-02-26
 
 ## Completed and Landed
 
+### SEO Baseline Wiring for Launch Cutover (2026-02-26)
+- Scope:
+  - implemented code-side SEO baseline for static-export launch readiness.
+  - kept scope limited to metadata/canonical/robots/sitemap/indexing policy (no structured-data expansion in this pass).
+- Behavior landed:
+  - route-level metadata now exists for key index routes:
+    - `/`
+    - `/products`
+    - `/services`
+    - `/about`
+    - `/contact`
+    - `/projects`
+  - dynamic route metadata now exists for:
+    - `/products/[slug]` (indexable; title/description/canonical generated from product data)
+    - `/projects/[id]` (`noindex,follow`; canonical retained)
+  - indexing policy baseline is now explicit:
+    - `/cart`: `noindex,follow`
+    - `/projects/[id]`: `noindex,follow`
+    - `/products/[slug]`: indexable and included in sitemap
+  - static metadata routes now generated in export output:
+    - `GET /robots.txt` (`Allow: /`, `Disallow: /cart`)
+    - `GET /sitemap.xml` (core index routes + all generated product detail routes)
+  - client-route split landed for metadata compatibility under App Router:
+    - `page.tsx` server wrappers now own route metadata
+    - interactive route implementations moved to `*PageClient.tsx`
+- Files updated:
+  - `src/lib/seo.ts`
+  - `src/app/layout.tsx`
+  - `src/app/page.tsx`
+  - `src/app/robots.ts`
+  - `src/app/sitemap.ts`
+  - `src/app/about/page.tsx`
+  - `src/app/about/AboutPageClient.tsx`
+  - `src/app/cart/page.tsx`
+  - `src/app/cart/CartPageClient.tsx`
+  - `src/app/contact/page.tsx`
+  - `src/app/contact/ContactPageClient.tsx`
+  - `src/app/products/page.tsx`
+  - `src/app/products/ProductsPageClient.tsx`
+  - `src/app/projects/page.tsx`
+  - `src/app/projects/ProjectsPageClient.tsx`
+  - `src/app/services/page.tsx`
+  - `src/app/services/ServicesPageClient.tsx`
+  - `src/app/products/[slug]/page.tsx`
+  - `src/app/projects/[id]/page.tsx`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run lint`: pass (`0 errors, 20 warnings`)
+  - `npm run build`: pass
+  - `npx tsc --noEmit`: pass (after build)
+  - `npm run build:pages`: pass
+  - output checks:
+    - `dist/robots.txt` exists and matches launch policy
+    - `dist/sitemap.xml` exists and includes `/products/{slug}/`
+    - `dist/sitemap.xml` excludes `/cart` and `/projects/{id}`
+    - `dist/cart/index.html` contains `noindex, follow`
+    - `dist/projects/brighton-residence/index.html` contains `noindex, follow`
+
 ### Contact Form API Wiring (2026-02-26)
 - Scope:
   - turned `/contact` from visual-only CTA into a real API submit flow.

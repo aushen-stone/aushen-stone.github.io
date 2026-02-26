@@ -4,11 +4,28 @@ import { GrainOverlay } from "./components/GrainOverlay";
 import { Navbar } from "./components/Navbar";
 import { PageOffset } from "@/app/components/PageOffset";
 import { SampleCartProvider } from "./components/cart/SampleCartProvider";
+import { DEFAULT_DESCRIPTION, SITE_NAME, SITE_URL, canonicalUrl } from "@/lib/seo";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Aushen Stone",
-  description: "Natural stone supplier in Melbourne",
+  metadataBase: new URL(SITE_URL),
+  title: `${SITE_NAME} | Natural Stone Supplier in Melbourne`,
+  description: DEFAULT_DESCRIPTION,
+  alternates: {
+    canonical: canonicalUrl("/"),
+  },
+  openGraph: {
+    title: `${SITE_NAME} | Natural Stone Supplier in Melbourne`,
+    description: DEFAULT_DESCRIPTION,
+    url: canonicalUrl("/"),
+    siteName: SITE_NAME,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} | Natural Stone Supplier in Melbourne`,
+    description: DEFAULT_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({
