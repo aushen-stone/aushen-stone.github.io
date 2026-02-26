@@ -28,10 +28,37 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Validate contact API configuration
+        env:
+          NEXT_PUBLIC_CONTACT_API_URL: ${{ vars.NEXT_PUBLIC_CONTACT_API_URL }}
+        run: |
+          if [ -z "${NEXT_PUBLIC_CONTACT_API_URL}" ]; then
+            echo "NEXT_PUBLIC_CONTACT_API_URL is empty. Set it in repository Actions variables."
+            exit 1
+          fi
+          case "${NEXT_PUBLIC_CONTACT_API_URL}" in
+            http://*|https://*)
+              echo "NEXT_PUBLIC_CONTACT_API_URL looks valid."
+              ;;
+            *)
+              echo "NEXT_PUBLIC_CONTACT_API_URL must start with http:// or https://"
+              exit 1
+              ;;
+          esac
+
       - name: Build static export
         env:
           NEXT_PUBLIC_CONTACT_API_URL: ${{ vars.NEXT_PUBLIC_CONTACT_API_URL }}
         run: npm run build:pages
+
+      - name: Verify contact API endpoint is bundled
+        env:
+          NEXT_PUBLIC_CONTACT_API_URL: ${{ vars.NEXT_PUBLIC_CONTACT_API_URL }}
+        run: |
+          if ! rg -F --quiet "${NEXT_PUBLIC_CONTACT_API_URL}" dist; then
+            echo "Built assets do not contain NEXT_PUBLIC_CONTACT_API_URL. Aborting deploy."
+            exit 1
+          fi
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
