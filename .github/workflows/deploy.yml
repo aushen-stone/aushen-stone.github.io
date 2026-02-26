@@ -55,7 +55,7 @@ jobs:
         env:
           NEXT_PUBLIC_CONTACT_API_URL: ${{ vars.NEXT_PUBLIC_CONTACT_API_URL }}
         run: |
-          if ! rg -F --quiet "${NEXT_PUBLIC_CONTACT_API_URL}" dist; then
+          if ! grep -R --fixed-strings --quiet -- "${NEXT_PUBLIC_CONTACT_API_URL}" dist; then
             echo "Built assets do not contain NEXT_PUBLIC_CONTACT_API_URL. Aborting deploy."
             exit 1
           fi
