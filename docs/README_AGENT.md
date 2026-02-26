@@ -43,6 +43,11 @@ Last updated: 2026-02-26
   - content maintenance still depends on engineering workflow (CSV + code changes + deploy)
 
 ## What Changed Last
+- Homepage best-seller cards now use real products (2026-02-26):
+  - `src/app/components/BestSellers.tsx` no longer uses fake Unsplash cards.
+  - cards are now sourced from real generated product data + mapped product images and link to product detail routes.
+  - pinned selection in this pass: `blueocean`, `grey-apricot`, `silver-ash`.
+  - Task A placeholder debt reduced: unresolved shared slots now `2` (`Navbar`, `ServicesSection`).
 - SEO baseline wiring landed (2026-02-26):
   - route-level metadata/canonical now implemented for core routes plus product/project detail routes.
   - static-export metadata routes added:

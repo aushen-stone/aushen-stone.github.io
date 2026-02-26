@@ -4,6 +4,26 @@ Last updated: 2026-02-26
 
 ## Completed and Landed
 
+### Homepage Best Sellers Real Product Wiring (首尾, 2026-02-26)
+- 首:
+  - homepage `Best sellers` section was still using three fake cards (Unsplash images + non-catalog names/prices).
+  - this kept Task A placeholder debt open for `src/app/components/BestSellers.tsx`.
+- 尾:
+  - `Best sellers` now pulls real product cards from generated catalog data and product image overrides.
+  - cards are now clickable and route to `/products/{slug}` detail pages.
+  - pinned homepage selection in this pass:
+    - `blueocean` (Blue Ocean)
+    - `grey-apricot` (Grey Apricot)
+    - `silver-ash` (Silver Ash)
+  - fallback behavior remains safe: mapped image -> default product placeholder image.
+- Files updated:
+  - `src/app/components/BestSellers.tsx`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npx eslint src/app/components/BestSellers.tsx`: pass (`0 errors, 1 warning`)
+
 ### SEO Baseline Wiring for Launch Cutover (2026-02-26)
 - Scope:
   - implemented code-side SEO baseline for static-export launch readiness.

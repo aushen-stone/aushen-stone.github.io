@@ -138,7 +138,6 @@ Launch `aushenstone.com.au` quickly on the current Next.js static site while pro
   - `src/app/services/page.tsx` (`Book a Consultation`, `Contact Us`, `Visit Showroom`)
   - `src/app/products/[slug]/ProductDetailClient.tsx` (`Enquire`, `Book Consultation`, `Call Us`)
   - `src/app/components/Footer.tsx` (newsletter submit)
-  - `src/app/components/BestSellers.tsx` (`Quick View`)
 - Overlap note:
   - `/contact` "Send Message" submit is elevated to `LAUNCH-P0-001` and should be tracked there, not as non-blocking P1 debt.
 - Implemented CTA baseline (already operational):
@@ -163,7 +162,6 @@ Launch `aushenstone.com.au` quickly on the current Next.js static site while pro
   - `src/app/about/page.tsx` (line-level image slots around `49`, `93`, `100`, `107`)
   - `src/app/contact/page.tsx` (placeholder map block around `145`, `147`)
   - `src/app/components/Navbar.tsx` (mega-menu feature image around `443`)
-  - `src/app/components/BestSellers.tsx` (product card images around `15`, `21`, `27`)
   - `src/app/components/ServicesSection.tsx` (service image around `13`)
 - Action:
   - build and maintain a replacement tracker per image slot (`source file + slot + target asset + status`).
@@ -174,11 +172,21 @@ Launch `aushenstone.com.au` quickly on the current Next.js static site while pro
     - `src/app/services/page.tsx` (`15`, `22`, `29`, `201`)
     - `src/app/about/page.tsx` (`49`, `93`, `100`, `107`)
     - `src/app/contact/page.tsx` (`147`)
-  - Remaining placeholder slots (`5`, intentionally deferred this round):
+  - Remaining placeholder slots (`5`, intentionally deferred in that round):
     - `src/app/components/Navbar.tsx` (`443`)
     - `src/app/components/BestSellers.tsx` (`15`, `21`, `27`)
     - `src/app/components/ServicesSection.tsx` (`13`)
   - Temporary policy for this round: provided source images are published as-is (including visible watermark marks) and queued for a later clean-asset pass.
+- Status update (2026-02-26):
+  - `src/app/components/BestSellers.tsx` no longer uses placeholder/Unsplash cards.
+  - homepage best-seller cards are now wired to real catalog products with mapped product imagery and detail-page links.
+  - pinned homepage selection in this pass:
+    - `blueocean` (Blue Ocean)
+    - `grey-apricot` (Grey Apricot)
+    - `silver-ash` (Silver Ash)
+  - Remaining placeholder slots now: `2`
+    - `src/app/components/Navbar.tsx` (`443`)
+    - `src/app/components/ServicesSection.tsx` (`13`)
 - Definition of Done:
   - in-scope routes/components no longer depend on obvious placeholder imagery (`images.unsplash.com` or explicit placeholder markers).
   - tracker status is fully up to date for all in-scope slots.
