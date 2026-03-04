@@ -19,6 +19,7 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isMediumNavTight, setIsMediumNavTight] = useState(false);
+  const headerRef = useRef<HTMLElement | null>(null);
   const desktopGridRef = useRef<HTMLDivElement | null>(null);
   const logoColumnRef = useRef<HTMLDivElement | null>(null);
   const rightClusterRef = useRef<HTMLDivElement | null>(null);
@@ -66,13 +67,27 @@ export function Navbar() {
         setIsMobileMenuOpen(false);
         return;
       }
+      if (activeMenu) {
+        setActiveMenu(null);
+        return;
+      }
       if (isDrawerOpen) {
         closeDrawer();
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isMobileMenuOpen, isDrawerOpen, closeDrawer]);
+  }, [isMobileMenuOpen, activeMenu, isDrawerOpen, closeDrawer]);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setActiveMenu(null);
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     if (!isMobileMenuOpen) return;
@@ -212,6 +227,21 @@ export function Navbar() {
     return () => container.removeEventListener("keydown", handleTabLoop);
   }, [isMobileMenuOpen]);
 
+  useEffect(() => {
+    if (!activeMenu) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (!headerRef.current?.contains(target)) {
+        setActiveMenu(null);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [activeMenu]);
+
   /** 非首页默认实心 Navbar */
   const shouldBeSolid = isScrolled || !!activeMenu || !isHome;
 
@@ -253,6 +283,7 @@ export function Navbar() {
     >
       <Link
         href={item.href}
+        onClick={() => setActiveMenu(null)}
         className={`group relative whitespace-nowrap font-medium uppercase transition-colors flex items-center gap-1 ${desktopNavLinkSizingClass} ${textColorClass}`}
       >
         {item.name}
@@ -274,6 +305,7 @@ export function Navbar() {
   return (
     <>
       <header
+        ref={headerRef}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${navBackgroundClass} ${
           isScrolled ? "h-[var(--nav-h-scrolled)]" : "h-[var(--nav-h-expanded)]"
         }`}
@@ -320,7 +352,11 @@ export function Navbar() {
             ref={logoColumnRef}
             className="min-w-0 flex justify-center transition-all duration-500 z-0"
           >
-            <Link href="/" className="block cursor-pointer">
+            <Link
+              href="/"
+              onClick={() => setActiveMenu(null)}
+              className="block cursor-pointer"
+            >
               <img
                 src="/AushenLogo.webp"
                 alt="Aushen"
@@ -336,6 +372,7 @@ export function Navbar() {
           >
             <Link
               href="/contact"
+              onClick={() => setActiveMenu(null)}
               className="hidden lg:block hover:opacity-70 transition-opacity"
             >
               Contact
@@ -385,6 +422,7 @@ export function Navbar() {
                       <li key={cat.slug}>
                         <Link
                           href={`/products?category=${cat.slug}`}
+                          onClick={() => setActiveMenu(null)}
                           className="block text-sm text-gray-600 hover:text-gray-900 hover:pl-2 transition-all"
                         >
                           {cat.name}
@@ -404,6 +442,7 @@ export function Navbar() {
                       <li key={cat.slug}>
                         <Link
                           href={`/products?category=${cat.slug}`}
+                          onClick={() => setActiveMenu(null)}
                           className="block text-sm text-gray-600 hover:text-gray-900 hover:pl-2 transition-all"
                         >
                           {cat.name}

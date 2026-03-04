@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { Footer } from "@/app/components/Footer";
 import { ArrowDownLeft, ArrowRight, ChevronLeft, ChevronRight, Plus, Minus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -40,6 +40,8 @@ function SelectField({
   onSelect: (value: string) => void;
   ariaLabel: string;
 }) {
+  const isOpenRef = useRef(false);
+
   return (
     <label htmlFor={id} className="flex flex-col gap-1.5">
       <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-gray-500">
@@ -48,7 +50,23 @@ function SelectField({
       <select
         id={id}
         value={selected}
-        onChange={(event) => onSelect(event.target.value)}
+        onMouseDown={(event) => {
+          if (isOpenRef.current) {
+            event.preventDefault();
+            isOpenRef.current = false;
+            event.currentTarget.blur();
+            return;
+          }
+          isOpenRef.current = true;
+        }}
+        onBlur={() => {
+          isOpenRef.current = false;
+        }}
+        onChange={(event) => {
+          onSelect(event.target.value);
+          isOpenRef.current = false;
+          event.currentTarget.blur();
+        }}
         aria-label={ariaLabel}
         disabled={options.length === 0}
         className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:bg-gray-50 disabled:text-gray-400"

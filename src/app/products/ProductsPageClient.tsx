@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useMemo, useRef, useState, type ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
 import { Footer } from "@/app/components/Footer";
 import { PRODUCTS } from "@/data/products.generated";
@@ -85,6 +85,49 @@ const collectApplicationLabels = (product: Product): string[] => {
 
 const hasActiveFilters = (filters: FilterState) =>
   Boolean(filters.query || filters.material || filters.application || filters.tone);
+
+function FilterSelect({
+  value,
+  onValueChange,
+  className,
+  ariaLabel,
+  children,
+}: {
+  value: string;
+  onValueChange: (value: string) => void;
+  className: string;
+  ariaLabel: string;
+  children: ReactNode;
+}) {
+  const isOpenRef = useRef(false);
+
+  return (
+    <select
+      value={value}
+      onMouseDown={(event) => {
+        if (isOpenRef.current) {
+          event.preventDefault();
+          isOpenRef.current = false;
+          event.currentTarget.blur();
+          return;
+        }
+        isOpenRef.current = true;
+      }}
+      onBlur={() => {
+        isOpenRef.current = false;
+      }}
+      onChange={(event) => {
+        onValueChange(event.target.value);
+        isOpenRef.current = false;
+        event.currentTarget.blur();
+      }}
+      className={className}
+      aria-label={ariaLabel}
+    >
+      {children}
+    </select>
+  );
+}
 
 function ProductsPageContent({ initialCategory }: { initialCategory: string | null }) {
   const materials = PRODUCT_CATEGORIES.materials;
@@ -184,9 +227,9 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
 
             <label className="flex flex-col gap-1.5">
               <span className="text-[11px] uppercase tracking-[0.14em] text-gray-500">Material</span>
-              <select
+              <FilterSelect
                 value={filters.material}
-                onChange={(event) => updateFilter("material", event.target.value)}
+                onValueChange={(value) => updateFilter("material", value)}
                 className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 aria-label="Filter by material"
               >
@@ -196,14 +239,14 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
                     {material.name}
                   </option>
                 ))}
-              </select>
+              </FilterSelect>
             </label>
 
             <label className="flex flex-col gap-1.5">
               <span className="text-[11px] uppercase tracking-[0.14em] text-gray-500">Application</span>
-              <select
+              <FilterSelect
                 value={filters.application}
-                onChange={(event) => updateFilter("application", event.target.value)}
+                onValueChange={(value) => updateFilter("application", value)}
                 className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 aria-label="Filter by application"
               >
@@ -213,15 +256,15 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
                     {application.name}
                   </option>
                 ))}
-              </select>
+              </FilterSelect>
             </label>
 
             {TONE_OPTIONS.length > 0 && (
               <label className="flex flex-col gap-1.5 sm:col-span-2 lg:col-span-1">
                 <span className="text-[11px] uppercase tracking-[0.14em] text-gray-500">Tone</span>
-                <select
+                <FilterSelect
                   value={filters.tone}
-                  onChange={(event) => updateFilter("tone", event.target.value)}
+                  onValueChange={(value) => updateFilter("tone", value)}
                   className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                   aria-label="Filter by tone"
                 >
@@ -231,7 +274,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
                       {tone.name}
                     </option>
                   ))}
-                </select>
+                </FilterSelect>
               </label>
             )}
           </div>
