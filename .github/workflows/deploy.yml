@@ -66,4 +66,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: gh-pages
+          cname: aushenstone.com.au
           enable_jekyll: false
