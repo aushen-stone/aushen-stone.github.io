@@ -19,7 +19,13 @@ npm run lint
 npm run build:pages
 ```
 
-`build:pages` performs a static export and copies `out/` to `dist/` for GitHub Pages deployment.
+`build:pages` performs a static export and copies `out/` to `dist/` for GitHub Pages publishing.
+
+## Canonical domain and hosting model
+
+- Canonical public domain: `https://aushenstone.com.au/`.
+- Canonical metadata/sitemap source in code: `src/lib/seo.ts` (`SITE_URL`).
+- GitHub Pages is the publish channel (`dist` -> `gh-pages`), not the canonical domain contract.
 
 ## Contact form API configuration
 
@@ -43,15 +49,7 @@ GitHub Pages workflow build:
 2. Add repository variable `NEXT_PUBLIC_CONTACT_API_URL`.
 3. Use the full endpoint URL including `/contact`.
 
-## GitHub Pages deployment
-
-This repository is configured for **root-path Pages hosting** on `aushen-stone.github.io`.
-
-- Expected site URL: `https://aushen-stone.github.io/`
-- No `basePath` is configured because this is a user/organization Pages repository (root path deployment).
-- Deployment uses `secrets.GITHUB_TOKEN` only (no personal access token).
-
-### Workflow
+## GitHub Pages deployment channel
 
 Deployment workflow file:
 
@@ -84,17 +82,16 @@ Workflow steps:
    - Confirm repository Actions permission is `Read and write`.
 
 2. `_next` assets return `404`
-   - For this repository (`aushen-stone.github.io`), keep root-path setup (no `basePath`).
-   - If moved to a project repository (for example `user/repo`), update Next config to use the repo path prefix (`basePath` and usually `assetPrefix`).
+   - Keep root-path static export setup (`trailingSlash: true`, no `basePath` for current setup).
+   - If hosting topology changes, update Next config and deployment docs together.
 
 3. Dynamic route path opens `404`
    - Static export only includes pre-generated params from `generateStaticParams()`.
-   - Add the missing slug/id to generation input, then rebuild and redeploy.
+   - Add missing slug/id to generation input, then rebuild and redeploy.
 
-4. Route loads locally but refresh on Pages returns `404`
-   - Keep `trailingSlash: true` so exported routes map to folder `index.html` paths on static hosting.
+4. Route loads locally but refresh on static host returns `404`
+   - Keep `trailingSlash: true` so exported routes map to folder `index.html` paths.
 
 5. CI fails at install stage
    - Re-run workflow to rule out transient npm/network issue.
    - If persistent, inspect lockfile/dependency drift and ensure Node 20 compatibility.
-   - This repo currently uses `legacy-peer-deps=true` because `@studio-freight/react-lenis@0.0.47` does not declare React 19 peer support yet.

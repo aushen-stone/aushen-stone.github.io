@@ -400,6 +400,14 @@ export default function ContactPage() {
                    </div>
                    <p className="text-sm text-gray-600 leading-loose">
                      <a
+                       href={CONTACT_INFO.landlineLink}
+                       className="hover:text-[#1a1c18] transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+                       aria-label={`Call landline ${CONTACT_INFO.landlineDisplay}`}
+                     >
+                       Landline: {CONTACT_INFO.landlineDisplay}
+                     </a>
+                     <br/>
+                     <a
                        href={CONTACT_INFO.phoneLink}
                        className="hover:text-[#1a1c18] transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
                        aria-label={`Call ${CONTACT_INFO.phoneDisplay}`}
@@ -513,7 +521,6 @@ export default function ContactPage() {
                    <textarea 
                      rows={4}
                      required
-                     data-lenis-prevent-wheel
                      className="w-full bg-transparent border-b border-gray-200 py-4 text-lg text-[#1a1c18] placeholder:text-gray-200 focus:outline-none focus:border-[#1a1c18] transition-colors font-serif resize-none overflow-y-auto"
                      value={formState.message}
                      onChange={(event) => updateField("message")(event.target.value)}

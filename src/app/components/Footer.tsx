@@ -52,6 +52,14 @@ export function Footer() {
             </a>
             <p className="mt-4">
               <a
+                href={CONTACT_INFO.landlineLink}
+                aria-label={`Call landline ${CONTACT_INFO.landlineDisplay}`}
+                className="rounded-sm hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
+              >
+                Landline: {CONTACT_INFO.landlineDisplay}
+              </a>
+              <br />
+              <a
                 href={CONTACT_INFO.phoneLink}
                 aria-label={`Call ${CONTACT_INFO.phoneDisplay}`}
                 className="rounded-sm hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"

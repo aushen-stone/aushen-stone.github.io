@@ -4,6 +4,8 @@ export const CONTACT_INFO = {
   addressLabel: "16a/347 Bay Rd, Cheltenham VIC 3192",
   phoneDisplay: "0430 799 906",
   phoneLink: "tel:+61430799906",
+  landlineDisplay: "03-9585 7005",
+  landlineLink: "tel:+61395857005",
   email: "info@aushenstone.com.au",
   mapDirectionsUrl:
     "https://www.google.com/maps/dir/?api=1&destination=16a%2F347+Bay+Rd%2C+Cheltenham+VIC+3192",

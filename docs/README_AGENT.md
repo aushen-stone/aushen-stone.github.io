@@ -1,152 +1,57 @@
 # README_AGENT - Single Entry for All Agents
 
-Last updated: 2026-02-26
+Last updated: 2026-03-04
+
+## Purpose
+- Keep handoff low-overhead and execution-focused.
+- Agent startup rule: read this file first.
+- Active read order:
+  1. `docs/NEXT_STEPS.md` (active execution board)
+  2. `docs/ARCHITECTURE.md` (stable facts and contracts)
+  3. `docs/WORKLOG.md` (historical detail)
+
+## Canonical Environment
+- Canonical public domain: `https://aushenstone.com.au/`.
+- GitHub Pages is the hosting/publish channel (`build:pages -> dist -> gh-pages`), not the canonical domain contract.
+- Canonical URL source in code: `src/lib/seo.ts` (`SITE_URL`).
 
 ## Current Objective
-- Maintain a single-entry, low-overhead handoff workflow.
-- Keep execution focused on `docs/NEXT_STEPS.md`.
-- P0 is now reopened for domain cutover readiness:
-  - `LAUNCH-P0-001`: `/contact` form submit delivery
-  - `LAUNCH-P0-002`: legacy WordPress URL -> new URL 301 redirect mapping
-  - `LAUNCH-P0-003`: launch SEO crawl/index baseline (`robots.txt`, `sitemap.xml`, route-level metadata)
-  - `LAUNCH-P0-004`: GA4 + Search Console launch telemetry validation
-  - `LAUNCH-P0-005`: domain cutover + rollback runbook
-- P1 remains post-cutover quality scope:
-  - non-contact CTA actionability completion
-  - image/lint warning reduction
-  - Task A: placeholder visual cleanup on non-Project/Product routes/components (`/`, `/services`, `/about`, `/contact`)
-  - Task B: contact-critical information unification (address/phone/email/hours/map/social)
-  - GitHub Pages deployment reproducibility and dependency-compat cleanup
-  - responsive QA evidence + automation follow-up after full-route squeeze hardening
-- Maintain a P2 lightweight-admin roadmap for non-engineering content updates (docs-only at this stage).
-- Update docs only on major changes (behavior/gates/contracts/priorities/risks).
+- Launch `aushenstone.com.au` with safe WordPress cutover.
+- Close launch blockers tracked in `NEXT_STEPS` (`LAUNCH-P0-001`..`LAUNCH-P0-005`).
+- Keep P1 quality work active without blocking cutover, except explicitly elevated risks.
 
-## System Health Snapshot
-- Current build state:
-  - `npm run build`: pass (`next build --webpack`)
-  - `npx tsc --noEmit`: pass **after** build (`.next/types` must exist)
-  - `npm run lint`: `0 errors, 20 warnings`
-  - `npm run build:pages`: pass (static export + `dist` output)
-- Current blocking gaps (`P0`):
-  - `LAUNCH-P0-001`: client submit flow is implemented, but production endpoint/config validation is still pending.
-  - `LAUNCH-P0-002`: redirect map for legacy WordPress URLs is not defined/executed.
-  - `LAUNCH-P0-003`: code-side SEO baseline is implemented; production crawl/index validation is still pending.
-  - `LAUNCH-P0-004`: launch telemetry checks are not verified.
-  - `LAUNCH-P0-005`: domain cutover and rollback runbook not yet validated.
-- Known non-blocking debt:
-  - image optimization warnings (`@next/next/no-img-element`)
-  - non-contact CTA behavior completion outside P0-critical paths
-  - non-project/non-product placeholder visual inventory replacement (Task A in `NEXT_STEPS`)
-  - contact-critical follow-ups: real social-profile destinations + published legal-policy links (Task B in `NEXT_STEPS`)
-  - automated e2e coverage
-  - temporary `legacy-peer-deps` fallback for `npm ci` (React 19 + `@studio-freight/react-lenis` peer declaration mismatch)
-  - content maintenance still depends on engineering workflow (CSV + code changes + deploy)
+## Health Snapshot (2026-03-04)
+- `npm run lint`: pass (`0 errors, 20 warnings`)
+- `npm run build`: pass
+- `npx tsc --noEmit`: pass (after build)
+- `npm run build:pages`: pass
 
-## What Changed Last
-- Primary CTA routing sweep landed (2026-02-26):
-  - tracked visual-only primary CTA buttons are now bound to `/contact` across Hero, Creative Hub, Services, Product Detail secondary CTA row, and Footer newsletter submit intent.
-  - dynamic product-detail secondary CTA label variants (for example `Call Us`) now also route to `/contact`.
-  - sample-cart funnel behavior is unchanged (`Order Free Sample` + cart-origin handoff remain intact).
-- Sample-cart prefill lifecycle and template were completed (2026-02-26):
-  - `Ask for sample` handoff message now uses polite request copy with numbered sample lines and context placeholders.
-  - contact prefill is no longer removed on first read, and is now refresh-safe before submit.
-  - prefill storage is cleared only after successful submit for `source=sample-cart`.
-  - fallback prefill from sample-cart lines is enabled when handoff key is missing, without overriding user-edited message.
-- Homepage best-seller cards now use real products (2026-02-26):
-  - `src/app/components/BestSellers.tsx` no longer uses fake Unsplash cards.
-  - cards are now sourced from real generated product data + mapped product images and link to product detail routes.
-  - pinned selection in this pass: `blueocean`, `grey-apricot`, `silver-ash`.
-  - Task A placeholder debt reduced: unresolved shared slots now `2` (`Navbar`, `ServicesSection`).
-- SEO baseline wiring landed (2026-02-26):
-  - route-level metadata/canonical now implemented for core routes plus product/project detail routes.
-  - static-export metadata routes added:
-    - `GET /robots.txt` (`Allow: /`, `Disallow: /cart`)
-    - `GET /sitemap.xml` (core index routes + all `/products/[slug]`).
-  - indexing policy landed:
-    - `/cart`: `noindex,follow`
-    - `/projects/[id]`: `noindex,follow`
-    - `/products/[slug]`: indexable and included in sitemap.
-  - client routes were split into `Server page.tsx + *PageClient.tsx` to support route-level metadata under App Router.
-- Contact form API wiring landed (2026-02-26):
-  - `/contact` now submits to `NEXT_PUBLIC_CONTACT_API_URL` with loading/success/error states.
-  - honeypot field and API-misconfiguration guard are in place.
-  - deployment docs/workflow now include `NEXT_PUBLIC_CONTACT_API_URL` build-time wiring.
-- Launch cutover docs realignment (2026-02-25):
-  - reopened `P0` for WordPress -> new-site domain cutover readiness.
-  - added overlap-dedup rules so the same work item is not tracked twice across P0/P1.
-  - updated `NEXT_STEPS` test/exit criteria to include launch migration gates.
-- Task B round 2 actionable contact links landed (2026-02-25):
-  - introduced single-source contact constants in `src/data/contact.ts`.
-  - Contact + Footer address/phone/email are now actionable links:
-    - address -> Google Maps directions
-    - phone -> `tel:+61430799906`
-    - email -> `mailto:info@aushenstone.com.au`
-  - Contact map visual is now clickable and routes to the same directions target.
-  - careers `mailto` now reuses the same contact source-of-truth.
-  - intentionally kept social homepage links and legal on-request placeholders unchanged.
-- Task B round 1 contact unification landed (2026-02-25):
-  - unified contact-critical values across Footer and Contact:
-    - address: `16a/347 Bay Rd, Cheltenham VIC 3192`
-    - phone: `0430 799 906`
-    - email: `info@aushenstone.com.au`
-    - business hours: `Mon-Fri 8:30am-4:30pm`, `Sat 10:00am-3:00pm`, `Sun Closed`
-  - updated Contact map link to the same address target.
-  - updated Footer careers mailto destination to `info@aushenstone.com.au`.
-  - intentionally kept social homepage links and legal on-request placeholders unchanged pending owner-provided destinations.
-- Task A round 1 image replacement landed (2026-02-25):
-  - replaced `9` in-scope placeholders on `/services`, `/about`, and `/contact` using local assets in `public/task-a-2026-02-24/`.
-  - deferred `5` placeholder slots remain tracked in `NEXT_STEPS` (`Navbar`, `BestSellers`, `ServicesSection`).
-  - temporary policy applied this round: source images were published without watermark cleanup.
-- Docs convergence finalized (2026-02-23):
-  - placeholder and information-cleanup work in `NEXT_STEPS` is now consolidated into two explicit tasks:
-    - Task A: non-Project/Product placeholder visuals.
-    - Task B: contact-critical information unification.
-  - all other roadmap items remain in place; this change is docs-only.
-- Navbar desktop visibility rebalance finalized (2026-02-10):
-  - desktop nav now appears from `1024px` (`lg`) instead of waiting for ultra-wide screens.
-  - `1024-1535` uses deterministic two-row split navigation (`2+2`), and `>=1536` returns to single-row desktop nav.
-  - desktop left nav removes `Get in Touch`; right-side `Contact` remains; mobile drawer keeps `Get in Touch`.
-  - validation: `npm run lint` (`0 errors, 20 warnings`) and `npm run build` both pass.
-- Product UX refresh finalized (2026-02-10):
-  - `/products` now uses compact finder layout (top toolbar filters + fixed-density grid).
-  - `/products/[slug]` now keeps `View Mode` in a low-priority footer-adjacent section.
-  - audience switch affects audience notes only; CTA stack is fixed homeowner-priority.
-  - validation: `npm run lint` (`0 errors, 20 warnings`) and `npm run build` both pass.
-- GitHub Pages deployment baseline is active (2026-02-10):
-  - static export + dynamic route `generateStaticParams` wrappers are in place.
-  - publish path is `build:pages` -> `dist` -> `gh-pages`.
-  - CI install still relies on `legacy-peer-deps` fallback until dependency compatibility cleanup.
-- Documentation hygiene:
-  - `README_AGENT` keeps high-signal current-state summaries only.
-  - detailed implementation history remains in `docs/WORKLOG.md`.
+## Active Risk Snapshot
+- `LAUNCH-P0-001` contact submit delivery: `Blocked` (production endpoint validation pending).
+- `LAUNCH-P0-002` legacy URL redirects: `Blocked` (redirect owner/ruleset pending).
+- `LAUNCH-P0-003` crawl/index baseline validation: `In Progress` (code baseline landed; production verification pending).
+- `LAUNCH-P0-004` GA4 + Search Console validation: `Blocked` (telemetry owner/access pending).
+- `LAUNCH-P0-005` cutover + rollback runbook: `Blocked` (runbook owner and dry-run pending).
+- `P1-DATA-LINK-001` project detail product-link mismatch: `Open` (project product slugs can route to non-generated product paths).
 
-## Where to Read Next
-- If implementing features or fixes:
-  - read `docs/NEXT_STEPS.md` first (start with `P0` launch-cutover blockers)
-  - then read `docs/WORKLOG.md` for recent context
-- If changing data/model/contracts:
-  - read `docs/ARCHITECTURE.md` first
-  - then read `docs/NEXT_STEPS.md`
-- If validating release readiness:
-  - read `docs/NEXT_STEPS.md` (`Exit Criteria`, `Verification Commands`, `Test Cases / Scenarios`)
-  - then compare with `docs/WORKLOG.md` (`Validation Snapshot`)
+## Documentation Consistency Rules
+- Active docs must not use line-number-based tracking.
+- Active status vocabulary is fixed: `Open`, `Blocked`, `In Progress`, `Done`.
+- Each active risk item must include `Owner`, `Evidence`, and `Exit Criteria`.
+- Fact conflicts are resolved by `docs/ARCHITECTURE.md` and current code.
+- Execution precedence for active docs:
+  - `NEXT_STEPS.md` > `README_AGENT.md` > `WORKLOG.md` > `ARCHITECTURE.md`
+  - Architecture facts precedence: `ARCHITECTURE.md` is authoritative.
 
-## Non-Negotiables
-- Agent startup rule:
-  - always read this file first (`docs/README_AGENT.md`)
-- Conflict resolution:
-  - execution precedence: `NEXT_STEPS.md` > `README_AGENT.md` > `WORKLOG.md` > `ARCHITECTURE.md`
-  - architecture facts precedence: `ARCHITECTURE.md` is authoritative
-- Major-change gate (docs update required):
-  - user-visible behavior changes
-  - engineering gate status changes (`lint`, `tsc`, `build`)
-  - architecture/data contract changes
-  - priority/blocker changes (`P0/P1`)
-  - new risks that affect handoff safety
-- For major changes, update at least:
-  - `docs/NEXT_STEPS.md`
-  - `docs/WORKLOG.md`
-  - `docs/README_AGENT.md`
-- Do not create new date-based active docs for next steps/worklog/handover.
-- Archive-only rule:
-  - historical snapshots go under `docs/archive/`
+## Update Gate (When Docs Must Be Updated)
+- User-visible behavior change.
+- Engineering gate state change (`lint`, `build`, `tsc`, `build:pages`).
+- Architecture/data contract change.
+- Priority or blocker change (`P0/P1/P2`).
+- New handoff risk affecting execution safety.
+
+## Active vs History Split
+- Keep active execution intent in `docs/NEXT_STEPS.md` only.
+- Keep architectural facts/contracts in `docs/ARCHITECTURE.md` only.
+- Keep implementation history and retrospective detail in `docs/WORKLOG.md`.
+- Do not create new date-based active handover docs.

@@ -1,177 +1,113 @@
 # Aushen Web - Architecture Overview
 
-Last updated: 2026-02-10
+Last updated: 2026-03-04
 
 ## Project Type
-- Next.js App Router project.
-- Frontend-only app with static data and generated TypeScript data files.
-- Static-export deployment target on GitHub Pages (`aushen-stone.github.io`, root path mode).
+- Next.js App Router frontend.
+- Static-export deployment model (`output: "export"`).
+- Runtime uses generated product data + manual override layer.
+
+## Canonical Domain and Hosting
+- Canonical public domain contract: `https://aushenstone.com.au/`.
+- Canonical URL source in code: `src/lib/seo.ts` (`SITE_URL`).
+- GitHub Pages is the publish channel (`dist` -> `gh-pages`), not canonical URL authority.
 
 ## Deployment Model
-- Build/export:
-  - Next config uses static export baseline:
-    - `output: "export"`
-    - `trailingSlash: true`
-    - `images.unoptimized: true`
-  - `npm run build:pages` runs `next build --webpack` and copies `out/` to `dist/`.
-- Publish:
-  - GitHub Actions workflow: `.github/workflows/deploy.yml`
-  - trigger: push to `main` + `workflow_dispatch`
+- Build/export baseline (`next.config.ts`):
+  - `output: "export"`
+  - `trailingSlash: true`
+  - `images.unoptimized: true`
+- Build command:
+  - `npm run build` -> `next build --webpack`
+  - `npm run build:pages` -> `next build --webpack && rm -rf dist && cp -R out dist`
+- Publish workflow:
+  - `.github/workflows/deploy.yml`
+  - trigger: `push main` + `workflow_dispatch`
   - publish action: `peaceiris/actions-gh-pages@v4`
-  - target branch/folder: `gh-pages` / `dist`
-  - credentials: `secrets.GITHUB_TOKEN` only (no PAT).
-- Install compatibility:
-  - CI currently uses `npm ci --legacy-peer-deps` due peer declaration mismatch (`@studio-freight/react-lenis@0.0.47` vs React 19).
+  - publish target: `gh-pages` branch, `dist/` folder
 
-## Planned Evolution (P2 Target; Not Implemented)
-- Current architecture remains frontend-only in runtime.
-- Planned improvement path (`ADM-LITE-001`):
-  - lightweight admin surface under `/admin` for display-content maintenance.
-  - single-account login with basic session hardening.
-  - GitHub PR-based publish flow (branch/commit/PR), no direct `main` write.
-  - product structural records remain CSV-driven in v1; admin scope is display-layer overrides only.
+## Route Architecture
+- Homepage composition: `src/app/page.tsx`.
+- Server wrapper routes (metadata ownership):
+  - `src/app/about/page.tsx`
+  - `src/app/contact/page.tsx`
+  - `src/app/products/page.tsx`
+  - `src/app/projects/page.tsx`
+  - `src/app/services/page.tsx`
+  - `src/app/cart/page.tsx`
+- Client route implementations:
+  - `*PageClient.tsx` files under corresponding route folders.
 
-## Directory Structure (High Level)
-- `src/app/` contains routes and page-level UI.
-- `src/app/components/` contains reusable UI sections and layout components.
-- `src/data/` contains generated data and manual overrides.
-- `src/types/` contains shared TypeScript types.
-- `public/` contains static assets.
-- `scripts/` contains data build tooling.
-- `docs/` contains project documentation.
+## Dynamic Route Static-Export Contract
+- Product detail route:
+  - `src/app/products/[slug]/page.tsx`
+  - uses `generateStaticParams()` from `PRODUCTS`
+  - sets `dynamicParams = false`
+- Project detail route:
+  - `src/app/projects/[id]/page.tsx`
+  - uses fixed static id list in file
+  - sets `dynamicParams = false`
 
-## Documentation Workflow
-- Single-entry file for all agents: `docs/README_AGENT.md`.
-- Canonical active docs:
-  - `docs/README_AGENT.md`
-  - `docs/ARCHITECTURE.md`
-  - `docs/NEXT_STEPS.md`
-  - `docs/WORKLOG.md`
-- Archived session snapshots belong under `docs/archive/` (not in active execution flow).
-- Conflict handling:
-  - Execution precedence: `NEXT_STEPS.md` > `README_AGENT.md` > `WORKLOG.md` > `ARCHITECTURE.md`
-  - Architecture facts are authoritative in `ARCHITECTURE.md`.
+## SEO and Indexing Contract
+- Metadata utilities: `src/lib/seo.ts`.
+- Metadata routes:
+  - `src/app/robots.ts`
+  - `src/app/sitemap.ts`
+- Index policy:
+  - `/cart`: `noindex,follow`
+  - `/projects/[id]`: `noindex,follow`
+  - `/products/[slug]`: indexable
+- Sitemap content:
+  - core static routes + generated product detail routes.
 
-## Routing
-- `src/app/page.tsx` is the homepage composition.
-- Product list: `src/app/products/page.tsx`
-- Product detail:
-  - server wrapper: `src/app/products/[slug]/page.tsx`
-  - client implementation: `src/app/products/[slug]/ProductDetailClient.tsx`
-- Other routes: `about`, `contact`, `services`, `projects`
-- Global navbar is rendered in `src/app/layout.tsx` only.
-- Dynamic-route static export contract:
-  - `src/app/products/[slug]/page.tsx` uses `generateStaticParams()` from `PRODUCTS` and sets `dynamicParams = false`.
-  - `src/app/projects/[id]/page.tsx` uses fixed slug list and sets `dynamicParams = false`.
-
-## Data Flow
-- Source of truth: `docs/aushen_product_library.csv` (outside app folder).
-- Build step: `scripts/build-product-data.ts` parses CSV and generates:
+## Data Model and Flow
+- Product source of truth: `../docs/aushen_product_library.csv` (repo root `docs/`).
+- Data generation script: `scripts/build-product-data.ts`.
+- Generated outputs:
   - `src/data/products.generated.ts`
   - `src/data/categories.generated.ts`
-- Manual override layer:
-  - `src/data/product_overrides.ts` for tone tags, description, and image overrides.
-  - planned editable source (target, not active yet): `src/data/product_overrides.editable.json`
-  - Audience-specific content fields for product detail:
-    - `homeownerSummary`, `homeownerUseCases`
-    - `professionalSummary`, `professionalNotes`
-    - `ctaOverride`
-  - Placeholder image path: `/Application001.webp`
+- Override layer:
+  - `src/data/product_overrides.ts`
+  - generated image mapping: `src/data/product_images.generated.ts`
+- Generated files are build artifacts and must not be edited manually.
 
-## Data Contracts (What to Read vs. What to Write)
-- **Read from**:
-  - `Product.applicationIndex` for application-first UI (application -> finish -> sizes).
-  - `Product.finishes` if you need raw finish/application matrix.
-- **Write to**:
-  - `docs/aushen_product_library.csv` for product inventory changes.
-  - `src/data/product_overrides.ts` for tone tags, descriptions, and image mapping.
-  - planned (when `ADM-LITE-001` implementation starts): `src/data/product_overrides.editable.json` as admin-editable display source.
-- **Do not edit**:
-  - `src/data/products.generated.ts` and `src/data/categories.generated.ts` (build artifacts; regenerate instead).
+## Product and Cart Contracts
+- Product core type: `Product` in `src/types/product.ts`.
+- Product detail selector model is application-first (`applicationIndex`), then finish, then size.
+- Sample cart contract (`src/types/cart.ts`):
+  - storage key: `aushen_sample_cart_v1`
+  - prefill handoff key: `aushen_sample_cart_contact_prefill_v1`
+  - cleared marker key: `aushen_sample_cart_contact_prefill_cleared_v1`
+  - variant key semantics: `productSlug + finishId`
+  - line limit: `10`
+  - sample size: `200x100mm`
 
-## Planned Admin Contracts (P2 Target; Docs-Only)
-- Planned routes:
-  - `/admin/login`
-  - `/admin`
-  - `/admin/products`
-  - `/admin/products/:slug`
-- Planned APIs:
-  - `POST /api/admin/login`
-  - `POST /api/admin/logout`
-  - `GET /api/admin/products`
-  - `GET /api/admin/products/:slug`
-  - `POST /api/admin/products/:slug/save-pr`
-- Planned core types:
-  - `AdminEditableOverride`
-  - `AdminSavePrRequest`
-  - `AdminSavePrResponse`
-  - `AdminSessionUser`
-- Planned transition model:
-  - display overrides: admin-editable JSON target.
-  - product structure (`material/finish/application/size`): stays in CSV pipeline for v1.
+## Contact Submission Contract
+- Contact submit client: `src/app/contact/ContactPageClient.tsx`.
+- Build-time endpoint env var: `NEXT_PUBLIC_CONTACT_API_URL`.
+- CI validates variable shape and checks endpoint string is bundled in `dist`.
 
-## Core Data Types
-- `Product`
-  - `materialId`, `materialName`
-  - `finishes` (finish variants with applications and sizes)
-  - `applicationIndex` (application-first index with finishes + sizes)
-  - `media` (product photo status + application photo progress)
-- `FinishVariant`
-  - `slipRating`
-  - `applications` (each with sizes)
-- `ApplicationIndexEntry`
-  - `label` and `category` metadata
-  - `finishes` for that application, each with sizes
-- `AudienceMode`
-  - `"homeowner" | "professional"`
+## Project Detail Content Contract
+- Current project detail content is hard-coded in `src/app/projects/[id]/ProjectDetailClient.tsx`.
+- Project detail `project.products[].slug` must align with generated product routes or provide fallback behavior.
 
-## Product UX
-- Product list (`/products`)
-  - Uses generated product data.
-  - Filters: material, application, tone.
-  - Desktop sidebar + mobile drawer share `ProductSidebar`.
-  - Mobile drawer supports ESC close, overlay close, and body scroll lock.
-  - Placeholder images unless overridden.
-- Product detail (`/products/[slug]`)
-  - Application-first selector, then finish.
-  - Sizes are shown for the selected application+finish.
-  - CTA stack is fixed (Homeowner-priority sequence) for stable sample-cart funnel behavior.
-  - Audience toggle remains available as a low-priority footer-adjacent control.
-  - Audience toggle affects audience copy only (not CTA order/priority).
-  - Description and audience copy come from overrides, otherwise defaults.
+## Documentation Model
+- Active docs:
+  - `docs/README_AGENT.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/ARCHITECTURE.md`
+  - `docs/WORKLOG.md`
+- Active execution board is `docs/NEXT_STEPS.md`.
+- Historical implementation detail is `docs/WORKLOG.md`.
+- Fact conflicts are resolved by this file and current code.
 
-## Layout & Semantics
-- `src/app/layout.tsx` contains:
-  - Global `Navbar`
-  - `GrainOverlay`
-  - `PageOffset`
-- `PageOffset` uses a `div` wrapper (not `main`) to avoid nested landmark issues.
+## Planned Evolution (P2, Not Implemented)
+- `ADM-LITE-001` lightweight admin portal remains backlog.
+- v1 intent: edit display-layer product overrides only.
+- Product structural records remain CSV-driven in v1.
 
-## Category Sources
-- Materials and applications are generated from the CSV into `categories.generated.ts`.
-- Navbar and sidebar menus use the generated categories.
-
-## Regenerating Data
-From `aushen-web/`:
-```bash
-npx tsc --target ES2019 --module commonjs --esModuleInterop --outDir /tmp/aushen-scripts scripts/build-product-data.ts
-node /tmp/aushen-scripts/build-product-data.js
-```
-
-## Pitfalls & Gotchas
-- **CSV header format**: 3-row header + forward-filled product fields. Missing this yields wrong grouping.
-- **Size values are messy**: mixed formats (`600x400x20/60`, `Random Size x20-30mm`, parentheses). We keep `raw` and only parse clean values.
-- **Dynamic route split required for static export**: keep `generateStaticParams` in server `page.tsx`, and interactive UI in `*Client.tsx`.
-- **Generated files are overwritten** on regeneration.
-- **Strict lint rules**: `react/no-unescaped-entities`, `no-html-link-for-pages`, `react-hooks/set-state-in-effect` are common sources of dev errors.
-- **Build environment**: build command uses webpack mode (`next build --webpack`) in this environment for stability.
-- **Peer dependency mismatch**: current install relies on `legacy-peer-deps`; remove only after dependency compatibility is resolved.
-- **Lint scope**: generated `dist/` output must remain ignored by ESLint.
-
-## Legacy / Unused
-- `src/data/categories.ts` is legacy; the app uses `src/data/categories.generated.ts`.
-
-## Notable Constraints
-- CSV contains a matrix of applications and sizes with forward-filled product metadata.
-- Size parsing is best-effort and keeps raw size strings when parsing is ambiguous.
-- Tone tags and descriptions are not in CSV and must be manually defined.
+## Pitfalls and Constraints
+- CSV parsing relies on multi-row header and forward-filled product context.
+- Size parsing is best-effort; ambiguous values keep raw string.
+- Static-export dynamic routes require explicit `generateStaticParams` coverage.
+- `dist` and generated data files are overwritten by build/generation commands.

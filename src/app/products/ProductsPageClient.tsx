@@ -231,7 +231,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
                 value={filters.material}
                 onValueChange={(value) => updateFilter("material", value)}
                 className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                aria-label="Filter by material"
+                ariaLabel="Filter by material"
               >
                 <option value="">All Materials</option>
                 {materials.map((material) => (
@@ -248,7 +248,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
                 value={filters.application}
                 onValueChange={(value) => updateFilter("application", value)}
                 className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                aria-label="Filter by application"
+                ariaLabel="Filter by application"
               >
                 <option value="">All Applications</option>
                 {applications.map((application) => (
@@ -266,7 +266,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
                   value={filters.tone}
                   onValueChange={(value) => updateFilter("tone", value)}
                   className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                  aria-label="Filter by tone"
+                  ariaLabel="Filter by tone"
                 >
                   <option value="">All Tones</option>
                   {TONE_OPTIONS.map((tone) => (

@@ -1,8 +1,74 @@
 # Worklog - Aushen Web
 
-Last updated: 2026-02-26
+Last updated: 2026-03-06
 
 ## Completed and Landed
+
+### Contact Landline Addition (2026-03-06)
+- Scope:
+  - added Aushen landline number to shared contact constants and contact-critical UI surfaces.
+- Behavior landed:
+  - contact surfaces now show both:
+    - mobile: `0430 799 906` (`tel:+61430799906`)
+    - landline: `03-9585 7005` (`tel:+61395857005`)
+- Files updated:
+  - `src/data/contact.ts`
+  - `src/app/components/Footer.tsx`
+  - `src/app/contact/ContactPageClient.tsx`
+  - `docs/WORKLOG.md`
+
+### Documentation Stabilization Pass (2026-03-04)
+- Scope:
+  - docs-only governance pass; no runtime code changes.
+  - converted active documentation to execution-first contracts and removed stale path/line tracking from active board.
+- Decision baseline enforced:
+  - canonical production domain is `https://aushenstone.com.au/`.
+  - GitHub Pages is publish channel only (`dist` -> `gh-pages`).
+  - `/projects/[id]` product-link mismatch elevated as active `P1` risk (`P1-DATA-LINK-001`).
+- Files updated:
+  - `docs/README_AGENT.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/ARCHITECTURE.md`
+  - `README.md`
+  - `docs/WORKLOG.md`
+- Key outcomes:
+  - `README_AGENT` reduced to single-entry startup guide + consistency rules.
+  - `NEXT_STEPS` now tracks active execution items only (`Owner/Evidence/Exit Criteria` required).
+  - domain narrative is consistent across active docs and aligned with `src/lib/seo.ts`.
+  - active tracking references use stable anchors (file + semantic marker), not line numbers.
+- Validation commands run:
+  - `npm run lint` -> pass (`0 errors, 20 warnings`)
+  - `npm run build` -> pass
+  - `npx tsc --noEmit` -> pass
+  - `npm run build:pages` -> pass
+- Residual blockers carried forward:
+  - social profile destination URLs (Owner: TBD)
+  - legal policy destination URLs (Owner: TBD)
+  - legacy redirect execution owner/runbook (`LAUNCH-P0-002`, `LAUNCH-P0-005`)
+  - telemetry owner/access for GA4 + Search Console (`LAUNCH-P0-004`)
+
+### Smooth Scroll Dependency Removal + Install Baseline Cleanup (2026-03-04)
+- Scope implemented:
+  - removed smooth-scroll runtime dependency `@studio-freight/react-lenis`.
+  - removed smooth-scroll wrapper usage from root layout.
+  - removed residual Lenis-only attribute in contact textarea.
+  - removed legacy peer-deps fallback from local and CI install paths.
+- Files updated:
+  - `package.json`
+  - `package-lock.json`
+  - `src/app/layout.tsx`
+  - `src/app/components/SmoothScroll.tsx` (deleted)
+  - `src/app/contact/ContactPageClient.tsx`
+  - `.npmrc` (deleted)
+  - `.github/workflows/deploy.yml`
+  - `README.md`
+  - `docs/README_AGENT.md`
+  - `docs/ARCHITECTURE.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm ci`: pass
+  - `npm run build`: pass
 
 ### Primary CTA Contact Routing Sweep (首尾, 2026-02-26)
 - 首:
