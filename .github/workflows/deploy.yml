@@ -80,3 +80,12 @@ jobs:
           publish_branch: gh-pages
           cname: aushenstone.com.au
           enable_jekyll: false
+
+      - name: Smoke test custom domain
+        run: |
+          curl --fail --silent --show-error \
+            --retry 12 \
+            --retry-delay 10 \
+            --retry-all-errors \
+            --head \
+            https://aushenstone.com.au > /dev/null
