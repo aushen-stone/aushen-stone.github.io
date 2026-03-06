@@ -60,6 +60,18 @@ jobs:
             exit 1
           fi
 
+      - name: Verify custom domain CNAME is bundled
+        run: |
+          if [ ! -f dist/CNAME ]; then
+            echo "dist/CNAME is missing. Aborting deploy to protect custom domain."
+            exit 1
+          fi
+          CNAME_VALUE="$(tr -d '\r\n' < dist/CNAME)"
+          if [ "${CNAME_VALUE}" != "aushenstone.com.au" ]; then
+            echo "dist/CNAME must be exactly 'aushenstone.com.au'. Found: '${CNAME_VALUE}'"
+            exit 1
+          fi
+
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
