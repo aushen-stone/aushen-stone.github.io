@@ -4,7 +4,15 @@ import { canonicalUrl } from "@/lib/seo";
 
 export const dynamic = "force-static";
 
-const STATIC_ROUTES = ["/", "/about/", "/contact/", "/products/", "/projects/", "/services/"];
+const STATIC_ROUTES = [
+  "/",
+  "/about/",
+  "/contact/",
+  "/products/",
+  "/projects/",
+  "/services/",
+  "/terms-condition/",
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
@@ -13,7 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: canonicalUrl(path),
     lastModified,
     changeFrequency: "weekly",
-    priority: path === "/" ? 1 : 0.8,
+    priority: path === "/" ? 1 : path === "/terms-condition/" ? 0.5 : 0.8,
   }));
 
   const productEntries: MetadataRoute.Sitemap = PRODUCTS.map((product) => ({

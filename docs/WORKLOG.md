@@ -1,8 +1,33 @@
 # Worklog - Aushen Web
 
-Last updated: 2026-03-06
+Last updated: 2026-03-12
 
 ## Completed and Landed
+
+### Terms & Conditions Page Launch (2026-03-12)
+- Scope:
+  - published an indexable static legal page for AUSHEN terms and conditions.
+  - replaced Footer terms placeholder copy with a real site route.
+- Behavior landed:
+  - new public route: `/terms-condition/`
+  - page uses a static long-form legal layout with clause index, anchor navigation, and semantic nested lists.
+  - Footer now links `Terms & Conditions` to the published route.
+  - sitemap now includes `/terms-condition/`
+- Files updated:
+  - `src/data/legal/terms.ts`
+  - `src/app/terms-condition/page.tsx`
+  - `src/app/components/Footer.tsx`
+  - `src/app/sitemap.ts`
+  - `docs/ARCHITECTURE.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run lint`: pass (`0 errors, 20 warnings`)
+  - `npm run build`: pass
+  - `npx tsc --noEmit`: pass
+  - `npm run build:pages`: pass
+  - `out/terms-condition/index.html`: present
+  - `out/sitemap.xml`: includes `/terms-condition/`
 
 ### Contact Landline Addition (2026-03-06)
 - Scope:

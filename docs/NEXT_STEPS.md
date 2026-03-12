@@ -1,6 +1,6 @@
 # Next Steps - Aushen Web
 
-Last updated: 2026-03-06
+Last updated: 2026-03-12
 
 ## Release Goal
 Launch `aushenstone.com.au` on the current static Next.js stack while protecting lead capture and minimizing SEO loss during WordPress cutover.
@@ -113,7 +113,8 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
   - Finalize real social profile URLs and legal policy destinations.
 - Evidence:
   - Footer social icons currently point to platform homepages.
-  - Legal links are still request-only placeholders in Footer copy.
+  - Published terms page now exists at `/terms-condition/` and Footer links to it.
+  - Privacy policy is still a request-only placeholder in Footer copy.
 - Exit Criteria:
   - Social links resolve to business-owned profiles.
   - Privacy policy and terms resolve to published destinations.

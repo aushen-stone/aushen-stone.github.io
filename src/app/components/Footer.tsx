@@ -120,7 +120,12 @@ export function Footer() {
               <span className="text-white/40 block w-max">Privacy Policy (On Request)</span>
             </li>
             <li>
-              <span className="text-white/40 block w-max">Terms of Use (On Request)</span>
+              <Link
+                href="/terms-condition"
+                className="hover:text-white transition-colors block w-max"
+              >
+                Terms &amp; Conditions
+              </Link>
             </li>
           </ul>
         </motion.div>
