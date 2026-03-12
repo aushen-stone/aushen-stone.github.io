@@ -49,6 +49,25 @@ GitHub Pages workflow build:
 2. Add repository variable `NEXT_PUBLIC_CONTACT_API_URL`.
 3. Use the full endpoint URL including `/contact`.
 
+## Google Tag Manager
+
+Google Tag Manager is injected globally from `src/app/layout.tsx`.
+
+- Default container ID in code: `GTM-NNH55QC`
+- Optional override env var: `NEXT_PUBLIC_GTM_ID`
+
+Local development:
+
+```bash
+cp .env.example .env.local
+```
+
+Set or override:
+
+```bash
+NEXT_PUBLIC_GTM_ID=GTM-NNH55QC
+```
+
 ## GitHub Pages deployment channel
 
 Deployment workflow file:
@@ -65,15 +84,18 @@ Workflow steps:
 1. `npm ci`
 2. `npm run lint`
 3. `npm run build:pages`
-4. Publish `dist/` to `gh-pages` using `peaceiris/actions-gh-pages@v4`
+4. Upload `dist/` as the Pages artifact
+5. Deploy via `actions/deploy-pages`
 
 ## Required repository settings (manual)
 
-1. Go to `Settings -> Actions -> General -> Workflow permissions` and set to `Read and write permissions`.
-2. Go to `Settings -> Pages` and set:
-   - Source: `Deploy from a branch`
-   - Branch: `gh-pages`
-   - Folder: `/(root)`
+1. Go to `Settings -> Pages`.
+2. Set:
+   - Source: `GitHub Actions`
+3. If repository or organization Actions policy is restricted, allow:
+   - `actions/configure-pages`
+   - `actions/upload-pages-artifact`
+   - `actions/deploy-pages`
 
 ## Common failure troubleshooting
 
