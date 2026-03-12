@@ -94,10 +94,10 @@ export default function TermsConditionPage() {
 
       <section className="page-padding-x py-12 sm:py-16 md:py-20">
         <div className="mx-auto grid max-w-[1400px] gap-10 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start lg:gap-16">
-          <aside className="lg:min-w-0">
+          <aside className="lg:sticky lg:top-[calc(var(--content-sticky-top)+1.5rem)] lg:self-start">
             <div
               id="terms-index"
-              className="rounded-[1.5rem] border border-[#1a1c18]/10 bg-white/80 p-6 lg:sticky lg:top-[calc(var(--content-sticky-top)+1.5rem)] lg:max-h-[calc(100vh-var(--content-sticky-top)-3rem)] lg:overflow-y-auto"
+              className="rounded-[1.5rem] border border-[#1a1c18]/10 bg-white/80 p-6 lg:max-h-[calc(100vh-var(--content-sticky-top)-3rem)] lg:overflow-y-auto"
             >
               <p className="text-[10px] uppercase tracking-[0.24em] text-[#6b715f]">
                 Clause Index
