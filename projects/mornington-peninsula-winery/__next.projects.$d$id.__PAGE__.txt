@@ -2,5 +2,5 @@
 2:I[2477,["431","static/chunks/431-938871a7ca132afd.js","72","static/chunks/72-b33a07b274a3d20e.js","801","static/chunks/app/projects/%5Bid%5D/page-2010e50749ca1388.js"],"default"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"buildId":"9BK1CGhUDEyjwwuQNwe8h","rsc":["$","$1","c",{"children":[["$","$L2",null,{"id":"mornington-peninsula-winery"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
+0:{"buildId":"Y1-HpXnUoZ-zKlDAAOvap","rsc":["$","$1","c",{"children":[["$","$L2",null,{"id":"mornington-peninsula-winery"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"loading":null,"isPartial":false}
 5:null
