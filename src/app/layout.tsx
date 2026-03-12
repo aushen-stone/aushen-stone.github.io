@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BackToTopButton } from "./components/BackToTopButton";
 import { GrainOverlay } from "./components/GrainOverlay";
 import { Navbar } from "./components/Navbar";
 import { PageOffset } from "@/app/components/PageOffset";
@@ -46,6 +47,8 @@ export default function RootLayout({
 
           {/* 3. 页面主体（给 fixed Navbar 让位） */}
           <PageOffset>{children}</PageOffset>
+
+          <BackToTopButton />
         </SampleCartProvider>
       </body>
     </html>
