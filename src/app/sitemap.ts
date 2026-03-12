@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { BLOG_POSTS } from "@/data/blog.generated";
 import { PRODUCTS } from "@/data/products.generated";
 import { canonicalUrl } from "@/lib/seo";
 
@@ -7,6 +8,7 @@ export const dynamic = "force-static";
 const STATIC_ROUTES = [
   "/",
   "/about/",
+  "/blog/",
   "/contact/",
   "/products/",
   "/projects/",
@@ -31,5 +33,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticEntries, ...productEntries];
+  const blogEntries: MetadataRoute.Sitemap = BLOG_POSTS.map((post) => ({
+    url: canonicalUrl(`/blog/${post.slug}/`),
+    lastModified: new Date(post.publishedAt),
+    changeFrequency: "monthly",
+    priority: 0.65,
+  }));
+
+  return [...staticEntries, ...productEntries, ...blogEntries];
 }

@@ -32,6 +32,7 @@ export function Navbar() {
     { name: "Products", href: "/products", hasDropdown: true },
     { name: "Projects", href: "/projects", hasDropdown: false },
     { name: "Services", href: "/services", hasDropdown: false },
+    { name: "Blog", href: "/blog", hasDropdown: false },
     { name: "Our Story", href: "/about", hasDropdown: false },
   ];
 

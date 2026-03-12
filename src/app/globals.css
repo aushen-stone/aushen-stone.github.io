@@ -88,3 +88,84 @@ body {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.text-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.blog-richtext {
+  color: #3f443a;
+  font-size: 1rem;
+  line-height: 1.9;
+  max-width: 72ch;
+  width: 100%;
+}
+
+.blog-richtext > * + * {
+  margin-top: 1.25rem;
+}
+
+.blog-richtext h2,
+.blog-richtext h3 {
+  color: #1a1c18;
+  font-family: Georgia, serif;
+  line-height: 1.15;
+  scroll-margin-top: calc(var(--content-sticky-top) + 1.5rem);
+}
+
+.blog-richtext h2 {
+  margin-top: 2.5rem;
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+}
+
+.blog-richtext h3 {
+  margin-top: 2rem;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+}
+
+.blog-richtext p,
+.blog-richtext ul,
+.blog-richtext ol,
+.blog-richtext blockquote {
+  font-size: 0.98rem;
+}
+
+.blog-richtext ul,
+.blog-richtext ol {
+  padding-left: 1.25rem;
+}
+
+.blog-richtext ul {
+  list-style: disc;
+}
+
+.blog-richtext ol {
+  list-style: decimal;
+}
+
+.blog-richtext li + li {
+  margin-top: 0.65rem;
+}
+
+.blog-richtext a {
+  color: #1a1c18;
+  text-decoration: underline;
+  text-decoration-color: rgba(26, 28, 24, 0.24);
+  text-underline-offset: 0.24rem;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
+}
+
+.blog-richtext a:hover {
+  color: #3b4034;
+  text-decoration-color: rgba(59, 64, 52, 0.42);
+}
+
+.blog-richtext blockquote {
+  border-left: 1px solid rgba(26, 28, 24, 0.14);
+  color: #555b4f;
+  font-style: italic;
+  padding-left: 1rem;
+}
