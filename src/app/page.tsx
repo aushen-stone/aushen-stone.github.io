@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Hero } from "@/app/components/Hero"
 import { BrandBanner } from "@/app/components/BrandBanner"
 import { BestSellers } from "@/app/components/BestSellers"
+import { AccessoriesGatewaySection } from "@/app/components/AccessoriesGatewaySection"
 import { ProjectShowcase } from "@/app/components/ProjectShowcase"
 import { ServicesSection } from "@/app/components/ServicesSection"
 import { CreativeHubSection } from "@/app/components/CreativeHubSection"
@@ -22,6 +23,7 @@ export default function Home() {
       <Hero />
       <BrandBanner />
       <BestSellers />
+      <AccessoriesGatewaySection />
       <ProjectShowcase />
       <ServicesSection />
       <CreativeHubSection />

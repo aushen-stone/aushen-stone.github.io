@@ -4,6 +4,23 @@ Last updated: 2026-04-20
 
 ## Completed and Landed
 
+### Homepage Accessories Gateway (2026-04-20)
+- Scope:
+  - added a light-touch homepage accessories section to introduce the new accessories architecture without turning the homepage into another product grid.
+- Behavior landed:
+  - new homepage section now sits between `Best sellers` and `Projects`.
+  - section frames accessories as project-finishing systems rather than sample-order products.
+  - visitors can jump directly into `Chemforce`, `HIDE`, and `FormBoss` from a short homepage gateway.
+  - homepage CTAs remain enquiry- and discovery-led:
+    - `/accessories/`
+    - `/contact/`
+- Files updated:
+  - `src/app/components/AccessoriesGatewaySection.tsx`
+  - `src/app/page.tsx`
+  - `docs/WORKLOG.md`
+- Notes:
+  - this is a short discovery layer only; accessories still use their own dedicated routes and do not enter the sample-cart model.
+
 ### Accessories Public-Copy Cleanup (2026-04-20)
 - Scope:
   - removed internal migration wording from the public accessories experience so the launched pages read like product pages instead of implementation notes.
