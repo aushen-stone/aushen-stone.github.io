@@ -6,11 +6,13 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ACCESSORY_BRANDS } from "@/data/accessories";
 import { PRODUCT_CATEGORIES } from "@/data/categories.generated";
 import { SampleCartDrawer } from "@/app/components/cart/SampleCartDrawer";
 import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
 
 export function Navbar() {
+  const accessoriesIndexPath = "/accessories/";
   const pathname = usePathname();
   const isHome = pathname === "/";
   const { lineCount, isDrawerOpen, openDrawer, closeDrawer } = useSampleCart();
@@ -455,45 +457,69 @@ export function Navbar() {
 
                 {/* Column 3 */}
                 <div className="space-y-6">
-                  <h4 className="font-serif text-xl italic text-gray-900">
-                    Curated Series
-                  </h4>
-                  <ul className="space-y-3">
+                  <div className="space-y-2">
+                    <h4 className="font-serif text-xl italic text-gray-900">
+                      Accessories
+                    </h4>
+                    <p className="max-w-xs text-sm leading-6 text-gray-500">
+                      Project support brands that complement stone selection without
+                      being forced into the sample workflow.
+                    </p>
+                  </div>
+                  <ul className="space-y-4">
                     <li>
-                      <span className="block text-sm text-gray-600">
-                        European Limestone
-                      </span>
+                      <Link
+                        href={accessoriesIndexPath}
+                        onClick={() => setActiveMenu(null)}
+                        className="block border-b border-black/10 pb-4 text-sm uppercase tracking-[0.18em] text-gray-900 transition-colors hover:text-gray-600"
+                      >
+                        View All Accessories
+                      </Link>
                     </li>
-                    <li>
-                      <span className="block text-sm text-gray-600">
-                        Organic Steppers
-                      </span>
-                    </li>
-                    <li>
-                      <span className="block text-sm text-gray-600">
-                        Pool Essentials
-                      </span>
-                    </li>
+                    {ACCESSORY_BRANDS.map((brand) => (
+                      <li key={brand.slug}>
+                        <Link
+                          href={`/accessories/${brand.slug}/`}
+                          onClick={() => setActiveMenu(null)}
+                          className="group block"
+                        >
+                          <span className="block text-sm text-gray-900 transition-colors group-hover:text-gray-600">
+                            {brand.name}
+                          </span>
+                          <span className="mt-1 block text-sm leading-6 text-gray-500">
+                            {brand.hero.eyebrow}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
                 </div>
 
                 {/* Column 4 */}
-                <div className="relative min-h-[250px] rounded-sm overflow-hidden group cursor-pointer">
-                  <img
-                    src="https://images.unsplash.com/photo-1621252179027-94459d27d3ee?q=80&w=1000&auto=format&fit=crop"
-                    alt="Featured Stone"
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-                  <div className="absolute bottom-6 left-6 text-white">
-                    <p className="text-xs uppercase tracking-widest mb-2">
-                      New Arrival
-                    </p>
-                    <p className="font-serif text-2xl">
-                      Italian Porphyry
-                    </p>
+                <Link
+                  href={accessoriesIndexPath}
+                  onClick={() => setActiveMenu(null)}
+                  className="group relative min-h-[250px] overflow-hidden rounded-sm border border-black/10 bg-[#D7D0C5]"
+                >
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.5),transparent_54%),linear-gradient(135deg,rgba(59,64,52,0.12),transparent_68%)] transition-transform duration-500 group-hover:scale-[1.02]" />
+                  <div className="relative flex h-full flex-col justify-between p-7">
+                    <div className="space-y-4">
+                      <p className="text-xs uppercase tracking-[0.24em] text-gray-700">
+                        Accessories
+                      </p>
+                      <p className="max-w-xs font-serif text-[2rem] leading-tight text-gray-900">
+                        Project details that finish the job.
+                      </p>
+                      <p className="max-w-xs text-sm leading-6 text-gray-700">
+                        Browse Chemforce, HIDE, and FormBoss in a dedicated
+                        accessories section built for project-led selection.
+                      </p>
+                    </div>
+                    <span className="text-[11px] uppercase tracking-[0.22em] text-gray-700 transition-transform duration-200 group-hover:translate-x-1">
+                      View All Accessories
+                    </span>
                   </div>
-                </div>
+                </Link>
               </div>
             </motion.div>
           )}
@@ -559,6 +585,39 @@ export function Navbar() {
               </nav>
 
               <div className="space-y-6">
+                <section>
+                  <h4 className="text-[11px] uppercase tracking-[0.2em] text-gray-500 mb-3">
+                    Accessories
+                  </h4>
+                  <ul className="space-y-3">
+                    <li>
+                      <Link
+                        href={accessoriesIndexPath}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block text-sm uppercase tracking-[0.16em] text-gray-900"
+                      >
+                        View All Accessories
+                      </Link>
+                    </li>
+                    {ACCESSORY_BRANDS.map((brand) => (
+                      <li key={brand.slug}>
+                        <Link
+                          href={`/accessories/${brand.slug}/`}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block"
+                        >
+                          <span className="block text-sm text-gray-700">
+                            {brand.name}
+                          </span>
+                          <span className="mt-1 block text-xs leading-5 text-gray-500">
+                            {brand.hero.eyebrow}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
                 <section>
                   <h4 className="text-[11px] uppercase tracking-[0.2em] text-gray-500 mb-3">
                     By Material

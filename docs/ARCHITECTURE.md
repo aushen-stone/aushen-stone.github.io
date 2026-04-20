@@ -30,6 +30,8 @@ Last updated: 2026-04-20
 - Homepage composition: `src/app/page.tsx`.
 - Server wrapper routes (metadata ownership):
   - `src/app/about/page.tsx`
+  - `src/app/accessories/page.tsx`
+  - `src/app/accessories/[slug]/page.tsx`
   - `src/app/contact/page.tsx`
   - `src/app/products/page.tsx`
   - `src/app/projects/page.tsx`
@@ -40,6 +42,10 @@ Last updated: 2026-04-20
   - `*PageClient.tsx` files under corresponding route folders.
 
 ## Dynamic Route Static-Export Contract
+- Accessories detail route:
+  - `src/app/accessories/[slug]/page.tsx`
+  - uses `generateStaticParams()` from `ACCESSORY_BRANDS`
+  - sets `dynamicParams = false`
 - Product detail route:
   - `src/app/products/[slug]/page.tsx`
   - uses `generateStaticParams()` from `PRODUCTS`
@@ -60,7 +66,7 @@ Last updated: 2026-04-20
   - `/products/[slug]`: indexable
   - `/terms-condition`: indexable
 - Sitemap content:
-  - core static routes, legal static routes, and generated product detail routes.
+  - core static routes, legal static routes, accessories routes, and generated product detail routes.
 
 ## Data Model and Flow
 - Product source of truth: `../docs/aushen_product_library.csv` (repo root `docs/`).
@@ -79,9 +85,38 @@ Last updated: 2026-04-20
   - `Blueocean Honed` in the outer CSV generates the dedicated slug `blueocean-honed`.
   - Remaining Blueocean special finishes are intentionally still grouped under `blueocean` until a later reclassification pass.
 
+## Accessories Architecture
+- Accessories are a first-class site section inside the inner repo and are not treated as a subcase of the outer-CSV stone catalog.
+- Stone products continue to be generated from the outer CSV; accessories are curated through dedicated inner-repo pages, navigation, and supporting content.
+- Accessory source files:
+  - `src/types/accessory.ts`
+  - `src/data/accessories.ts`
+- Runtime entry points:
+  - accessories index: `src/app/accessories/page.tsx`
+  - accessories brand page: `src/app/accessories/[slug]/page.tsx`
+- Page renderer files:
+  - `src/app/accessories/AccessoriesIndexPageClient.tsx`
+  - `src/app/accessories/AccessoryBrandPageRenderer.tsx`
+- Navigation and indexing touchpoints:
+  - `src/app/components/Navbar.tsx`
+  - `src/app/components/Footer.tsx`
+  - `src/app/sitemap.ts`
+- Phase 1 accessories coverage includes:
+  - `Chemforce`
+  - `HIDE`
+  - `FormBoss`
+- `Mapei` remains a later candidate and is intentionally deferred until a separate accessories expansion pass.
+- The old Aushen-covered accessories content on the legacy site is the minimum coverage baseline for Phase 1.
+- Data-contract intent:
+  - accessories are modeled as brand-led landing pages with curated family and item content.
+  - accessories are not generated from the outer CSV.
+  - accessories do not participate in the stone sample-cart contract.
+  - continuity and migration notes belong in docs and internal review context, not in public-facing accessory page copy.
+
 ## Product and Cart Contracts
 - Product core type: `Product` in `src/types/product.ts`.
 - Product detail selector model is application-first (`applicationIndex`), then finish, then size.
+- Accessories intentionally bypass the `Product` selector contract and use direct enquiry CTAs instead of sample ordering.
 - Sample cart contract (`src/types/cart.ts`):
   - storage key: `aushen_sample_cart_v1`
   - prefill handoff key: `aushen_sample_cart_contact_prefill_v1`

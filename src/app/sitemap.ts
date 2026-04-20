@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { ACCESSORY_BRANDS } from "@/data/accessories";
 import { BLOG_POSTS } from "@/data/blog.generated";
 import { PRODUCTS } from "@/data/products.generated";
 import { canonicalUrl } from "@/lib/seo";
@@ -10,6 +11,7 @@ const STATIC_ROUTES = [
   "/about/",
   "/blog/",
   "/contact/",
+  "/accessories/",
   "/products/",
   "/projects/",
   "/services/",
@@ -40,5 +42,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.65,
   }));
 
-  return [...staticEntries, ...productEntries, ...blogEntries];
+  const accessoryEntries: MetadataRoute.Sitemap = ACCESSORY_BRANDS.map((brand) => ({
+    url: canonicalUrl(brand.route),
+    lastModified,
+    changeFrequency: "weekly",
+    priority: 0.72,
+  }));
+
+  return [...staticEntries, ...productEntries, ...accessoryEntries, ...blogEntries];
 }

@@ -19,11 +19,13 @@ Last updated: 2026-04-20
 - Launch `aushenstone.com.au` with safe WordPress cutover.
 - Close launch blockers tracked in `NEXT_STEPS` (`LAUNCH-P0-001`..`LAUNCH-P0-005`).
 - Keep P1 quality work active without blocking cutover, except explicitly elevated risks.
+- Preserve the new accessories architecture as a first-class inner-repo section.
+- Phase 1 accessories scope is `Chemforce`, `HIDE`, and `FormBoss`; `Mapei` stays deferred.
 
 ## Health Snapshot (2026-04-20)
 - `npm run build:product-data`: pass
 - product-photo mapping refresh: pass (raw photo root was unavailable in this workspace, so a temporary source tree was reconstructed from published `public/product-photos/`)
-- `npm run lint`: pass (`0 errors, 20 warnings`)
+- `npm run lint`: pass (`0 errors, 23 warnings`)
 - `npm run build`: pass
 - `npx tsc --noEmit`: pass (after build)
 - `npm run build:pages`: pass
@@ -36,6 +38,13 @@ Last updated: 2026-04-20
   - `SAI/Blueocean Sawn.jpg` -> `blueocean`
   - `SAI/Blueocean Honed.jpg` -> `blueocean-honed`
 - Remaining Blueocean special-finish reclassification is deferred and tracked in `docs/NEXT_STEPS.md`.
+- Accessories are curated separately from CSV-generated stone products, with legacy Aushen accessories coverage used as the minimum Phase 1 baseline.
+- Accessories source files live inside the inner repo:
+  - type contract: `src/types/accessory.ts`
+  - curated content source: `src/data/accessories.ts`
+  - routes: `src/app/accessories/page.tsx`, `src/app/accessories/[slug]/page.tsx`
+- Accessories use enquiry-driven CTAs and must not be forced into the stone sample-cart workflow.
+- Continuity reasoning for accessories should stay in docs and handoff notes; public pages should stay customer-facing and avoid migration language.
 
 ## Active Risk Snapshot
 - `LAUNCH-P0-001` contact submit delivery: `Blocked` (production endpoint validation pending).

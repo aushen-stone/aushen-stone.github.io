@@ -4,6 +4,93 @@ Last updated: 2026-04-20
 
 ## Completed and Landed
 
+### Accessories Public-Copy Cleanup (2026-04-20)
+- Scope:
+  - removed internal migration wording from the public accessories experience so the launched pages read like product pages instead of implementation notes.
+- Behavior landed:
+  - removed public `legacy` / `Phase 1` / migration framing from accessories index and brand pages.
+  - removed family-level legacy chip blocks from the brand-page renderer.
+  - replaced internal-facing range headings with customer-facing product and resources sections.
+  - resource cards now use user-readable labels such as product details, guides, and range overviews.
+  - kept internal continuity rules in docs while leaving public CTAs enquiry-driven and sample-cart-free.
+- Files updated:
+  - `src/app/accessories/AccessoriesIndexPageClient.tsx`
+  - `src/app/accessories/AccessoryBrandPageRenderer.tsx`
+  - `src/data/accessories.ts`
+  - `src/types/accessory.ts`
+  - `docs/ARCHITECTURE.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run lint`: pass (`0 errors, 23 warnings`)
+  - `npx tsc --noEmit`: pass (after build)
+  - `npm run build`: pass
+  - `npm run build:pages`: pass
+- Notes:
+  - accessories continuity coverage remains an internal requirement, but it is no longer surfaced as public UI language.
+
+### Accessories Phase 1 Runtime Launch (2026-04-20)
+- Scope:
+  - implemented the first live accessories section inside `aushen-web`.
+  - kept the stone CSV pipeline unchanged while introducing separate accessories data, routes, navigation, and sitemap coverage.
+- Behavior landed:
+  - new public routes:
+    - `/accessories/`
+    - `/accessories/chemforce/`
+    - `/accessories/hide/`
+    - `/accessories/formboss/`
+  - new curated accessories data contract now lives in:
+    - `src/types/accessory.ts`
+    - `src/data/accessories.ts`
+  - product navigation now exposes accessories directly:
+    - desktop `Products` dropdown third column now points to accessories
+    - mobile menu now includes an accessories section
+    - footer `Explore` links now include `Accessories`
+  - accessories pages use enquiry-driven CTAs and intentionally do not participate in the sample-cart flow
+  - sitemap now includes accessories routes alongside stone products and blog posts
+- Files updated:
+  - `src/types/accessory.ts`
+  - `src/data/accessories.ts`
+  - `src/app/accessories/page.tsx`
+  - `src/app/accessories/AccessoriesIndexPageClient.tsx`
+  - `src/app/accessories/[slug]/page.tsx`
+  - `src/app/accessories/AccessoryBrandPageRenderer.tsx`
+  - `src/app/components/Navbar.tsx`
+  - `src/app/components/Footer.tsx`
+  - `src/app/sitemap.ts`
+  - `docs/ARCHITECTURE.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npx tsc --noEmit`: pass
+  - `npm run lint`: pass (`0 errors, 23 warnings`, all current warnings are existing or expected `no-img-element` warnings)
+  - `npm run build`: pass
+  - `npm run build:pages`: pass
+- Notes:
+  - Phase 1 respects the user rule that the new site must not lose old Aushen-covered accessories content.
+  - `Chemforce` is intentionally kept to the legacy stone-care set; `Mapei` remains deferred.
+  - HIDE is treated as the formal brand name, not `Hide Skim Lid`.
+
+### Accessories Architecture Documentation Pass (2026-04-20)
+- Scope:
+  - documented the inner-repo accessories architecture as a first-class site section distinct from CSV-generated stone products.
+  - captured the Phase 1 accessories baseline and the deferred Mapei candidate in the docs layer only.
+- Behavior landed:
+  - accessories are now described as curated through dedicated inner-repo pages, navigation, and supporting content.
+  - Phase 1 coverage is explicitly anchored to the legacy Aushen accessories set:
+    - `Chemforce`
+    - `HIDE`
+    - `FormBoss`
+  - `Mapei` remains a later candidate and is intentionally deferred.
+- Files updated:
+  - `docs/ARCHITECTURE.md`
+  - `docs/README_AGENT.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+- Notes:
+  - this pass is docs-only and does not change runtime catalog generation.
+  - the old Aushen-covered accessories content is treated as the minimum coverage baseline for Phase 1.
+
 ### Porcelain Product Expansion (2026-04-20)
 - Scope:
   - added 11 new Porcelain products from user-supplied product names and images.

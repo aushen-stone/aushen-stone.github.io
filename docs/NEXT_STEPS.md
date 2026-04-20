@@ -145,6 +145,7 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 ## P2 Backlog (Not Launch-Blocking)
 - `ADM-LITE-001` lightweight admin portal remains backlog only.
 - `P2-DATA-BLUEOCEAN-001` reclassify remaining Blueocean special finishes (`Polished`, `Rockface`, `Ripple`, and other non-honed carryovers) out of the continuity slug once the business grouping is confirmed.
+- `P2-ACCESSORIES-MAPEI-001` evaluate `Mapei` as a later accessories expansion after Phase 1 coverage is stable.
 - Project detail content typing/CMS migration remains backlog.
 - Full e2e suite expansion remains backlog.
 
