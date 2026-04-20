@@ -35,8 +35,10 @@ export const PRODUCT_IMAGE_GALLERIES: Record<string, string[]> = {
     "/product-photos/blue-ridge-01.webp"
   ],
   "blueocean": [
-    "/product-photos/blueocean-01.webp",
-    "/product-photos/blueocean-02.webp"
+    "/product-photos/blueocean-01.webp"
+  ],
+  "blueocean-honed": [
+    "/product-photos/blueocean-honed-01.webp"
   ],
   "buffalo": [
     "/product-photos/buffalo-01.webp"
@@ -187,6 +189,7 @@ export const PRODUCT_COVER_IMAGES: Record<string, string> = {
   "black-ochre-blend": "/product-photos/black-ochre-blend-01.webp",
   "blue-ridge": "/product-photos/blue-ridge-01.webp",
   "blueocean": "/product-photos/blueocean-01.webp",
+  "blueocean-honed": "/product-photos/blueocean-honed-01.webp",
   "buffalo": "/product-photos/buffalo-01.webp",
   "charlotte": "/product-photos/charlotte-01.webp",
   "classic-travertine-sai": "/product-photos/classic-travertine-sai-01.webp",

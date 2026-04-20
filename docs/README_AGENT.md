@@ -1,6 +1,6 @@
 # README_AGENT - Single Entry for All Agents
 
-Last updated: 2026-03-04
+Last updated: 2026-04-20
 
 ## Purpose
 - Keep handoff low-overhead and execution-focused.
@@ -20,11 +20,22 @@ Last updated: 2026-03-04
 - Close launch blockers tracked in `NEXT_STEPS` (`LAUNCH-P0-001`..`LAUNCH-P0-005`).
 - Keep P1 quality work active without blocking cutover, except explicitly elevated risks.
 
-## Health Snapshot (2026-03-04)
+## Health Snapshot (2026-04-20)
+- `npm run build:product-data`: pass
+- product-photo mapping refresh: pass (raw photo root was unavailable in this workspace, so a temporary source tree was reconstructed from published `public/product-photos/`)
 - `npm run lint`: pass (`0 errors, 20 warnings`)
 - `npm run build`: pass
 - `npx tsc --noEmit`: pass (after build)
 - `npm run build:pages`: pass
+
+## Catalog Continuity Notes
+- Product structural source of truth remains outer-repo CSV: `../docs/aushen_product_library.csv`.
+- `blueocean` is the phase-1 continuity slug and still carries `Sawn` plus remaining Blueocean special finishes.
+- `blueocean-honed` is a first-class product slug generated from `Blueocean Honed` rows in the outer CSV.
+- Blueocean photo audit mapping is intentionally split:
+  - `SAI/Blueocean Sawn.jpg` -> `blueocean`
+  - `SAI/Blueocean Honed.jpg` -> `blueocean-honed`
+- Remaining Blueocean special-finish reclassification is deferred and tracked in `docs/NEXT_STEPS.md`.
 
 ## Active Risk Snapshot
 - `LAUNCH-P0-001` contact submit delivery: `Blocked` (production endpoint validation pending).

@@ -14,12 +14,35 @@ Open `http://localhost:3000`.
 ## Build and quality commands
 
 ```bash
+npm run build:product-data
 npm run build
 npm run lint
 npm run build:pages
 ```
 
 `build:pages` performs a static export and copies `out/` to `dist/` for GitHub Pages publishing.
+
+## Product data and photo regeneration
+
+- Product source of truth lives outside the web repo at `../docs/aushen_product_library.csv`.
+- Rebuild generated catalog data after CSV edits:
+
+```bash
+npm run build:product-data
+```
+
+- Rebuild published product-photo mappings after audit CSV changes:
+
+```bash
+python3 -m pip install Pillow
+npm run prepare:product-photos
+```
+
+- `prepare:product-photos` expects the raw source photo tree at `AUSHEN Product Photos/` plus audit rows in `docs/photo_audit_2026-02-17/photo_audit_all_in_one.csv`.
+- Blueocean phase-1 split convention:
+  - `blueocean` remains the continuity slug.
+  - `blueocean-honed` is the dedicated honed product slug.
+  - Remaining Blueocean special finishes still sit under `blueocean` until a later reclassification pass.
 
 ## Canonical domain and hosting model
 

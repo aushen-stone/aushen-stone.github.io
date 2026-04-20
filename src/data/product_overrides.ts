@@ -38,12 +38,19 @@ const GENERATED_IMAGE_OVERRIDES: Record<string, ProductOverride> = Object.fromEn
 );
 
 const MANUAL_PRODUCT_OVERRIDES: Record<string, ProductOverride> = {
-  // Example:
-  // "blueocean": {
-  //   toneTags: ["Medium", "Cool"],
-  //   description: "Volcanic bluestone with consistent mid-grey tones and a refined texture.",
-  //   imageUrl: "/Application001.webp",
-  // },
+  "blueocean-honed": {
+    description:
+      "Blueocean Honed offers the cooler Blueocean bluestone palette with a smoother, more architectural face for refined paving, coping, and feature applications.",
+    homeownerSummary:
+      "Ideal for projects that want Blueocean's cool tonal depth with a cleaner, smoother finish underfoot and around entertaining zones.",
+    professionalSummary:
+      "Use Blueocean Honed when the project calls for the Blueocean palette in a more refined honed specification across paving, coping, and matching detail elements.",
+    professionalNotes: [
+      "Confirm honed slip performance against the intended wet-area or poolside compliance requirements.",
+      "Check matching coping, pattern, and kerb availability early because the honed range is narrower than the continuity Blueocean slug.",
+      "Coordinate visual mockups against the sawn range when the finish change materially affects perceived colour and light reflectance.",
+    ],
+  },
 };
 
 const buildProductOverrides = (): Record<string, ProductOverride> => {

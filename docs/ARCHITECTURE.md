@@ -1,6 +1,6 @@
 # Aushen Web - Architecture Overview
 
-Last updated: 2026-03-12
+Last updated: 2026-04-20
 
 ## Project Type
 - Next.js App Router frontend.
@@ -65,13 +65,19 @@ Last updated: 2026-03-12
 ## Data Model and Flow
 - Product source of truth: `../docs/aushen_product_library.csv` (repo root `docs/`).
 - Data generation script: `scripts/build-product-data.ts`.
+- Data generation command: `npm run build:product-data`.
 - Generated outputs:
   - `src/data/products.generated.ts`
   - `src/data/categories.generated.ts`
 - Override layer:
   - `src/data/product_overrides.ts`
   - generated image mapping: `src/data/product_images.generated.ts`
+- Product photo mapping refresh command: `npm run prepare:product-photos`.
 - Generated files are build artifacts and must not be edited manually.
+- Blueocean phase-1 split contract:
+  - `Blueocean` in the outer CSV continues to generate the continuity slug `blueocean`.
+  - `Blueocean Honed` in the outer CSV generates the dedicated slug `blueocean-honed`.
+  - Remaining Blueocean special finishes are intentionally still grouped under `blueocean` until a later reclassification pass.
 
 ## Product and Cart Contracts
 - Product core type: `Product` in `src/types/product.ts`.
@@ -113,3 +119,4 @@ Last updated: 2026-03-12
 - Size parsing is best-effort; ambiguous values keep raw string.
 - Static-export dynamic routes require explicit `generateStaticParams` coverage.
 - `dist` and generated data files are overwritten by build/generation commands.
+- Product photo prep expects raw images referenced by the audit CSV under `AUSHEN Product Photos/`.

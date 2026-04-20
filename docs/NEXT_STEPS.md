@@ -1,6 +1,6 @@
 # Next Steps - Aushen Web
 
-Last updated: 2026-03-12
+Last updated: 2026-04-20
 
 ## Release Goal
 Launch `aushenstone.com.au` on the current static Next.js stack while protecting lead capture and minimizing SEO loss during WordPress cutover.
@@ -144,6 +144,7 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 
 ## P2 Backlog (Not Launch-Blocking)
 - `ADM-LITE-001` lightweight admin portal remains backlog only.
+- `P2-DATA-BLUEOCEAN-001` reclassify remaining Blueocean special finishes (`Polished`, `Rockface`, `Ripple`, and other non-honed carryovers) out of the continuity slug once the business grouping is confirmed.
 - Project detail content typing/CMS migration remains backlog.
 - Full e2e suite expansion remains backlog.
 
@@ -161,6 +162,11 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 ### Task Tracker Contract
 - Active work tracking must use stable anchors (file + semantic marker), not line numbers.
 - Active items must include `Owner`, `Evidence`, `Exit Criteria`.
+
+### Blueocean Split Contract
+- `blueocean` remains the phase-1 continuity slug and must stay routable.
+- `blueocean-honed` is a dedicated generated product route sourced from `Blueocean Honed` rows in the outer CSV.
+- Remaining Blueocean special finishes are intentionally still grouped under `blueocean` until `P2-DATA-BLUEOCEAN-001` is executed.
 
 ## Verification Commands
 ```bash

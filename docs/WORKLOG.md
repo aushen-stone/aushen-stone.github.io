@@ -1,8 +1,52 @@
 # Worklog - Aushen Web
 
-Last updated: 2026-03-12
+Last updated: 2026-04-20
 
 ## Completed and Landed
+
+### Blueocean Honed Product Split (2026-04-20)
+- Scope:
+  - split Blueocean Honed into a dedicated generated product without breaking the existing `blueocean` route.
+  - kept phase-1 scope intentionally narrow: no generator rule changes and no automatic regrouping of remaining Blueocean special finishes.
+- Behavior landed:
+  - new public product route: `/products/blueocean-honed/`
+  - existing public route `/products/blueocean/` remains the continuity slug
+  - `blueocean` no longer carries the `Honed / P3` finish family
+  - `blueocean-honed` now carries the former Blueocean honed applications/sizes as its own product identity
+  - product photo mapping now has distinct keys/covers for:
+    - `blueocean`
+    - `blueocean-honed`
+  - `npm run build:product-data` is now the canonical command for regenerating catalog data from the outer CSV
+- Implementation notes:
+  - outer CSV rows for Blueocean honed entries now use product name `Blueocean Honed`
+  - photo audit mapping now routes `SAI/Blueocean Honed.jpg` to `blueocean-honed`
+  - `src/data/product_overrides.ts` now contains a dedicated manual override for `blueocean-honed`
+  - in this workspace the raw `AUSHEN Product Photos/` source tree was unavailable, so the photo mapping refresh was rebuilt from the published `public/product-photos/` set to keep split outputs aligned with the updated audit rows
+- Files updated:
+  - outer CSV source: `../docs/aushen_product_library.csv`
+  - photo audit mapping docs under `docs/photo_audit_2026-02-17/`
+  - `package.json`
+  - `package-lock.json`
+  - `src/data/product_overrides.ts`
+  - generated catalog/photo outputs
+  - `README.md`
+  - `docs/README_AGENT.md`
+  - `docs/ARCHITECTURE.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run build:product-data`: pass (`Generated 63 products, 10 materials.`)
+  - photo mapping refresh: pass (`mapped_rows=63`, `missing_source_count=0`, `covered_products_count=55`)
+  - `npm run lint`: pass (`0 errors, 20 warnings`)
+  - `npm run build`: pass
+  - `npx tsc --noEmit`: pass
+  - `npm run build:pages`: pass
+  - static product build now includes both:
+    - `/products/blueocean/`
+    - `/products/blueocean-honed/`
+- Deferred follow-up:
+  - remaining Blueocean special finishes still live under `blueocean` by design in phase 1
+  - future regrouping is tracked as `P2-DATA-BLUEOCEAN-001`
 
 ### Terms & Conditions Page Launch (2026-03-12)
 - Scope:
