@@ -1493,6 +1493,55 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
+    "id": "black-granite",
+    "name": "Black Granite",
+    "slug": "black-granite",
+    "materialId": "porcelain",
+    "materialName": "Porcelain",
+    "finishes": [
+      {
+        "id": "textured-p5",
+        "name": "Textured",
+        "slipRating": "P5",
+        "applications": [
+          {
+            "id": "paver",
+            "label": "Paver",
+            "category": "Paver",
+            "categorySlug": "paver",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "applicationIndex": [
+      {
+        "id": "paver",
+        "label": "Paver",
+        "category": "Paver",
+        "categorySlug": "paver",
+        "finishes": [
+          {
+            "id": "textured-p5",
+            "name": "Textured",
+            "slipRating": "P5",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "black-ochre-blend",
     "name": "Black Ochre Blend",
     "slug": "black-ochre-blend",
@@ -3183,6 +3232,55 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
+    "id": "charcoal-quartz",
+    "name": "Charcoal Quartz",
+    "slug": "charcoal-quartz",
+    "materialId": "porcelain",
+    "materialName": "Porcelain",
+    "finishes": [
+      {
+        "id": "textured-p5",
+        "name": "Textured",
+        "slipRating": "P5",
+        "applications": [
+          {
+            "id": "paver",
+            "label": "Paver",
+            "category": "Paver",
+            "categorySlug": "paver",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "applicationIndex": [
+      {
+        "id": "paver",
+        "label": "Paver",
+        "category": "Paver",
+        "categorySlug": "paver",
+        "finishes": [
+          {
+            "id": "textured-p5",
+            "name": "Textured",
+            "slipRating": "P5",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "charlotte",
     "name": "Charlotte",
     "slug": "charlotte",
@@ -3849,6 +3947,55 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
+    "id": "dark-bluestone",
+    "name": "Dark Bluestone",
+    "slug": "dark-bluestone",
+    "materialId": "porcelain",
+    "materialName": "Porcelain",
+    "finishes": [
+      {
+        "id": "textured-p5",
+        "name": "Textured",
+        "slipRating": "P5",
+        "applications": [
+          {
+            "id": "paver",
+            "label": "Paver",
+            "category": "Paver",
+            "categorySlug": "paver",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "applicationIndex": [
+      {
+        "id": "paver",
+        "label": "Paver",
+        "category": "Paver",
+        "categorySlug": "paver",
+        "finishes": [
+          {
+            "id": "textured-p5",
+            "name": "Textured",
+            "slipRating": "P5",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "frozen-blue",
     "name": "Frozen Blue",
     "slug": "frozen-blue",
@@ -4424,6 +4571,55 @@ export const PRODUCTS: Product[] = [
     ]
   },
   {
+    "id": "grey-limestone",
+    "name": "Grey Limestone",
+    "slug": "grey-limestone",
+    "materialId": "porcelain",
+    "materialName": "Porcelain",
+    "finishes": [
+      {
+        "id": "textured-p5",
+        "name": "Textured",
+        "slipRating": "P5",
+        "applications": [
+          {
+            "id": "paver",
+            "label": "Paver",
+            "category": "Paver",
+            "categorySlug": "paver",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "applicationIndex": [
+      {
+        "id": "paver",
+        "label": "Paver",
+        "category": "Paver",
+        "categorySlug": "paver",
+        "finishes": [
+          {
+            "id": "textured-p5",
+            "name": "Textured",
+            "slipRating": "P5",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "grey-permeable-paver",
     "name": "Grey Permeable Paver",
     "slug": "grey-permeable-paver",
@@ -4464,6 +4660,55 @@ export const PRODUCTS: Product[] = [
             "sizes": [
               {
                 "raw": "400x200x55mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "grigio-storm",
+    "name": "Grigio Storm",
+    "slug": "grigio-storm",
+    "materialId": "porcelain",
+    "materialName": "Porcelain",
+    "finishes": [
+      {
+        "id": "textured-p5",
+        "name": "Textured",
+        "slipRating": "P5",
+        "applications": [
+          {
+            "id": "paver",
+            "label": "Paver",
+            "category": "Paver",
+            "categorySlug": "paver",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "applicationIndex": [
+      {
+        "id": "paver",
+        "label": "Paver",
+        "category": "Paver",
+        "categorySlug": "paver",
+        "finishes": [
+          {
+            "id": "textured-p5",
+            "name": "Textured",
+            "slipRating": "P5",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
                 "unit": "mm"
               }
             ]
@@ -4975,6 +5220,55 @@ export const PRODUCTS: Product[] = [
             "sizes": [
               {
                 "raw": "800x400x30mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "monte-carlo",
+    "name": "Monte Carlo",
+    "slug": "monte-carlo",
+    "materialId": "porcelain",
+    "materialName": "Porcelain",
+    "finishes": [
+      {
+        "id": "textured-p5",
+        "name": "Textured",
+        "slipRating": "P5",
+        "applications": [
+          {
+            "id": "paver",
+            "label": "Paver",
+            "category": "Paver",
+            "categorySlug": "paver",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "applicationIndex": [
+      {
+        "id": "paver",
+        "label": "Paver",
+        "category": "Paver",
+        "categorySlug": "paver",
+        "finishes": [
+          {
+            "id": "textured-p5",
+            "name": "Textured",
+            "slipRating": "P5",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
                 "unit": "mm"
               }
             ]
@@ -6463,6 +6757,104 @@ export const PRODUCTS: Product[] = [
             "sizes": [
               {
                 "raw": "150-600x30-40mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sahara-beige",
+    "name": "Sahara Beige",
+    "slug": "sahara-beige",
+    "materialId": "porcelain",
+    "materialName": "Porcelain",
+    "finishes": [
+      {
+        "id": "textured-p5",
+        "name": "Textured",
+        "slipRating": "P5",
+        "applications": [
+          {
+            "id": "paver",
+            "label": "Paver",
+            "category": "Paver",
+            "categorySlug": "paver",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "applicationIndex": [
+      {
+        "id": "paver",
+        "label": "Paver",
+        "category": "Paver",
+        "categorySlug": "paver",
+        "finishes": [
+          {
+            "id": "textured-p5",
+            "name": "Textured",
+            "slipRating": "P5",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sandy-beige",
+    "name": "Sandy Beige",
+    "slug": "sandy-beige",
+    "materialId": "porcelain",
+    "materialName": "Porcelain",
+    "finishes": [
+      {
+        "id": "textured-p5",
+        "name": "Textured",
+        "slipRating": "P5",
+        "applications": [
+          {
+            "id": "paver",
+            "label": "Paver",
+            "category": "Paver",
+            "categorySlug": "paver",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "applicationIndex": [
+      {
+        "id": "paver",
+        "label": "Paver",
+        "category": "Paver",
+        "categorySlug": "paver",
+        "finishes": [
+          {
+            "id": "textured-p5",
+            "name": "Textured",
+            "slipRating": "P5",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
                 "unit": "mm"
               }
             ]
@@ -8481,6 +8873,153 @@ export const PRODUCTS: Product[] = [
             "sizes": [
               {
                 "raw": "610x406x30/60mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tuscany-classic",
+    "name": "Tuscany Classic",
+    "slug": "tuscany-classic",
+    "materialId": "porcelain",
+    "materialName": "Porcelain",
+    "finishes": [
+      {
+        "id": "textured-p5",
+        "name": "Textured",
+        "slipRating": "P5",
+        "applications": [
+          {
+            "id": "paver",
+            "label": "Paver",
+            "category": "Paver",
+            "categorySlug": "paver",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "applicationIndex": [
+      {
+        "id": "paver",
+        "label": "Paver",
+        "category": "Paver",
+        "categorySlug": "paver",
+        "finishes": [
+          {
+            "id": "textured-p5",
+            "name": "Textured",
+            "slipRating": "P5",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tuscany-white",
+    "name": "Tuscany White",
+    "slug": "tuscany-white",
+    "materialId": "porcelain",
+    "materialName": "Porcelain",
+    "finishes": [
+      {
+        "id": "textured-p5",
+        "name": "Textured",
+        "slipRating": "P5",
+        "applications": [
+          {
+            "id": "paver",
+            "label": "Paver",
+            "category": "Paver",
+            "categorySlug": "paver",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "applicationIndex": [
+      {
+        "id": "paver",
+        "label": "Paver",
+        "category": "Paver",
+        "categorySlug": "paver",
+        "finishes": [
+          {
+            "id": "textured-p5",
+            "name": "Textured",
+            "slipRating": "P5",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "vintage-oyster",
+    "name": "Vintage Oyster",
+    "slug": "vintage-oyster",
+    "materialId": "porcelain",
+    "materialName": "Porcelain",
+    "finishes": [
+      {
+        "id": "textured-p5",
+        "name": "Textured",
+        "slipRating": "P5",
+        "applications": [
+          {
+            "id": "paver",
+            "label": "Paver",
+            "category": "Paver",
+            "categorySlug": "paver",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
+                "unit": "mm"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "applicationIndex": [
+      {
+        "id": "paver",
+        "label": "Paver",
+        "category": "Paver",
+        "categorySlug": "paver",
+        "finishes": [
+          {
+            "id": "textured-p5",
+            "name": "Textured",
+            "slipRating": "P5",
+            "sizes": [
+              {
+                "raw": "600x600x20mm",
                 "unit": "mm"
               }
             ]

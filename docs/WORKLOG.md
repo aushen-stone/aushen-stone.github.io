@@ -4,6 +4,45 @@ Last updated: 2026-04-20
 
 ## Completed and Landed
 
+### Porcelain Product Expansion (2026-04-20)
+- Scope:
+  - added 11 new Porcelain products from user-supplied product names and images.
+  - reused the existing Porcelain template so the new range stays consistent with the current data model.
+- Behavior landed:
+  - added new products:
+    - `Sandy Beige`
+    - `Vintage Oyster`
+    - `Tuscany White`
+    - `Tuscany Classic`
+    - `Sahara Beige`
+    - `Monte Carlo`
+    - `Grigio Storm`
+    - `Grey Limestone`
+    - `Dark Bluestone`
+    - `Charcoal Quartz`
+    - `Black Granite`
+  - all 11 inherit the existing Porcelain baseline:
+    - finish: `Textured`
+    - slip rating: `P5`
+    - application: `Paver`
+    - size: `600x600x20mm`
+  - promoted the supplied image files into explicit `manual_confirmed_by_user` product-photo mappings
+- Files updated:
+  - outer CSV source: `../docs/aushen_product_library.csv`
+  - `docs/photo_audit_2026-02-17/mapped_images.csv`
+  - `docs/photo_audit_2026-02-17/photo_audit_all_in_one.csv`
+  - `docs/photo_audit_2026-02-17/unclear_or_extra_images.csv`
+  - `docs/photo_audit_2026-02-17/summary_after_publish.txt`
+  - `src/data/products.generated.ts`
+  - `src/data/product_images.generated.ts`
+  - `public/product-photos/*.webp` for the new Porcelain slugs
+- Validation:
+  - `npm run build:product-data`: pass (`Generated 73 products, 10 materials.`)
+  - Porcelain data check: pass (`15` porcelain products total; all `11` new slugs inherit `Textured / P5 / Paver / 600x600x20mm`)
+  - new product image assets: pass (`11` new cover files generated and mapped)
+  - `npx tsc --noEmit`: pass
+  - `npm run build`: pass
+
 ### Philadelphia Silver Travertine Image Mapping Correction (2026-04-20)
 - Scope:
   - corrected the product image assignment for two Philadelphia Silver Travertine SKUs using user-supplied source images.

@@ -25,6 +25,9 @@ export const PRODUCT_IMAGE_GALLERIES: Record<string, string[]> = {
   "beloka": [
     "/product-photos/beloka-01.webp"
   ],
+  "black-granite": [
+    "/product-photos/black-granite-01.webp"
+  ],
   "bianca-chiaro": [
     "/product-photos/bianca-chiaro-01.webp"
   ],
@@ -43,6 +46,9 @@ export const PRODUCT_IMAGE_GALLERIES: Record<string, string[]> = {
   "buffalo": [
     "/product-photos/buffalo-01.webp"
   ],
+  "charcoal-quartz": [
+    "/product-photos/charcoal-quartz-01.webp"
+  ],
   "charlotte": [
     "/product-photos/charlotte-01.webp"
   ],
@@ -56,14 +62,23 @@ export const PRODUCT_IMAGE_GALLERIES: Record<string, string[]> = {
   "crema-siena": [
     "/product-photos/crema-siena-01.webp"
   ],
+  "dark-bluestone": [
+    "/product-photos/dark-bluestone-01.webp"
+  ],
   "frozen-blue": [
     "/product-photos/frozen-blue-01.webp"
   ],
   "glacier": [
     "/product-photos/glacier-01.webp"
   ],
+  "grey-limestone": [
+    "/product-photos/grey-limestone-01.webp"
+  ],
   "grey-apricot": [
     "/product-photos/grey-apricot-01.webp"
+  ],
+  "grigio-storm": [
+    "/product-photos/grigio-storm-01.webp"
   ],
   "grey-permeable-paver": [
     "/product-photos/grey-permeable-paver-01.webp"
@@ -82,6 +97,9 @@ export const PRODUCT_IMAGE_GALLERIES: Record<string, string[]> = {
   ],
   "lux-black": [
     "/product-photos/lux-black-01.webp"
+  ],
+  "monte-carlo": [
+    "/product-photos/monte-carlo-01.webp"
   ],
   "moonlight-grey": [
     "/product-photos/moonlight-grey-01.webp"
@@ -122,6 +140,12 @@ export const PRODUCT_IMAGE_GALLERIES: Record<string, string[]> = {
   "reefstone-warm-grey": [
     "/product-photos/reefstone-warm-grey-01.webp"
   ],
+  "sahara-beige": [
+    "/product-photos/sahara-beige-01.webp"
+  ],
+  "sandy-beige": [
+    "/product-photos/sandy-beige-01.webp"
+  ],
   "seagrass": [
     "/product-photos/seagrass-01.webp"
   ],
@@ -161,11 +185,20 @@ export const PRODUCT_IMAGE_GALLERIES: Record<string, string[]> = {
   "toros-black": [
     "/product-photos/toros-black-01.webp"
   ],
+  "tuscany-classic": [
+    "/product-photos/tuscany-classic-01.webp"
+  ],
+  "tuscany-white": [
+    "/product-photos/tuscany-white-01.webp"
+  ],
   "tundra-blue": [
     "/product-photos/tundra-blue-01.webp"
   ],
   "tundra-grey": [
     "/product-photos/tundra-grey-01.webp"
+  ],
+  "vintage-oyster": [
+    "/product-photos/vintage-oyster-01.webp"
   ],
   "white-ochre-blend": [
     "/product-photos/white-ochre-blend-01.webp"
@@ -187,24 +220,30 @@ export const PRODUCT_COVER_IMAGES: Record<string, string> = {
   "beige-travertine-sai": "/product-photos/beige-travertine-sai-01.webp",
   "belgium-blue": "/product-photos/belgium-blue-01.webp",
   "beloka": "/product-photos/beloka-01.webp",
+  "black-granite": "/product-photos/black-granite-01.webp",
   "bianca-chiaro": "/product-photos/bianca-chiaro-01.webp",
   "black-ochre-blend": "/product-photos/black-ochre-blend-01.webp",
   "blue-ridge": "/product-photos/blue-ridge-01.webp",
   "blueocean": "/product-photos/blueocean-01.webp",
   "blueocean-honed": "/product-photos/blueocean-honed-01.webp",
   "buffalo": "/product-photos/buffalo-01.webp",
+  "charcoal-quartz": "/product-photos/charcoal-quartz-01.webp",
   "charlotte": "/product-photos/charlotte-01.webp",
   "classic-travertine-sai": "/product-photos/classic-travertine-sai-01.webp",
   "crema-siena": "/product-photos/crema-siena-01.webp",
+  "dark-bluestone": "/product-photos/dark-bluestone-01.webp",
   "frozen-blue": "/product-photos/frozen-blue-01.webp",
   "glacier": "/product-photos/glacier-01.webp",
+  "grey-limestone": "/product-photos/grey-limestone-01.webp",
   "grey-apricot": "/product-photos/grey-apricot-01.webp",
+  "grigio-storm": "/product-photos/grigio-storm-01.webp",
   "grey-permeable-paver": "/product-photos/grey-permeable-paver-01.webp",
   "honey-limestone": "/product-photos/honey-limestone-01.webp",
   "hotham": "/product-photos/hotham-01.webp",
   "jamieson": "/product-photos/jamieson-01.webp",
   "ken-black": "/product-photos/ken-black-01.webp",
   "lux-black": "/product-photos/lux-black-01.webp",
+  "monte-carlo": "/product-photos/monte-carlo-01.webp",
   "moonlight-grey": "/product-photos/moonlight-grey-01.webp",
   "multicolor-ochre-blend": "/product-photos/multicolor-ochre-blend-01.webp",
   "new-grey": "/product-photos/new-grey-01.webp",
@@ -218,6 +257,8 @@ export const PRODUCT_COVER_IMAGES: Record<string, string> = {
   "reefstone-dark-grey": "/product-photos/reefstone-dark-grey-01.webp",
   "reefstone-neutral-grey": "/product-photos/reefstone-neutral-grey-01.webp",
   "reefstone-warm-grey": "/product-photos/reefstone-warm-grey-01.webp",
+  "sahara-beige": "/product-photos/sahara-beige-01.webp",
+  "sandy-beige": "/product-photos/sandy-beige-01.webp",
   "seagrass": "/product-photos/seagrass-01.webp",
   "sesame-white": "/product-photos/sesame-white-01.webp",
   "siena-earth": "/product-photos/siena-earth-01.webp",
@@ -230,8 +271,11 @@ export const PRODUCT_COVER_IMAGES: Record<string, string> = {
   "steal-blue": "/product-photos/steal-blue-01.webp",
   "stormy-grey": "/product-photos/stormy-grey-01.webp",
   "toros-black": "/product-photos/toros-black-01.webp",
+  "tuscany-classic": "/product-photos/tuscany-classic-01.webp",
+  "tuscany-white": "/product-photos/tuscany-white-01.webp",
   "tundra-blue": "/product-photos/tundra-blue-01.webp",
   "tundra-grey": "/product-photos/tundra-grey-01.webp",
+  "vintage-oyster": "/product-photos/vintage-oyster-01.webp",
   "white-ochre-blend": "/product-photos/white-ochre-blend-01.webp",
   "wilderness-grey": "/product-photos/wilderness-grey-01.webp",
   "zen-grey": "/product-photos/zen-grey-01.webp"

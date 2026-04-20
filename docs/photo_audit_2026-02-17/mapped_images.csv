@@ -7,12 +7,14 @@ beachport,Beachport,Beachport.jpg,exact_name,high,mapped
 beige-travertine-sai,Beige Travertine (SAI),SAI/Beige Travertine.jpg,exact_name,high,mapped
 belgium-blue,Belgium Blue,SAI/Belgium Blue.jpg,exact_name,high,mapped
 beloka,Beloka,Beloka.jpg,exact_name,high,mapped
+black-granite,Black Granite,Black Granite.jpg,manual_confirmed_by_user,high,mapped
 bianca-chiaro,Bianca Chiaro,Bianca Chiaro.jpg,exact_name,high,mapped
 black-ochre-blend,Black Ochre Blend,SAI/Black Ochre Blend.jpg,exact_name,high,mapped
 blue-ridge,Blue Ridge,Blue Ridge Ledge.jpg,name_alias,high,mapped
 blueocean-honed,Blueocean Honed,SAI/Blueocean Honed.jpg,base_name_plus_variant,medium,mapped
 blueocean,Blueocean,SAI/Blueocean Sawn.jpg,base_name_plus_variant,medium,mapped
 buffalo,Buffalo,Buffalo.jpg,exact_name,high,mapped
+charcoal-quartz,Charcoal Quartz,Charcoal Quartz.jpg,manual_confirmed_by_user,high,mapped
 charlotte,Charlotte,Charlotte.jpg,exact_name,high,mapped
 classic-travertine-sai,Classic Travertine (SAI),Classic Travertine Vien Cut.jpg,base_name_plus_variant,medium,mapped
 classic-travertine-sai,Classic Travertine (SAI),SAI/Classic Travertine_Honed and filled.jpg,name_alias,high,mapped
@@ -20,15 +22,19 @@ classic-travertine-sai,Classic Travertine (SAI),SAI/Classic Travertine_Tumbled a
 classic-travertine-sai,Classic Travertine (SAI),Standard Classic Travertine.jpg,name_alias,high,mapped
 classic-travertine-sai,Classic Travertine (SAI),Standard Classic Travertine_2.jpg,name_alias,high,mapped
 crema-siena,Crema Siena,Crema Siena.jpg,exact_name,high,mapped
+dark-bluestone,Dark Bluestone,Dark Bluestone.jpg,manual_confirmed_by_user,high,mapped
 frozen-blue,Frozen Blue,SAI/Frozen Blue.jpg,exact_name,high,mapped
 glacier,Glacier,Glacier.jpg,exact_name,high,mapped
+grey-limestone,Grey Limestone,Grey Limestone.jpg,manual_confirmed_by_user,high,mapped
 grey-apricot,Grey Apricot,SAI/Grey Apricot.jpg,exact_name,high,mapped
 grey-permeable-paver,Grey Permeable Paver,SAI/Permeable Paver.jpg,manual_confirmed_by_user,high,mapped
+grigio-storm,Grigio Storm,Grigio Storm.jpg,manual_confirmed_by_user,high,mapped
 honey-limestone,Honey Limestone,Honey Limestone.jpg,exact_name,high,mapped
 hotham,Hotham,Hotham.jpg,exact_name,high,mapped
 jamieson,Jamieson,Jamieson.jpg,exact_name,high,mapped
 ken-black,Ken Black,SAI/Ken Black.jpg,exact_name,high,mapped
 lux-black,Lux Black,SAI/Lux Black.jpg,exact_name,high,mapped
+monte-carlo,Monte Carlo,Monte Carlo .jpg,manual_confirmed_by_user,high,mapped
 moonlight-grey,Moonlight Grey,SAI/Moonlight Grey.jpg,exact_name,high,mapped
 multicolor-ochre-blend,MultiColor Ochre Blend,SAI/Multicolor Ochre Blend..jpg,exact_name,high,mapped
 new-grey,New Grey,SAI/New Grey.jpg,exact_name,high,mapped
@@ -42,6 +48,8 @@ reefstone-creamy-white,Reefstone Creamy White,SAI/Reefstone Creamy White.jpg,exa
 reefstone-dark-grey,Reefstone Dark Grey,SAI/Reefstone Dark Grey.jpg,exact_name,high,mapped
 reefstone-neutral-grey,Reefstone Neutral Grey,SAI/Reefstone Neutral Grey.jpg,exact_name,high,mapped
 reefstone-warm-grey,Reefstone Warm Grey,SAI/Reefstone Warm Grey.jpg,exact_name,high,mapped
+sahara-beige,Sahara Beige,Sahara Beige.jpg,manual_confirmed_by_user,high,mapped
+sandy-beige,Sandy Beige,Sandy Beige.png,manual_confirmed_by_user,high,mapped
 seagrass,Seagrass,Seagrass.jpg,exact_name,high,mapped
 sesame-white,Sesame White,SAI/Seame White.jpg,name_alias,high,mapped
 siena-earth,Siena Earth,Siena Earth.jpg,exact_name,high,mapped
@@ -57,8 +65,11 @@ steal-blue,Steal Blue,SAI/Steel Blue.jpg,name_alias,high,mapped
 stormy-grey,Stormy Grey,SAI/Stormy Grey-2.jpg,exact_name,high,mapped
 stormy-grey,Stormy Grey,SAI/Stormy Grey.jpg,exact_name,high,mapped
 toros-black,Toros Black,Toros Black.jpg,exact_name,high,mapped
+tuscany-classic,Tuscany Classic,Tuscany Classic.jpg,manual_confirmed_by_user,high,mapped
+tuscany-white,Tuscany White,Tuscany White.jpg,manual_confirmed_by_user,high,mapped
 tundra-blue,Tundra Blue,Tundra Blue.jpg,exact_name,high,mapped
 tundra-grey,Tundra Grey,Tundra Grey.jpg,exact_name,high,mapped
+vintage-oyster,Vintage Oyster,Vintage Oyster.png,manual_confirmed_by_user,high,mapped
 white-ochre-blend,White Ochre Blend,SAI/White Ochre Blend.jpg,exact_name,high,mapped
 wilderness-grey,Wilderness Grey,Wildness Grey.jpg,name_alias,high,mapped
 zen-grey,Zen Grey,SAI/Zen Grey.jpg,exact_name,high,mapped
