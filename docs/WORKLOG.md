@@ -4,6 +4,21 @@ Last updated: 2026-04-20
 
 ## Completed and Landed
 
+### Philadelphia Silver Travertine Image Mapping Correction (2026-04-20)
+- Scope:
+  - corrected the product image assignment for two Philadelphia Silver Travertine SKUs using user-supplied source images.
+- Behavior landed:
+  - `philadelphia-silver-travertine-vien-cut` now uses the provided `Philadelphia Silver Travertine Vien Cut.jpg`
+  - `philadelphia-silver-travertine-cross-cut-tumbled` now has a dedicated mapped image from `Philadelphia Silver Travertine.jpg`
+  - cross-cut tumbled is no longer tracked as a missing-product-image gap in photo audit docs
+- Files updated:
+  - `docs/photo_audit_2026-02-17/photo_audit_all_in_one.csv`
+  - `docs/photo_audit_2026-02-17/mapped_images.csv`
+  - `docs/photo_audit_2026-02-17/missing_products.csv`
+  - `docs/photo_audit_2026-02-17/summary_after_publish.txt`
+  - `src/data/product_images.generated.ts`
+  - `public/product-photos/philadelphia-silver-travertine-*.webp`
+
 ### Turkish Carrara(Aqua Blue) Product Removal (2026-04-20)
 - Scope:
   - removed the discontinued Marble product `Turkish Carrara(Aqua Blue)` from the catalog source and downstream generated outputs.

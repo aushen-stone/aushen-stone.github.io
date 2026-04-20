@@ -98,9 +98,11 @@ export const PRODUCT_IMAGE_GALLERIES: Record<string, string[]> = {
   "pearl-grey": [
     "/product-photos/pearl-grey-01.webp"
   ],
+  "philadelphia-silver-travertine-cross-cut-tumbled": [
+    "/product-photos/philadelphia-silver-travertine-cross-cut-tumbled-01.webp"
+  ],
   "philadelphia-silver-travertine-vien-cut": [
-    "/product-photos/philadelphia-silver-travertine-vien-cut-01.webp",
-    "/product-photos/philadelphia-silver-travertine-vien-cut-02.webp"
+    "/product-photos/philadelphia-silver-travertine-vien-cut-01.webp"
   ],
   "premium-classic-travertine-artma": [
     "/product-photos/premium-classic-travertine-artma-01.webp"
@@ -208,6 +210,7 @@ export const PRODUCT_COVER_IMAGES: Record<string, string> = {
   "new-grey": "/product-photos/new-grey-01.webp",
   "nimbus-white": "/product-photos/nimbus-white-01.webp",
   "pearl-grey": "/product-photos/pearl-grey-01.webp",
+  "philadelphia-silver-travertine-cross-cut-tumbled": "/product-photos/philadelphia-silver-travertine-cross-cut-tumbled-01.webp",
   "philadelphia-silver-travertine-vien-cut": "/product-photos/philadelphia-silver-travertine-vien-cut-01.webp",
   "premium-classic-travertine-artma": "/product-photos/premium-classic-travertine-artma-01.webp",
   "red-ochre-blend": "/product-photos/red-ochre-blend-01.webp",
