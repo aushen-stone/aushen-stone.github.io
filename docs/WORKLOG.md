@@ -4,6 +4,29 @@ Last updated: 2026-04-20
 
 ## Completed and Landed
 
+### Turkish Carrara(Aqua Blue) Product Removal (2026-04-20)
+- Scope:
+  - removed the discontinued Marble product `Turkish Carrara(Aqua Blue)` from the catalog source and downstream generated outputs.
+  - cleaned photo-audit records that only existed because the removed product had no mapped image.
+- Behavior landed:
+  - public product route `/products/turkish-carrara-aqua-blue/` is no longer generated
+  - product list/detail data no longer include `turkish-carrara-aqua-blue`
+  - photo audit missing-product records no longer track the removed product
+- Files updated:
+  - outer CSV source: `../docs/aushen_product_library.csv`
+  - `docs/photo_audit_2026-02-17/photo_audit_all_in_one.csv`
+  - `docs/photo_audit_2026-02-17/missing_products.csv`
+  - `src/data/products.generated.ts`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run build:product-data`: pass
+  - `npm run lint`: pass (`0 errors, 20 warnings`)
+  - `npm run build`: pass
+  - `npx tsc --noEmit`: pass
+  - `npm run build:pages`: pass
+  - `dist/products/turkish-carrara-aqua-blue/index.html`: absent
+  - `dist/sitemap.xml`: does not include `/products/turkish-carrara-aqua-blue/`
+
 ### Blueocean Honed Product Split (2026-04-20)
 - Scope:
   - split Blueocean Honed into a dedicated generated product without breaking the existing `blueocean` route.
