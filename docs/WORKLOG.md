@@ -4,6 +4,17 @@ Last updated: 2026-04-27
 
 ## Completed and Landed
 
+### Buffalo and Hotham Application Correction (2026-04-28)
+- Scope:
+  - corrected Buffalo and Hotham from `Crazy Paver` to `Cladding / Wall Cladding`.
+- Behavior landed:
+  - moved the `150-600x30-40mm` size entries for `buffalo` and `hotham` from the CSV `Crazy Paver` column to the `Cladding / Wall Cladding` column.
+  - regenerated product data so both products now expose `categorySlug: cladding` and `subtypeSlug: wall-cladding`.
+- Files updated:
+  - outer CSV source: `../docs/aushen_product_library.csv`
+  - `src/data/products.generated.ts`
+  - `docs/WORKLOG.md`
+
 ### Travertine Catalog Cleanup (2026-04-27)
 - Scope:
   - removed the discontinued `Classic Light Travertine(Artmar)` product.

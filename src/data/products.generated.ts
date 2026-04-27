@@ -3195,10 +3195,12 @@ export const PRODUCTS: Product[] = [
         "slipRating": "P5",
         "applications": [
           {
-            "id": "crazy-paver",
-            "label": "Crazy Paver",
-            "category": "Crazy Paver",
-            "categorySlug": "crazy-paver",
+            "id": "cladding--wall-cladding",
+            "label": "Cladding / Wall Cladding",
+            "category": "Cladding",
+            "categorySlug": "cladding",
+            "subtype": "Wall Cladding",
+            "subtypeSlug": "wall-cladding",
             "sizes": [
               {
                 "raw": "150-600x30-40mm",
@@ -3211,10 +3213,12 @@ export const PRODUCTS: Product[] = [
     ],
     "applicationIndex": [
       {
-        "id": "crazy-paver",
-        "label": "Crazy Paver",
-        "category": "Crazy Paver",
-        "categorySlug": "crazy-paver",
+        "id": "cladding--wall-cladding",
+        "label": "Cladding / Wall Cladding",
+        "category": "Cladding",
+        "categorySlug": "cladding",
+        "subtype": "Wall Cladding",
+        "subtypeSlug": "wall-cladding",
         "finishes": [
           {
             "id": "natural-split-face-finish-p5",
@@ -4684,10 +4688,12 @@ export const PRODUCTS: Product[] = [
         "slipRating": "P5",
         "applications": [
           {
-            "id": "crazy-paver",
-            "label": "Crazy Paver",
-            "category": "Crazy Paver",
-            "categorySlug": "crazy-paver",
+            "id": "cladding--wall-cladding",
+            "label": "Cladding / Wall Cladding",
+            "category": "Cladding",
+            "categorySlug": "cladding",
+            "subtype": "Wall Cladding",
+            "subtypeSlug": "wall-cladding",
             "sizes": [
               {
                 "raw": "150-600x30-40mm",
@@ -4700,10 +4706,12 @@ export const PRODUCTS: Product[] = [
     ],
     "applicationIndex": [
       {
-        "id": "crazy-paver",
-        "label": "Crazy Paver",
-        "category": "Crazy Paver",
-        "categorySlug": "crazy-paver",
+        "id": "cladding--wall-cladding",
+        "label": "Cladding / Wall Cladding",
+        "category": "Cladding",
+        "categorySlug": "cladding",
+        "subtype": "Wall Cladding",
+        "subtypeSlug": "wall-cladding",
         "finishes": [
           {
             "id": "natural-split-finish-and-polished-honed-and-leathered-finishes-p5",
