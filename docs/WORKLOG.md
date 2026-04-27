@@ -1,8 +1,109 @@
 # Worklog - Aushen Web
 
-Last updated: 2026-04-20
+Last updated: 2026-04-27
 
 ## Completed and Landed
+
+### Travertine Catalog Cleanup (2026-04-27)
+- Scope:
+  - removed the discontinued `Classic Light Travertine(Artmar)` product.
+  - removed the incorrect first image from `Classic Travertine (SAI)`.
+  - cleaned public display names for travertine products that carried supplier suffixes.
+- Behavior landed:
+  - `classic-light-travertine-artmar` is no longer present in generated product data.
+  - the outer CSV no longer contains the `Classic Light Travertine(Artmar)` block.
+  - photo audit docs no longer track `classic-light-travertine-artmar` as a missing-product-image item.
+  - `SAI/Classic Travertine_Honed and filled.jpg` was removed from the Classic Travertine photo audit mapping.
+  - published Classic Travertine image assets now contain four gallery images, with the previous second image promoted to the cover slot.
+  - public display names now remove supplier suffixes while preserving continuity slugs:
+    - `beige-travertine-sai` -> `Beige Travertine`
+    - `classic-travertine-sai` -> `Classic Travertine`
+    - `premium-classic-travertine-artma` -> `Premium Classic Travertine`
+    - `silver-travertine-artma` -> `Silver Travertine`
+- Files updated:
+  - outer CSV source: `../docs/aushen_product_library.csv`
+  - `docs/photo_audit_2026-02-17/mapped_images.csv`
+  - `docs/photo_audit_2026-02-17/missing_products.csv`
+  - `docs/photo_audit_2026-02-17/photo_audit_all_in_one.csv`
+  - `docs/photo_audit_2026-02-17/summary_after_publish.txt`
+  - `public/product-photos/classic-travertine-sai-*.webp`
+  - `src/data/product_display_names.ts`
+  - `src/data/product_overrides.ts`
+  - `src/data/product_images.generated.ts`
+  - `src/data/products.generated.ts`
+  - `docs/ARCHITECTURE.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Notes:
+  - source image folder `AUSHEN Product Photos/` is not present in this workspace, so the Classic Travertine webp outputs were adjusted from the existing published assets to mirror the updated audit mapping.
+- Validation:
+  - `npm run build:product-data`: pass (`72 products`, `10 materials`)
+  - `npm run lint`: pass (`0 errors, 23 warnings`, existing `no-img-element` backlog)
+  - `npx tsc --noEmit`: pass
+  - `git diff --check`: pass
+  - `npm run build`: pass; static generation now reports `157` pages.
+  - exported `/products/classic-light-travertine-artmar/` is absent.
+  - exported travertine detail pages for the affected supplier-suffix SKUs render without `(SAI)` / `(Artma)` in public title content.
+
+### Product Browse State UX (2026-04-27)
+- Scope:
+  - improved the product browse -> detail -> browse loop so customers can return to the exact filtered product context.
+  - preserved existing product slugs and old inbound `category` filter links.
+- Behavior landed:
+  - `/products` now reads and writes shareable filter params: `q`, `material`, `application`, and `tone`.
+  - old `/products?category=...` links remain compatible as inbound filters, but new interactions emit normalized params.
+  - product-card clicks store a short-lived return context with the filtered list URL, source product slug, scroll position, and timestamp.
+  - product detail pages now show a direct back affordance:
+    - `Back to filtered products` when a valid return context exists.
+    - `Back to products` for direct visits.
+  - returning to the product list restores the saved filtered URL and scrolls the original product card into view when available.
+  - detail selectors now persist in the URL with `application`, `finish`, and `size` params and normalize invalid combinations to available product options.
+  - product detail enquiry/consultation CTAs hand the current product selection to `/contact?source=product-detail` as a prefilled message.
+- Files updated:
+  - `src/types/productNavigation.ts`
+  - `src/app/products/ProductsPageClient.tsx`
+  - `src/app/products/[slug]/ProductDetailClient.tsx`
+  - `src/app/contact/ContactPageClient.tsx`
+  - `docs/ARCHITECTURE.md`
+  - `docs/README_AGENT.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run lint`: pass (`0 errors, 23 warnings`, existing `no-img-element` backlog)
+  - `npx tsc --noEmit`: pass
+  - `git diff --check`: pass
+  - `npm run build`: pass; static output still includes `/products` and generated product detail routes.
+
+### BlueOcean Display-Name Override (2026-04-27)
+- Scope:
+  - renamed the public-facing `blueocean` product to `BlueOcean Sawn` while preserving the existing `blueocean` route slug.
+  - paired the honed product display name as `BlueOcean Honed` for consistency.
+- Behavior landed:
+  - `src/data/products.generated.ts` and the outer CSV remain structurally unchanged.
+  - `ProductOverride.displayName` now carries display-only product naming.
+  - product list cards, product detail metadata, product detail hero text, best-seller cards, image alt labels, and sample-cart line names use the display name helper.
+  - stored sample-cart lines are normalized on hydration so existing `blueocean` cart entries pick up the new display name.
+  - `/products/blueocean/` remains the continuity route; `/products/blueocean-honed/` remains the dedicated honed route.
+  - remaining non-honed special finishes under `blueocean` were not reclassified in this task and remain tracked under `P2-DATA-BLUEOCEAN-001`.
+- Files updated:
+  - `src/types/product.ts`
+  - `src/data/product_display_names.ts`
+  - `src/data/product_overrides.ts`
+  - `src/app/components/BestSellers.tsx`
+  - `src/app/components/cart/SampleCartProvider.tsx`
+  - `src/app/products/ProductsPageClient.tsx`
+  - `src/app/products/[slug]/page.tsx`
+  - `src/app/products/[slug]/ProductDetailClient.tsx`
+  - `docs/ARCHITECTURE.md`
+  - `docs/README_AGENT.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run build:product-data`: pass (`73 products`, `10 materials`; generated product/category files unchanged)
+  - `npm run lint`: pass (`0 errors, 23 warnings`, existing `no-img-element` backlog)
+  - `npx tsc --noEmit`: pass
+  - `npm run build`: pass; static output keeps `/products/blueocean/` and `/products/blueocean-honed/`
+  - exported product pages include `BlueOcean Sawn` and `BlueOcean Honed` metadata while generated product names remain unchanged.
 
 ### Homepage Accessories Gateway (2026-04-20)
 - Scope:

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { PRODUCTS } from "@/data/products.generated";
+import { getProductDisplayName } from "@/data/product_display_names";
 import {
   DEFAULT_PRODUCT_IMAGE,
   PRODUCT_OVERRIDES,
@@ -30,7 +31,7 @@ const toCard = (product: Product): BestSellerCard => {
   return {
     id: product.id,
     slug: product.slug,
-    name: product.name,
+    name: getProductDisplayName(product),
     materialName: product.materialName,
     imageUrl:
       override?.imageUrls?.[0] ||

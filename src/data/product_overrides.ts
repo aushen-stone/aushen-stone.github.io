@@ -2,6 +2,7 @@ import {
   PRODUCT_COVER_IMAGES,
   PRODUCT_IMAGE_GALLERIES,
 } from "@/data/product_images.generated";
+import { PRODUCT_DISPLAY_NAMES } from "@/data/product_display_names";
 import type { ProductOverride } from "@/types/product";
 
 export const DEFAULT_PRODUCT_IMAGE = "/Application001.webp";
@@ -38,18 +39,34 @@ const GENERATED_IMAGE_OVERRIDES: Record<string, ProductOverride> = Object.fromEn
 );
 
 const MANUAL_PRODUCT_OVERRIDES: Record<string, ProductOverride> = {
+  "beige-travertine-sai": {
+    displayName: PRODUCT_DISPLAY_NAMES["beige-travertine-sai"],
+  },
+  blueocean: {
+    displayName: PRODUCT_DISPLAY_NAMES.blueocean,
+  },
   "blueocean-honed": {
+    displayName: PRODUCT_DISPLAY_NAMES["blueocean-honed"],
     description:
-      "Blueocean Honed offers the cooler Blueocean bluestone palette with a smoother, more architectural face for refined paving, coping, and feature applications.",
+      "BlueOcean Honed offers the cooler BlueOcean bluestone palette with a smoother, more architectural face for refined paving, coping, and feature applications.",
     homeownerSummary:
-      "Ideal for projects that want Blueocean's cool tonal depth with a cleaner, smoother finish underfoot and around entertaining zones.",
+      "Ideal for projects that want BlueOcean's cool tonal depth with a cleaner, smoother finish underfoot and around entertaining zones.",
     professionalSummary:
-      "Use Blueocean Honed when the project calls for the Blueocean palette in a more refined honed specification across paving, coping, and matching detail elements.",
+      "Use BlueOcean Honed when the project calls for the BlueOcean palette in a more refined honed specification across paving, coping, and matching detail elements.",
     professionalNotes: [
       "Confirm honed slip performance against the intended wet-area or poolside compliance requirements.",
-      "Check matching coping, pattern, and kerb availability early because the honed range is narrower than the continuity Blueocean slug.",
+      "Check matching coping, pattern, and kerb availability early because the honed range is narrower than the continuity BlueOcean slug.",
       "Coordinate visual mockups against the sawn range when the finish change materially affects perceived colour and light reflectance.",
     ],
+  },
+  "classic-travertine-sai": {
+    displayName: PRODUCT_DISPLAY_NAMES["classic-travertine-sai"],
+  },
+  "premium-classic-travertine-artma": {
+    displayName: PRODUCT_DISPLAY_NAMES["premium-classic-travertine-artma"],
+  },
+  "silver-travertine-artma": {
+    displayName: PRODUCT_DISPLAY_NAMES["silver-travertine-artma"],
   },
 };
 

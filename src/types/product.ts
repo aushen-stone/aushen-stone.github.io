@@ -80,6 +80,7 @@ export type ProductCategories = {
 };
 
 export type ProductOverride = {
+  displayName?: string;
   toneTags?: string[];
   description?: string;
   imageUrl?: string;

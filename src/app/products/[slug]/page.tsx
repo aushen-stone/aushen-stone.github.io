@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PRODUCTS } from "@/data/products.generated";
+import { getProductDisplayName } from "@/data/product_display_names";
 import {
   DEFAULT_PRODUCT_DESCRIPTION,
   PRODUCT_OVERRIDES,
@@ -34,12 +35,13 @@ export async function generateMetadata({
   }
 
   const override = PRODUCT_OVERRIDES[product.slug];
+  const displayName = getProductDisplayName(product);
   const description =
     override?.description ||
-    `${product.name} in ${product.materialName}, curated by Aushen Stone for architectural and landscape applications. ${DEFAULT_PRODUCT_DESCRIPTION}`;
+    `${displayName} in ${product.materialName}, curated by Aushen Stone for architectural and landscape applications. ${DEFAULT_PRODUCT_DESCRIPTION}`;
 
   return buildMetadata({
-    title: `${product.name} | ${product.materialName} | Aushen Stone`,
+    title: `${displayName} | ${product.materialName} | Aushen Stone`,
     description,
     path: `/products/${product.slug}/`,
     index: true,

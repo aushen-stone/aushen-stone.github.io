@@ -2,15 +2,26 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useMemo, useRef, useState, type ReactNode } from "react";
-import { useSearchParams } from "next/navigation";
+import {
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  type ReactNode,
+} from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Footer } from "@/app/components/Footer";
 import { PRODUCTS } from "@/data/products.generated";
 import { PRODUCT_CATEGORIES } from "@/data/categories.generated";
+import { getProductDisplayName } from "@/data/product_display_names";
 import {
   DEFAULT_PRODUCT_IMAGE,
   PRODUCT_OVERRIDES,
 } from "@/data/product_overrides";
+import {
+  PRODUCTS_RETURN_CONTEXT_STORAGE_KEY,
+  type ProductsReturnContext,
+} from "@/types/productNavigation";
 import type { Product } from "@/types/product";
 
 type FilterState = {
@@ -86,6 +97,88 @@ const collectApplicationLabels = (product: Product): string[] => {
 const hasActiveFilters = (filters: FilterState) =>
   Boolean(filters.query || filters.material || filters.application || filters.tone);
 
+const emptyFilters = (): FilterState => ({
+  query: "",
+  material: "",
+  application: "",
+  tone: "",
+});
+
+const parseFiltersFromParams = (
+  params: URLSearchParams,
+  materials: { name: string; slug: string }[],
+  applications: { name: string; slug: string }[]
+): FilterState => {
+  const selected = buildInitialFilters(
+    params.get("category"),
+    materials,
+    applications
+  );
+
+  const query = params.get("q")?.trim() || "";
+  const material = params.get("material") || selected.material;
+  const application = params.get("application") || selected.application;
+  const tone = params.get("tone") || selected.tone;
+
+  return {
+    query,
+    material: materials.some((item) => item.slug === material) ? material : "",
+    application: applications.some((item) => item.slug === application)
+      ? application
+      : "",
+    tone: TONE_OPTIONS.some((item) => item.slug === tone) ? tone : "",
+  };
+};
+
+const buildProductsQuery = (
+  currentParams: URLSearchParams,
+  filters: FilterState
+): string => {
+  const nextParams = new URLSearchParams(currentParams.toString());
+
+  ["category", "q", "material", "application", "tone"].forEach((key) => {
+    nextParams.delete(key);
+  });
+
+  const query = filters.query.trim();
+  if (query) nextParams.set("q", query);
+  if (filters.material) nextParams.set("material", filters.material);
+  if (filters.application) nextParams.set("application", filters.application);
+  if (filters.tone) nextParams.set("tone", filters.tone);
+
+  return nextParams.toString();
+};
+
+const readProductsReturnContext = (): ProductsReturnContext | null => {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const raw = window.sessionStorage.getItem(
+      PRODUCTS_RETURN_CONTEXT_STORAGE_KEY
+    );
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as Partial<ProductsReturnContext>;
+    if (
+      typeof parsed.href !== "string" ||
+      typeof parsed.productSlug !== "string" ||
+      typeof parsed.scrollY !== "number" ||
+      typeof parsed.savedAt !== "string"
+    ) {
+      return null;
+    }
+
+    return {
+      href: parsed.href,
+      productSlug: parsed.productSlug,
+      scrollY: parsed.scrollY,
+      savedAt: parsed.savedAt,
+    };
+  } catch {
+    return null;
+  }
+};
+
 function FilterSelect({
   value,
   onValueChange,
@@ -129,15 +222,56 @@ function FilterSelect({
   );
 }
 
-function ProductsPageContent({ initialCategory }: { initialCategory: string | null }) {
+type ProductsPageContentProps = {
+  filters: FilterState;
+  onFiltersChange?: (filters: FilterState) => void;
+  enableReturnRestore?: boolean;
+};
+
+function ProductsPageContent({
+  filters,
+  onFiltersChange,
+  enableReturnRestore = false,
+}: ProductsPageContentProps) {
   const materials = PRODUCT_CATEGORIES.materials;
-  const applications = PRODUCT_CATEGORIES.applications.map((application) => ({
-    name: application.name,
-    slug: application.slug,
-  }));
-  const [filters, setFilters] = useState<FilterState>(() =>
-    buildInitialFilters(initialCategory, materials, applications)
+  const applications = useMemo(
+    () =>
+      PRODUCT_CATEGORIES.applications.map((application) => ({
+        name: application.name,
+        slug: application.slug,
+      })),
+    []
   );
+
+  useEffect(() => {
+    if (!enableReturnRestore) return;
+    if (typeof window === "undefined") return;
+
+    const context = readProductsReturnContext();
+    if (!context) return;
+
+    const currentHref = `${window.location.pathname}${window.location.search}`;
+    const isCurrentList = context.href === currentHref;
+    const ageMs = Date.now() - new Date(context.savedAt).getTime();
+    const isFresh = Number.isFinite(ageMs) && ageMs < 30 * 60 * 1000;
+
+    if (!isCurrentList || !isFresh) {
+      window.sessionStorage.removeItem(PRODUCTS_RETURN_CONTEXT_STORAGE_KEY);
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      const productCard = document.getElementById(
+        `product-${context.productSlug}`
+      );
+      if (productCard) {
+        productCard.scrollIntoView({ block: "center" });
+      } else {
+        window.scrollTo({ top: context.scrollY });
+      }
+      window.sessionStorage.removeItem(PRODUCTS_RETURN_CONTEXT_STORAGE_KEY);
+    });
+  }, [enableReturnRestore]);
 
   const filteredProducts = useMemo(() => {
     const normalizedQuery = filters.query.trim().toLowerCase();
@@ -168,7 +302,9 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
         return true;
       }
 
+      const displayName = getProductDisplayName(product);
       const searchable = [
+        displayName,
         product.name,
         product.materialName,
         ...collectApplicationLabels(product),
@@ -181,16 +317,34 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
   }, [filters]);
 
   const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    onFiltersChange?.({ ...filters, [key]: value });
   };
 
-  const clearFilters = () =>
-    setFilters({
-      query: "",
-      material: "",
-      application: "",
-      tone: "",
-    });
+  const clearFilters = () => {
+    onFiltersChange?.(emptyFilters());
+  };
+
+  const saveReturnContext = (productSlug: string) => {
+    if (typeof window === "undefined") return;
+
+    const context: ProductsReturnContext = {
+      href: `${window.location.pathname}${window.location.search}`,
+      productSlug,
+      scrollY: window.scrollY,
+      savedAt: new Date().toISOString(),
+    };
+
+    try {
+      window.sessionStorage.setItem(
+        PRODUCTS_RETURN_CONTEXT_STORAGE_KEY,
+        JSON.stringify(context)
+      );
+    } catch {
+      // Navigation still works if session storage is unavailable.
+    }
+  };
+
+  const productHref = (slug: string) => `/products/${slug}`;
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
@@ -309,6 +463,7 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
           <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
             {filteredProducts.map((product) => {
               const override = PRODUCT_OVERRIDES[product.slug];
+              const displayName = getProductDisplayName(product);
               const imageUrl =
                 override?.imageUrls?.[0] || override?.imageUrl || DEFAULT_PRODUCT_IMAGE;
               const applicationLabels = collectApplicationLabels(product);
@@ -317,21 +472,23 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
 
               return (
                 <Link
+                  id={`product-${product.slug}`}
                   key={product.id}
-                  href={`/products/${product.slug}`}
+                  href={productHref(product.slug)}
+                  onClick={() => saveReturnContext(product.slug)}
                   className="group block overflow-hidden border border-[#E6E0D8] bg-white hover:border-[#CDC5BA] hover:shadow-[0_10px_30px_-20px_rgba(0,0,0,0.45)] transition-all"
                 >
                   <div className="relative aspect-[5/4] bg-[#E5E5E5] overflow-hidden">
                     <img
                       src={imageUrl}
-                      alt={product.name}
+                      alt={displayName}
                       className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                     />
                   </div>
 
                   <div className="p-4 sm:p-5">
                     <h2 className="font-serif text-[1.1rem] leading-tight text-[#1D1D1B] min-h-[2.35rem]">
-                      {product.name}
+                      {displayName}
                     </h2>
 
                     <p className="mt-1.5 text-[11px] uppercase tracking-[0.14em] text-gray-500">
@@ -367,16 +524,49 @@ function ProductsPageContent({ initialCategory }: { initialCategory: string | nu
 }
 
 function ProductsPageInner() {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const initialCategory = searchParams.get("category");
-  const searchKey = searchParams.toString() || "all";
+  const materials = PRODUCT_CATEGORIES.materials;
+  const applications = useMemo(
+    () =>
+      PRODUCT_CATEGORIES.applications.map((application) => ({
+        name: application.name,
+        slug: application.slug,
+      })),
+    []
+  );
 
-  return <ProductsPageContent key={searchKey} initialCategory={initialCategory} />;
+  const urlFilters = useMemo(
+    () =>
+      parseFiltersFromParams(
+        new URLSearchParams(searchParams.toString()),
+        materials,
+        applications
+      ),
+    [applications, materials, searchParams]
+  );
+
+  const handleFiltersChange = (nextFilters: FilterState) => {
+    const query = buildProductsQuery(
+      new URLSearchParams(searchParams.toString()),
+      nextFilters
+    );
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  };
+
+  return (
+    <ProductsPageContent
+      filters={urlFilters}
+      onFiltersChange={handleFiltersChange}
+      enableReturnRestore
+    />
+  );
 }
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<ProductsPageContent initialCategory={null} />}>
+    <Suspense fallback={<ProductsPageContent filters={emptyFilters()} />}>
       <ProductsPageInner />
     </Suspense>
   );

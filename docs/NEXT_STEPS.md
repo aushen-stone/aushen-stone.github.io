@@ -1,6 +1,6 @@
 # Next Steps - Aushen Web
 
-Last updated: 2026-04-20
+Last updated: 2026-04-27
 
 ## Release Goal
 Launch `aushenstone.com.au` on the current static Next.js stack while protecting lead capture and minimizing SEO loss during WordPress cutover.
@@ -124,7 +124,7 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 - Status: `Open`
 - Owner: `Engineering`
 - Scope:
-  - Current lint health is `0 errors, 20 warnings` (`@next/next/no-img-element`).
+  - Current lint health is `0 errors, 23 warnings` (`@next/next/no-img-element`).
 - Evidence:
   - Warnings are present across shared components and route clients.
 - Exit Criteria:
@@ -167,6 +167,7 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 ### Blueocean Split Contract
 - `blueocean` remains the phase-1 continuity slug and must stay routable.
 - `blueocean-honed` is a dedicated generated product route sourced from `Blueocean Honed` rows in the outer CSV.
+- Public display names are applied through `ProductOverride.displayName`: `blueocean` -> `BlueOcean Sawn`; `blueocean-honed` -> `BlueOcean Honed`.
 - Remaining Blueocean special finishes are intentionally still grouped under `blueocean` until `P2-DATA-BLUEOCEAN-001` is executed.
 
 ## Verification Commands

@@ -2,12 +2,27 @@
 "use client";
 
 import Link from "next/link";
-import React, { useMemo, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { Footer } from "@/app/components/Footer";
-import { ArrowDownLeft, ArrowRight, ChevronLeft, ChevronRight, Plus, Minus } from "lucide-react";
+import {
+  ArrowDownLeft,
+  ArrowLeft,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Minus,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
 import { PRODUCTS } from "@/data/products.generated";
+import { getProductDisplayName } from "@/data/product_display_names";
 import {
   DEFAULT_HOMEOWNER_SUMMARY,
   DEFAULT_HOMEOWNER_USE_CASES,
@@ -18,6 +33,11 @@ import {
   PRODUCT_OVERRIDES,
 } from "@/data/product_overrides";
 import type { AddSampleResult } from "@/types/cart";
+import {
+  PRODUCT_CONTACT_HANDOFF_KEY,
+  PRODUCTS_RETURN_CONTEXT_STORAGE_KEY,
+  type ProductsReturnContext,
+} from "@/types/productNavigation";
 import type { AudienceMode, Product } from "@/types/product";
 
 type SelectOption = {
@@ -176,9 +196,147 @@ type ProductDetailViewProps = {
 
 type SampleFeedback = AddSampleResult | "unavailable";
 
+type ProductSelectionState = {
+  applicationId: string;
+  finishId: string;
+  size: string;
+};
+
+const PRODUCT_DETAIL_SELECTION_PARAMS = ["application", "finish", "size"] as const;
+const PRODUCT_DETAIL_SELECTION_EVENT = "aushen_product_detail_selection_change";
+const PRODUCT_RETURN_CONTEXT_MAX_AGE_MS = 30 * 60 * 1000;
+
+const subscribeNoop = () => () => {};
+
+const subscribeProductSelectionSearch = (onStoreChange: () => void) => {
+  if (typeof window === "undefined") return () => {};
+
+  window.addEventListener("popstate", onStoreChange);
+  window.addEventListener(PRODUCT_DETAIL_SELECTION_EVENT, onStoreChange);
+
+  return () => {
+    window.removeEventListener("popstate", onStoreChange);
+    window.removeEventListener(PRODUCT_DETAIL_SELECTION_EVENT, onStoreChange);
+  };
+};
+
+const getProductSelectionSearchSnapshot = () =>
+  typeof window === "undefined" ? "" : window.location.search;
+
+const getEmptySnapshot = () => "";
+
+function readProductsReturnContext(): ProductsReturnContext | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const raw = window.sessionStorage.getItem(
+      PRODUCTS_RETURN_CONTEXT_STORAGE_KEY
+    );
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as Partial<ProductsReturnContext>;
+    if (
+      typeof parsed.href !== "string" ||
+      typeof parsed.productSlug !== "string" ||
+      typeof parsed.scrollY !== "number" ||
+      typeof parsed.savedAt !== "string"
+    ) {
+      return null;
+    }
+
+    return {
+      href: parsed.href,
+      productSlug: parsed.productSlug,
+      scrollY: parsed.scrollY,
+      savedAt: parsed.savedAt,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function resolveSelectionFromParams(
+  product: Product,
+  params: URLSearchParams
+): ProductSelectionState {
+  const requestedApplicationId = params.get("application") || "";
+  const requestedFinishId = params.get("finish") || "";
+  const requestedSize = params.get("size") || "";
+
+  const application =
+    product.applicationIndex.find((item) => item.id === requestedApplicationId) ||
+    product.applicationIndex[0];
+  const finish =
+    application?.finishes.find((item) => item.id === requestedFinishId) ||
+    application?.finishes[0];
+  const size = finish?.sizes.some((item) => item.raw === requestedSize)
+    ? requestedSize
+    : finish?.sizes[0]?.raw || "";
+
+  return {
+    applicationId: application?.id || "",
+    finishId: finish?.id || "",
+    size,
+  };
+}
+
+function selectionMatchesParams(
+  selection: ProductSelectionState,
+  params: URLSearchParams
+): boolean {
+  return (
+    params.get("application") === selection.applicationId &&
+    params.get("finish") === selection.finishId &&
+    params.get("size") === selection.size
+  );
+}
+
+function replaceSelectionParams(selection: ProductSelectionState): void {
+  if (typeof window === "undefined") return;
+
+  const url = new URL(window.location.href);
+  if (selection.applicationId) {
+    url.searchParams.set("application", selection.applicationId);
+  } else {
+    url.searchParams.delete("application");
+  }
+
+  if (selection.finishId) {
+    url.searchParams.set("finish", selection.finishId);
+  } else {
+    url.searchParams.delete("finish");
+  }
+
+  if (selection.size) {
+    url.searchParams.set("size", selection.size);
+  } else {
+    url.searchParams.delete("size");
+  }
+
+  const nextHref = `${url.pathname}${url.search}${url.hash}`;
+  const currentHref = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  if (nextHref === currentHref) return;
+
+  window.history.replaceState(null, "", nextHref);
+  window.dispatchEvent(new Event(PRODUCT_DETAIL_SELECTION_EVENT));
+}
+
+function getProductsReturnHrefSnapshot(productSlug: string): string {
+  const context = readProductsReturnContext();
+  if (!context || context.productSlug !== productSlug) return "";
+
+  const ageMs = Date.now() - new Date(context.savedAt).getTime();
+  if (!Number.isFinite(ageMs) || ageMs >= PRODUCT_RETURN_CONTEXT_MAX_AGE_MS) {
+    return "";
+  }
+
+  return context.href || "/products";
+}
+
 function ProductDetailView({ product }: ProductDetailViewProps) {
   const { addSample, openDrawer } = useSampleCart();
   const override = PRODUCT_OVERRIDES[product.slug];
+  const displayName = getProductDisplayName(product);
   const description = override?.description || DEFAULT_PRODUCT_DESCRIPTION;
   const imageGallery =
     override?.imageUrls?.length && override.imageUrls.length > 0
@@ -195,6 +353,13 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
   const sampleLabel = override?.ctaOverride?.sample || "Order Free Sample";
   const enquireLabel = override?.ctaOverride?.enquire || "Enquire";
   const consultLabel = override?.ctaOverride?.consult || "Book Consultation";
+  const returnContextHref = useSyncExternalStore(
+    subscribeNoop,
+    () => getProductsReturnHrefSnapshot(product.slug),
+    getEmptySnapshot
+  );
+  const returnHref = returnContextHref || "/products";
+  const hasReturnContext = Boolean(returnContextHref);
 
   const applicationOptions = useMemo(
     () =>
@@ -205,9 +370,20 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     [product]
   );
 
-  const [selectedApplicationId, setSelectedApplicationId] = useState(
-    applicationOptions[0]?.value || ""
+  const selectionSearch = useSyncExternalStore(
+    subscribeProductSelectionSearch,
+    getProductSelectionSearchSnapshot,
+    getEmptySnapshot
   );
+  const selectedSelection = useMemo(
+    () =>
+      resolveSelectionFromParams(
+        product,
+        new URLSearchParams(selectionSearch)
+      ),
+    [product, selectionSearch]
+  );
+  const selectedApplicationId = selectedSelection.applicationId;
   const [audienceMode, setAudienceMode] = useState<AudienceMode>("homeowner");
   const [sampleFeedback, setSampleFeedback] = useState<SampleFeedback | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -225,7 +401,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     [selectedApplication]
   );
 
-  const [selectedFinishId, setSelectedFinishId] = useState(finishOptions[0]?.value || "");
+  const selectedFinishId = selectedSelection.finishId;
 
   const selectedFinish =
     selectedApplication?.finishes.find((finish) => finish.id === selectedFinishId) ||
@@ -243,25 +419,70 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     }, []);
   }, [selectedFinish]);
 
-  const [selectedSize, setSelectedSize] = useState(sizeOptions[0]?.value || "");
+  const selectedSize = selectedSelection.size;
   const selectedSizeValue = sizeOptions.some((size) => size.value === selectedSize)
     ? selectedSize
     : sizeOptions[0]?.value || "";
 
+  useEffect(() => {
+    const context = readProductsReturnContext();
+    if (!context) return;
+
+    if (context.productSlug !== product.slug) {
+      window.sessionStorage.removeItem(PRODUCTS_RETURN_CONTEXT_STORAGE_KEY);
+      return;
+    }
+
+    const ageMs = Date.now() - new Date(context.savedAt).getTime();
+    if (!Number.isFinite(ageMs) || ageMs >= PRODUCT_RETURN_CONTEXT_MAX_AGE_MS) {
+      window.sessionStorage.removeItem(PRODUCTS_RETURN_CONTEXT_STORAGE_KEY);
+      return;
+    }
+  }, [product.slug]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    const hasSelectionParams = PRODUCT_DETAIL_SELECTION_PARAMS.some((key) =>
+      params.has(key)
+    );
+    if (!hasSelectionParams) return;
+
+    if (!selectionMatchesParams(selectedSelection, params)) {
+      replaceSelectionParams(selectedSelection);
+    }
+  }, [selectedSelection]);
+
   const handleApplicationSelect = (applicationId: string) => {
-    setSelectedApplicationId(applicationId);
     const nextApplication = product.applicationIndex.find(
       (application) => application.id === applicationId
     );
     const nextFinish = nextApplication?.finishes[0];
-    setSelectedFinishId(nextFinish?.id || "");
-    setSelectedSize(nextFinish?.sizes[0]?.raw || "");
+    const nextSelection = {
+      applicationId,
+      finishId: nextFinish?.id || "",
+      size: nextFinish?.sizes[0]?.raw || "",
+    };
+    replaceSelectionParams(nextSelection);
   };
 
   const handleFinishSelect = (finishId: string) => {
-    setSelectedFinishId(finishId);
     const nextFinish = selectedApplication?.finishes.find((finish) => finish.id === finishId);
-    setSelectedSize(nextFinish?.sizes[0]?.raw || "");
+    const nextSelection = {
+      applicationId: selectedApplication?.id || "",
+      finishId,
+      size: nextFinish?.sizes[0]?.raw || "",
+    };
+    replaceSelectionParams(nextSelection);
+  };
+
+  const handleSizeSelect = (size: string) => {
+    replaceSelectionParams({
+      applicationId: selectedApplication?.id || "",
+      finishId: selectedFinish?.id || "",
+      size,
+    });
   };
 
   const handleAddSample = () => {
@@ -272,7 +493,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
 
     const result = addSample({
       productSlug: product.slug,
-      productName: product.name,
+      productName: displayName,
       finishId: selectedFinish.id,
       finishName: selectedFinish.name,
     });
@@ -324,8 +545,8 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     imageGallery.length > 0 ? activeImageIndex % imageGallery.length : 0;
   const currentImageUrl = imageGallery[currentImageIndex] || DEFAULT_PRODUCT_IMAGE;
   const currentImageAlt = hasMultipleImages
-    ? `${product.name} image ${currentImageIndex + 1} of ${imageGallery.length}`
-    : product.name;
+    ? `${displayName} image ${currentImageIndex + 1} of ${imageGallery.length}`
+    : displayName;
 
   const handlePrevImage = () => {
     if (!hasMultipleImages) return;
@@ -339,10 +560,56 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     setActiveImageIndex((previous) => (previous + 1) % imageGallery.length);
   };
 
+  const buildProductContactMessage = () => {
+    const pageUrl =
+      typeof window === "undefined"
+        ? `/products/${product.slug}/`
+        : `${window.location.origin}${window.location.pathname}${window.location.search}`;
+
+    return [
+      "Hi Aushen team,",
+      "",
+      "I would like to enquire about this product:",
+      `Product: ${displayName}`,
+      `Application: ${selectedApplication?.label || "-"}`,
+      `Finish: ${selectedFinish?.name || "-"}`,
+      `Size: ${selectedSizeValue || "-"}`,
+      `Slip rating: ${selectedFinish?.slipRating || "-"}`,
+      `Page: ${pageUrl}`,
+      "",
+      "Project suburb/address:",
+      "Approximate quantity or area:",
+      "Preferred timing:",
+      "",
+      "Thank you.",
+    ].join("\n");
+  };
+
+  const persistProductContactPrefill = () => {
+    if (typeof window === "undefined") return;
+
+    try {
+      window.sessionStorage.setItem(
+        PRODUCT_CONTACT_HANDOFF_KEY,
+        buildProductContactMessage()
+      );
+    } catch {
+      // Continue to the contact page even if handoff storage is unavailable.
+    }
+  };
+
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
       <section className="bg-[#1a1c18] border-b border-[#32352F] pt-28 sm:pt-32 pb-10 sm:pb-12 page-padding-x">
         <div className="max-w-[1600px] mx-auto">
+          <Link
+            href={returnHref}
+            className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 px-3.5 py-2 text-[10px] uppercase tracking-[0.16em] text-white/70 transition-colors hover:border-white/35 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          >
+            <ArrowLeft size={14} />
+            {hasReturnContext ? "Back to filtered products" : "Back to products"}
+          </Link>
+
           <div className="flex items-center flex-wrap gap-2 mb-4">
             <span className="px-2.5 py-1 border border-white/20 text-[10px] uppercase tracking-[0.16em] rounded-full text-white/70">
               Premium Series
@@ -353,7 +620,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
           </div>
 
           <h1 className="font-serif text-[clamp(1.9rem,5vw,4.9rem)] text-[#F8F5F1] leading-[0.92]">
-            {product.name}
+            {displayName}
           </h1>
           <p className="mt-3 text-sm sm:text-base text-white/70">{subtitle}</p>
         </div>
@@ -371,7 +638,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                       type="button"
                       onClick={handlePrevImage}
                       className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/55 text-white p-2 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                      aria-label={`Previous image for ${product.name}`}
+                      aria-label={`Previous image for ${displayName}`}
                     >
                       <ChevronLeft size={16} />
                     </button>
@@ -379,7 +646,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                       type="button"
                       onClick={handleNextImage}
                       className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/55 text-white p-2 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                      aria-label={`Next image for ${product.name}`}
+                      aria-label={`Next image for ${displayName}`}
                     >
                       <ChevronRight size={16} />
                     </button>
@@ -392,7 +659,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                           className={`h-2.5 w-2.5 rounded-full transition-colors ${
                             index === currentImageIndex ? "bg-white" : "bg-white/55"
                           }`}
-                          aria-label={`View image ${index + 1} of ${imageGallery.length} for ${product.name}`}
+                          aria-label={`View image ${index + 1} of ${imageGallery.length} for ${displayName}`}
                         />
                       ))}
                     </div>
@@ -433,7 +700,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                       title="Size"
                       options={sizeOptions}
                       selected={selectedSizeValue}
-                      onSelect={setSelectedSize}
+                      onSelect={handleSizeSelect}
                       ariaLabel="Select size"
                     />
                   </div>
@@ -458,14 +725,16 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <Link
-                      href="/contact"
+                      href="/contact?source=product-detail"
+                      onClick={persistProductContactPrefill}
                       className="border border-gray-300 text-gray-900 py-3 px-4 sm:px-5 flex items-center justify-center gap-2.5 hover:border-gray-900 transition-all uppercase tracking-[0.12em] text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                       aria-label={consultLabel}
                     >
                       {consultLabel}
                     </Link>
                     <Link
-                      href="/contact"
+                      href="/contact?source=product-detail"
+                      onClick={persistProductContactPrefill}
                       className="border border-gray-300 text-gray-900 py-3 px-4 sm:px-5 flex items-center justify-center gap-2.5 hover:border-gray-900 transition-all uppercase tracking-[0.12em] text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                       aria-label={enquireLabel}
                     >

@@ -1,6 +1,6 @@
 # README_AGENT - Single Entry for All Agents
 
-Last updated: 2026-04-20
+Last updated: 2026-04-27
 
 ## Purpose
 - Keep handoff low-overhead and execution-focused.
@@ -34,10 +34,22 @@ Last updated: 2026-04-20
 - Product structural source of truth remains outer-repo CSV: `../docs/aushen_product_library.csv`.
 - `blueocean` is the phase-1 continuity slug and still carries `Sawn` plus remaining Blueocean special finishes.
 - `blueocean-honed` is a first-class product slug generated from `Blueocean Honed` rows in the outer CSV.
+- Public display naming is override-layer only: `blueocean` displays as `BlueOcean Sawn`; `blueocean-honed` displays as `BlueOcean Honed`; CSV product names and route slugs remain unchanged.
 - Blueocean photo audit mapping is intentionally split:
   - `SAI/Blueocean Sawn.jpg` -> `blueocean`
   - `SAI/Blueocean Honed.jpg` -> `blueocean-honed`
 - Remaining Blueocean special-finish reclassification is deferred and tracked in `docs/NEXT_STEPS.md`.
+- Travertine supplier suffixes are public-display overrides only:
+  - `beige-travertine-sai` -> `Beige Travertine`
+  - `classic-travertine-sai` -> `Classic Travertine`
+  - `premium-classic-travertine-artma` -> `Premium Classic Travertine`
+  - `silver-travertine-artma` -> `Silver Travertine`
+  - keep those slugs stable unless a separate redirect/slug migration task is explicitly planned.
+- `classic-light-travertine-artmar` was removed from the product CSV and generated product catalog on 2026-04-27.
+- Product browsing state is URL-led:
+  - `/products` filter params are `q`, `material`, `application`, and `tone`; old `category` links remain readable but should not be emitted by new code.
+  - `/products/[slug]` selector params are `application`, `finish`, and `size`, validated on the client against generated product data.
+  - product-list return context uses `sessionStorage` key `aushen_products_return_context_v1`; product-detail contact prefill uses `aushen_product_contact_prefill_v1`.
 - Accessories are curated separately from CSV-generated stone products, with legacy Aushen accessories coverage used as the minimum Phase 1 baseline.
 - Accessories source files live inside the inner repo:
   - type contract: `src/types/accessory.ts`

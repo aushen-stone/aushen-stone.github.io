@@ -56,8 +56,7 @@ export const PRODUCT_IMAGE_GALLERIES: Record<string, string[]> = {
     "/product-photos/classic-travertine-sai-01.webp",
     "/product-photos/classic-travertine-sai-02.webp",
     "/product-photos/classic-travertine-sai-03.webp",
-    "/product-photos/classic-travertine-sai-04.webp",
-    "/product-photos/classic-travertine-sai-05.webp"
+    "/product-photos/classic-travertine-sai-04.webp"
   ],
   "crema-siena": [
     "/product-photos/crema-siena-01.webp"

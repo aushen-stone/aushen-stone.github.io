@@ -8,6 +8,7 @@ import {
   SAMPLE_CART_CONTACT_HANDOFF_KEY,
   SAMPLE_CART_CONTACT_PREFILL_CLEARED_KEY,
 } from "@/types/cart";
+import { PRODUCT_CONTACT_HANDOFF_KEY } from "@/types/productNavigation";
 import { CONTACT_INFO } from "@/data/contact";
 
 type UserType = "homeowner" | "pro";
@@ -34,6 +35,16 @@ function readSampleCartPrefill(): string {
 
   try {
     return window.sessionStorage.getItem(SAMPLE_CART_CONTACT_HANDOFF_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+
+function readProductContactPrefill(): string {
+  if (typeof window === "undefined") return "";
+
+  try {
+    return window.sessionStorage.getItem(PRODUCT_CONTACT_HANDOFF_KEY) || "";
   } catch {
     return "";
   }
@@ -73,22 +84,40 @@ function clearSampleCartPrefill(): void {
   }
 }
 
+function clearProductContactPrefill(): void {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.sessionStorage.removeItem(PRODUCT_CONTACT_HANDOFF_KEY);
+  } catch {
+    // Ignore storage failures and continue.
+  }
+}
+
 function getInitialMessageAndSource() {
   if (typeof window === "undefined") {
     return { message: "", source: "website-contact" };
   }
 
   const params = new URLSearchParams(window.location.search);
-  if (params.get("source") !== "sample-cart") {
-    return { message: "", source: "website-contact" };
+  const source = params.get("source");
+  if (source === "sample-cart") {
+    const prefillMessage = readSampleCartPrefill();
+    if (prefillMessage) {
+      return { message: prefillMessage, source: "sample-cart" };
+    }
+
+    return { message: "", source: "sample-cart" };
   }
 
-  const prefillMessage = readSampleCartPrefill();
-  if (prefillMessage) {
-    return { message: prefillMessage, source: "sample-cart" };
+  if (source === "product-detail") {
+    return {
+      message: readProductContactPrefill(),
+      source: "product-detail",
+    };
   }
 
-  return { message: "", source: "sample-cart" };
+  return { message: "", source: "website-contact" };
 }
 
 // === 组件: 身份切换器 (The Identity Toggle) ===
@@ -307,6 +336,9 @@ export default function ContactPage() {
 
       if (formState.source === "sample-cart") {
         clearSampleCartPrefill();
+      }
+      if (formState.source === "product-detail") {
+        clearProductContactPrefill();
       }
       setIsMessageTouched(false);
 

@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { getProductDisplayNameBySlug } from "@/data/product_display_names";
 import {
   MAX_SAMPLE_LINES,
   SAMPLE_CART_STORAGE_KEY,
@@ -48,6 +49,18 @@ function isSampleCartLine(value: unknown): value is SampleCartLine {
   );
 }
 
+function normalizeSampleCartLine(line: SampleCartLine): SampleCartLine {
+  const productName = getProductDisplayNameBySlug(line.productSlug, line.productName);
+  if (productName === line.productName) {
+    return line;
+  }
+
+  return {
+    ...line,
+    productName,
+  };
+}
+
 export function SampleCartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<SampleCartLine[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -68,7 +81,8 @@ export function SampleCartProvider({ children }: { children: React.ReactNode }) 
         if (Array.isArray(parsed)) {
           const hydratedLines = parsed
             .filter(isSampleCartLine)
-            .slice(0, MAX_SAMPLE_LINES);
+            .slice(0, MAX_SAMPLE_LINES)
+            .map(normalizeSampleCartLine);
           linesRef.current = hydratedLines;
           setLines(hydratedLines);
         }

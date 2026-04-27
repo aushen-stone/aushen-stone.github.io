@@ -1,4 +1,4 @@
-mapped_rows_count=74
-successful_webp_count=74
+mapped_rows_count=73
+successful_webp_count=73
 missing_source_count=0
 covered_products_count=67

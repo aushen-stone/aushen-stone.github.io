@@ -1,6 +1,6 @@
 # Aushen Web - Architecture Overview
 
-Last updated: 2026-04-20
+Last updated: 2026-04-27
 
 ## Project Type
 - Next.js App Router frontend.
@@ -78,12 +78,19 @@ Last updated: 2026-04-20
 - Override layer:
   - `src/data/product_overrides.ts`
   - generated image mapping: `src/data/product_images.generated.ts`
+  - display-only product names can be supplied through `ProductOverride.displayName`
 - Product photo mapping refresh command: `npm run prepare:product-photos`.
 - Generated files are build artifacts and must not be edited manually.
 - Blueocean phase-1 split contract:
   - `Blueocean` in the outer CSV continues to generate the continuity slug `blueocean`.
   - `Blueocean Honed` in the outer CSV generates the dedicated slug `blueocean-honed`.
+  - Public display names are override-layer only: `blueocean` displays as `BlueOcean Sawn`, and `blueocean-honed` displays as `BlueOcean Honed`.
   - Remaining Blueocean special finishes are intentionally still grouped under `blueocean` until a later reclassification pass.
+- Travertine supplier suffix display contract:
+  - CSV/generated names for supplier-distinguished travertine SKUs can retain suffixes such as `(SAI)` and `(Artma)` to preserve continuity slugs and image mapping keys.
+  - Public-facing product names remove those supplier suffixes through `src/data/product_display_names.ts`.
+- Removed catalog item:
+  - `Classic Light Travertine(Artmar)` was removed from the CSV source and generated product data on 2026-04-27.
 
 ## Accessories Architecture
 - Accessories are a first-class site section inside the inner repo and are not treated as a subcase of the outer-CSV stone catalog.
@@ -116,6 +123,18 @@ Last updated: 2026-04-20
 ## Product and Cart Contracts
 - Product core type: `Product` in `src/types/product.ts`.
 - Product detail selector model is application-first (`applicationIndex`), then finish, then size.
+- Product list browser state:
+  - `/products` uses client query params `q`, `material`, `application`, and `tone` for shareable filters.
+  - legacy inbound `category` params are still read as compatibility input, but new filter interactions write the normalized params and remove `category`.
+  - clicking a product card stores a short-lived return context in `sessionStorage` under `aushen_products_return_context_v1` with `href`, `productSlug`, `scrollY`, and `savedAt`.
+  - returning from a product detail page restores the exact filtered list URL and prioritizes scrolling the original product card into view.
+- Product detail browser state:
+  - `/products/[slug]` supports selector query params `application`, `finish`, and `size`.
+  - selector params are validated against the current generated product before use, and invalid combinations are normalized to available options.
+  - product detail canonical metadata remains the slug route; selector params are client-side UI state only.
+- Product detail contact handoff:
+  - product enquiry/consultation CTAs write the current product, application, finish, size, slip rating, and page URL to `sessionStorage` under `aushen_product_contact_prefill_v1`.
+  - `/contact?source=product-detail` reads that handoff as the initial message and clears it after successful submit.
 - Accessories intentionally bypass the `Product` selector contract and use direct enquiry CTAs instead of sample ordering.
 - Sample cart contract (`src/types/cart.ts`):
   - storage key: `aushen_sample_cart_v1`
