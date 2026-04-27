@@ -119,7 +119,12 @@ export function Footer() {
               </a>
             </li>
             <li>
-              <span className="text-white/40 block w-max">Privacy Policy (On Request)</span>
+              <Link
+                href="/privacy-policy"
+                className="hover:text-white transition-colors block w-max"
+              >
+                Privacy Policy
+              </Link>
             </li>
             <li>
               <Link

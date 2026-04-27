@@ -31,6 +31,7 @@ export function Navbar() {
   const mobileCloseButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const desktopMenuItems = [
+    { name: "Home", href: "/", hasDropdown: false },
     { name: "Products", href: "/products", hasDropdown: true },
     { name: "Projects", href: "/projects", hasDropdown: false },
     { name: "Services", href: "/services", hasDropdown: false },

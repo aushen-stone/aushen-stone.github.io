@@ -1,6 +1,6 @@
 # Aushen Web - Architecture Overview
 
-Last updated: 2026-04-27
+Last updated: 2026-04-28
 
 ## Project Type
 - Next.js App Router frontend.
@@ -35,6 +35,7 @@ Last updated: 2026-04-27
   - `src/app/contact/page.tsx`
   - `src/app/products/page.tsx`
   - `src/app/projects/page.tsx`
+  - `src/app/privacy-policy/page.tsx`
   - `src/app/services/page.tsx`
   - `src/app/cart/page.tsx`
   - `src/app/terms-condition/page.tsx`
@@ -64,6 +65,7 @@ Last updated: 2026-04-27
   - `/cart`: `noindex,follow`
   - `/projects/[id]`: `noindex,follow`
   - `/products/[slug]`: indexable
+  - `/privacy-policy`: indexable
   - `/terms-condition`: indexable
 - Sitemap content:
   - core static routes, legal static routes, accessories routes, and generated product detail routes.

@@ -14,6 +14,7 @@ const STATIC_ROUTES = [
   "/accessories/",
   "/products/",
   "/projects/",
+  "/privacy-policy/",
   "/services/",
   "/terms-condition/",
 ];
@@ -25,7 +26,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: canonicalUrl(path),
     lastModified,
     changeFrequency: "weekly",
-    priority: path === "/" ? 1 : path === "/terms-condition/" ? 0.5 : 0.8,
+    priority:
+      path === "/"
+        ? 1
+        : path === "/terms-condition/" || path === "/privacy-policy/"
+          ? 0.5
+          : 0.8,
   }));
 
   const productEntries: MetadataRoute.Sitemap = PRODUCTS.map((product) => ({

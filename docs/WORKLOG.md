@@ -1,8 +1,34 @@
 # Worklog - Aushen Web
 
-Last updated: 2026-04-27
+Last updated: 2026-04-28
 
 ## Completed and Landed
+
+### Privacy Policy Page Launch (2026-04-28)
+- Scope:
+  - published an indexable Privacy Policy page for Aushen Stone.
+  - replaced the Footer request-only privacy placeholder with a real site route.
+- Behavior landed:
+  - new public route: `/privacy-policy/`
+  - page follows the existing legal document pattern with a visual hero, policy summary, sticky index, anchor navigation, and semantic nested lists.
+  - content is structured around APP Privacy Policy requirements: collection, holding, use, disclosure, cookies and analytics, overseas disclosure, security, access/correction, complaints, contact, and updates.
+  - Footer now links `Privacy Policy` to the published route.
+  - sitemap now includes `/privacy-policy/` with the same legal-page priority as `/terms-condition/`.
+- Files updated:
+  - `src/data/legal/privacy.ts`
+  - `src/app/privacy-policy/page.tsx`
+  - `src/app/privacy-policy/PrivacyPolicyPageClient.tsx`
+  - `src/app/components/Footer.tsx`
+  - `src/app/sitemap.ts`
+  - `docs/ARCHITECTURE.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run lint`: pass (`0 errors, 23 warnings`, existing `no-img-element` backlog)
+  - `npx tsc --noEmit`: pass
+  - `git diff --check`: pass
+  - `npm run build`: pass; static generation now reports `158` pages and includes `/privacy-policy`.
+  - local dev check: `GET /privacy-policy/` returns `200`; `/sitemap.xml` includes `/privacy-policy/`.
 
 ### Buffalo and Hotham Application Correction (2026-04-28)
 - Scope:
