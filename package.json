@@ -10,7 +10,8 @@
     "build:product-data": "tsx scripts/build-product-data.ts",
     "prepare:product-photos": "python3 scripts/prepare-product-photos.py",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "docs:check": "node scripts/check-docs-sync.mjs"
   },
   "dependencies": {
     "framer-motion": "^12.23.26",

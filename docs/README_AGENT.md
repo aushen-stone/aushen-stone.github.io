@@ -1,6 +1,6 @@
 # README_AGENT - Single Entry for All Agents
 
-Last updated: 2026-04-27
+Last updated: 2026-05-01
 
 ## Purpose
 - Keep handoff low-overhead and execution-focused.
@@ -12,23 +12,32 @@ Last updated: 2026-04-27
 
 ## Canonical Environment
 - Canonical public domain: `https://aushenstone.com.au/`.
-- GitHub Pages is the hosting/publish channel (`build:pages -> dist -> gh-pages`), not the canonical domain contract.
+- GitHub Pages is the hosting/publish channel (`build:pages -> dist -> Pages artifact -> actions/deploy-pages`), not the canonical domain contract.
 - Canonical URL source in code: `src/lib/seo.ts` (`SITE_URL`).
+
+## Fact Ownership Matrix
+- Current code is the runtime truth for implemented behavior.
+- `docs/ARCHITECTURE.md` owns current stable contracts, route inventory, deployment model, data flow, SEO/indexing, and integration boundaries.
+- `docs/NEXT_STEPS.md` owns active execution priorities, blockers, statuses, owners, evidence, exit criteria, and docs impact.
+- `docs/README_AGENT.md` owns startup context, current risk snapshot, and agent operating rules.
+- `docs/WORKLOG.md` is historical implementation context only; old entries can be stale and must not override current code or `docs/ARCHITECTURE.md`.
+- `README.md` owns developer quickstart, local commands, and deploy setup notes.
 
 ## Current Objective
 - Launch `aushenstone.com.au` with safe WordPress cutover.
 - Close launch blockers tracked in `NEXT_STEPS` (`LAUNCH-P0-001`..`LAUNCH-P0-005`).
+- Keep advertising/marketing feedback tracked under `MKT-*` items in `NEXT_STEPS`; marketing-originated active items carry the `marketing` tag.
 - Keep P1 quality work active without blocking cutover, except explicitly elevated risks.
 - Preserve the new accessories architecture as a first-class inner-repo section.
 - Phase 1 accessories scope is `Chemforce`, `HIDE`, and `FormBoss`; `Mapei` stays deferred.
 
-## Health Snapshot (2026-04-20)
-- `npm run build:product-data`: pass
-- product-photo mapping refresh: pass (raw photo root was unavailable in this workspace, so a temporary source tree was reconstructed from published `public/product-photos/`)
+## Health Snapshot (2026-05-01)
+- `npm run docs:check`: pass
 - `npm run lint`: pass (`0 errors, 23 warnings`)
 - `npm run build`: pass
 - `npx tsc --noEmit`: pass (after build)
 - `npm run build:pages`: pass
+- Product catalog/photo generation was not rerun in this docs sync; current inspected state is `72` generated products, `67` products with mapped images, and `5` products missing mapped images.
 
 ## Catalog Continuity Notes
 - Product structural source of truth remains outer-repo CSV: `../docs/aushen_product_library.csv`.
@@ -57,6 +66,7 @@ Last updated: 2026-04-27
   - routes: `src/app/accessories/page.tsx`, `src/app/accessories/[slug]/page.tsx`
 - Accessories use enquiry-driven CTAs and must not be forced into the stone sample-cart workflow.
 - Continuity reasoning for accessories should stay in docs and handoff notes; public pages should stay customer-facing and avoid migration language.
+- Successful `/contact` submissions push `contact_form_submit` to `window.dataLayer` and route to `/thank-you/`; production GA4/GTM validation remains under `LAUNCH-P0-004`.
 
 ## Active Risk Snapshot
 - `LAUNCH-P0-001` contact submit delivery: `Blocked` (production endpoint validation pending).
@@ -65,15 +75,21 @@ Last updated: 2026-04-27
 - `LAUNCH-P0-004` GA4 + Search Console validation: `Blocked` (telemetry owner/access pending).
 - `LAUNCH-P0-005` cutover + rollback runbook: `Blocked` (runbook owner and dry-run pending).
 - `P1-DATA-LINK-001` project detail product-link mismatch: `Open` (project product slugs can route to non-generated product paths).
+- `P1-PROJECT-AUTH-001` project showcase authenticity/indexing risk: `Open` (`/projects` is indexable while project content is still hard-coded/mock).
+- `P1-IMG-001` remaining non-project/non-product placeholder visual: `Open` (`ServicesSection` templating image only).
+- Marketing board: `MKT-P0-001` implementation is `Done`; remaining marketing items stay in `NEXT_STEPS` with `marketing` tags.
 
 ## Documentation Consistency Rules
 - Active docs must not use line-number-based tracking.
 - Active status vocabulary is fixed: `Open`, `Blocked`, `In Progress`, `Done`.
-- Each active risk item must include `Owner`, `Evidence`, and `Exit Criteria`.
+- Each active risk item must include `Owner`, `Evidence`, `Exit Criteria`, and `Docs Impact`.
+- Marketing-originated active items must include `Tags: marketing`.
 - Fact conflicts are resolved by `docs/ARCHITECTURE.md` and current code.
-- Execution precedence for active docs:
-  - `NEXT_STEPS.md` > `README_AGENT.md` > `WORKLOG.md` > `ARCHITECTURE.md`
-  - Architecture facts precedence: `ARCHITECTURE.md` is authoritative.
+- `npm run docs:check` must pass before handoff when route, deploy, sitemap, contact-conversion, or active-task schema facts change.
+- Execution precedence for active intent:
+  - `NEXT_STEPS.md` > `README_AGENT.md`
+  - `WORKLOG.md` is historical context only.
+  - Architecture facts precedence: current code + `ARCHITECTURE.md`.
 
 ## Update Gate (When Docs Must Be Updated)
 - User-visible behavior change.
@@ -81,6 +97,14 @@ Last updated: 2026-04-27
 - Architecture/data contract change.
 - Priority or blocker change (`P0/P1/P2`).
 - New handoff risk affecting execution safety.
+- Touching any of these paths requires a docs check and either a docs update or an explicit final note that no docs change was required:
+  - `src/app/**/page.tsx`
+  - `src/app/sitemap.ts`
+  - `src/app/robots.ts`
+  - `.github/workflows/**`
+  - `src/data/**`
+  - `scripts/build-*`
+  - contact, analytics, GTM, and conversion-tracking code
 
 ## Active vs History Split
 - Keep active execution intent in `docs/NEXT_STEPS.md` only.

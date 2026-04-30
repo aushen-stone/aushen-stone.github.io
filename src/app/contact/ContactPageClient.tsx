@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { Footer } from "@/app/components/Footer";
+import { useRouter } from "next/navigation";
 import { MapPin, Phone, Clock, ArrowRight, Check } from "lucide-react";
 import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
 import {
@@ -29,6 +30,22 @@ type SubmitState =
   | { kind: "error"; message: string };
 
 const CONTACT_API_URL = process.env.NEXT_PUBLIC_CONTACT_API_URL?.trim() ?? "";
+const CONTACT_CONVERSION_EVENT = "contact_form_submit";
+
+type DataLayerWindow = Window & {
+  dataLayer?: Array<Record<string, unknown>>;
+};
+
+function pushContactConversionEvent(source: string): void {
+  if (typeof window === "undefined") return;
+
+  const conversionWindow = window as DataLayerWindow;
+  conversionWindow.dataLayer = conversionWindow.dataLayer || [];
+  conversionWindow.dataLayer.push({
+    event: CONTACT_CONVERSION_EVENT,
+    form_source: source,
+  });
+}
 
 function readSampleCartPrefill(): string {
   if (typeof window === "undefined") return "";
@@ -220,6 +237,7 @@ function InputField({
 }
 
 export default function ContactPage() {
+  const router = useRouter();
   const { buildContactPrefillMessage } = useSampleCart();
   const [userType, setUserType] = useState<UserType>("homeowner");
   const [submitState, setSubmitState] = useState<SubmitState>({
@@ -333,6 +351,7 @@ export default function ContactPage() {
         message:
           "Thanks, your message has been sent. Our team will contact you shortly.",
       });
+      pushContactConversionEvent(formState.source);
 
       if (formState.source === "sample-cart") {
         clearSampleCartPrefill();
@@ -351,6 +370,7 @@ export default function ContactPage() {
         message: "",
         website: "",
       }));
+      router.push("/thank-you/");
     } catch {
       setSubmitState({
         kind: "error",

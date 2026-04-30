@@ -1,8 +1,66 @@
 # Worklog - Aushen Web
 
-Last updated: 2026-04-28
+Last updated: 2026-05-01
 
 ## Completed and Landed
+
+### Docs Governance v1 (2026-05-01)
+- Scope:
+  - added a machine-checkable docs governance layer so active documentation cannot silently drift from route, deploy, sitemap, contact-conversion, or task-board facts.
+  - made `Docs Impact` a required field for active `LAUNCH-*`, `P1-*`, and `MKT-*` items.
+- Behavior landed:
+  - `npm run docs:check` runs `scripts/check-docs-sync.mjs`.
+  - CI runs `npm run docs:check` after lint and before static export.
+  - route page files under `src/app/**/page.tsx` must be listed in `docs/ARCHITECTURE.md`.
+  - active docs are checked against the current Pages artifact workflow and the `/contact` -> `contact_form_submit` -> `/thank-you/` conversion contract.
+  - `docs/README_AGENT.md` now defines a fact ownership matrix and path-based update gate for future agents.
+- Files updated:
+  - `README.md`
+  - `package.json`
+  - `.github/workflows/deploy.yml`
+  - `scripts/check-docs-sync.mjs`
+  - `docs/ARCHITECTURE.md`
+  - `docs/README_AGENT.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run docs:check`: pass
+  - `npm run lint`: pass (`0 errors, 23 warnings`, existing `no-img-element` backlog)
+  - `npx tsc --noEmit`: pass
+  - `npm run build`: pass; static generation reports `159` pages.
+  - `npm run build:pages`: pass; `dist/thank-you/index.html` remains `noindex, nofollow`.
+  - `dist/sitemap.xml` does not include `/thank-you/`.
+  - `git diff --check`: pass
+
+### Docs Synchronization + Contact Thank-You Conversion Path (2026-04-30)
+- Scope:
+  - synchronized active docs with current deployment, route, sitemap, photo-audit, and marketing-tracking facts.
+  - added a real `/thank-you/` confirmation page for successful contact submissions.
+- Behavior landed:
+  - `/contact` successful API responses now push `contact_form_submit` to `window.dataLayer`.
+  - `/contact` successful API responses route to `/thank-you/`.
+  - `/thank-you/` is generated as a static noindex/nofollow confirmation route and is intentionally excluded from sitemap.
+  - `MKT-P0-001` is marked `Done`; production GA4/GTM verification remains tracked under `LAUNCH-P0-004`.
+  - deployment docs now describe the current Pages artifact workflow instead of the old `gh-pages` branch publishing model.
+  - architecture docs now include blog routes, generated blog sitemap entries, and the thank-you conversion route.
+  - `P1-PROJECT-AUTH-001` now tracks the indexable `/projects` mock-content/authenticity risk.
+  - `P1-IMG-001` now tracks only the remaining ServicesSection templating placeholder image.
+- Files updated:
+  - `README.md`
+  - `src/app/contact/ContactPageClient.tsx`
+  - `src/app/thank-you/page.tsx`
+  - `docs/ARCHITECTURE.md`
+  - `docs/README_AGENT.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+  - `docs/photo_audit_2026-02-17/summary.txt`
+- Validation:
+  - `npm run lint`: pass (`0 errors, 23 warnings`, existing `no-img-element` backlog)
+  - `npx tsc --noEmit`: pass
+  - `npm run build`: pass; static generation now reports `159` pages and includes `/thank-you`.
+  - `npm run build:pages`: pass; `dist/thank-you/index.html` is generated with `noindex, nofollow`.
+  - `dist/sitemap.xml` does not include `/thank-you/`.
+  - `git diff --check`: pass
 
 ### Privacy Policy Page Launch (2026-04-28)
 - Scope:

@@ -1,6 +1,6 @@
 # Aushen Web - Architecture Overview
 
-Last updated: 2026-04-28
+Last updated: 2026-05-01
 
 ## Project Type
 - Next.js App Router frontend.
@@ -10,7 +10,7 @@ Last updated: 2026-04-28
 ## Canonical Domain and Hosting
 - Canonical public domain contract: `https://aushenstone.com.au/`.
 - Canonical URL source in code: `src/lib/seo.ts` (`SITE_URL`).
-- GitHub Pages is the publish channel (`dist` -> `gh-pages`), not canonical URL authority.
+- GitHub Pages is the publish channel (`dist` uploaded as a Pages artifact), not canonical URL authority.
 
 ## Deployment Model
 - Build/export baseline (`next.config.ts`):
@@ -23,8 +23,10 @@ Last updated: 2026-04-28
 - Publish workflow:
   - `.github/workflows/deploy.yml`
   - trigger: `push main` + `workflow_dispatch`
-  - publish action: `peaceiris/actions-gh-pages@v4`
-  - publish target: `gh-pages` branch, `dist/` folder
+  - publish actions: `actions/configure-pages@v5`, `actions/upload-pages-artifact@v4`, `actions/deploy-pages@v4`
+  - publish artifact: `dist/`
+  - repository Pages source must be `GitHub Actions`
+  - `public/CNAME` must export to `dist/CNAME`; CI verifies it is exactly `aushenstone.com.au`
 
 ## Route Architecture
 - Homepage composition: `src/app/page.tsx`.
@@ -32,12 +34,15 @@ Last updated: 2026-04-28
   - `src/app/about/page.tsx`
   - `src/app/accessories/page.tsx`
   - `src/app/accessories/[slug]/page.tsx`
+  - `src/app/blog/page.tsx`
+  - `src/app/blog/[slug]/page.tsx`
   - `src/app/contact/page.tsx`
   - `src/app/products/page.tsx`
   - `src/app/projects/page.tsx`
   - `src/app/privacy-policy/page.tsx`
   - `src/app/services/page.tsx`
   - `src/app/cart/page.tsx`
+  - `src/app/thank-you/page.tsx`
   - `src/app/terms-condition/page.tsx`
 - Client route implementations:
   - `*PageClient.tsx` files under corresponding route folders.
@@ -55,6 +60,10 @@ Last updated: 2026-04-28
   - `src/app/projects/[id]/page.tsx`
   - uses fixed static id list in file
   - sets `dynamicParams = false`
+- Blog detail route:
+  - `src/app/blog/[slug]/page.tsx`
+  - uses `generateStaticParams()` from `BLOG_POSTS`
+  - sets `dynamicParams = false`
 
 ## SEO and Indexing Contract
 - Metadata utilities: `src/lib/seo.ts`.
@@ -63,12 +72,17 @@ Last updated: 2026-04-28
   - `src/app/sitemap.ts`
 - Index policy:
   - `/cart`: `noindex,follow`
+  - `/blog`: indexable
+  - `/blog/[slug]`: indexable
+  - `/projects`: indexable
   - `/projects/[id]`: `noindex,follow`
   - `/products/[slug]`: indexable
   - `/privacy-policy`: indexable
+  - `/thank-you`: `noindex,nofollow`
   - `/terms-condition`: indexable
 - Sitemap content:
-  - core static routes, legal static routes, accessories routes, and generated product detail routes.
+  - core static routes, legal static routes, accessories routes, generated product detail routes, and generated blog detail routes.
+  - Excluded from sitemap: `/cart`, `/projects/[id]`, `/thank-you`.
 
 ## Data Model and Flow
 - Product source of truth: `../docs/aushen_product_library.csv` (repo root `docs/`).
@@ -150,6 +164,9 @@ Last updated: 2026-04-28
 - Contact submit client: `src/app/contact/ContactPageClient.tsx`.
 - Build-time endpoint env var: `NEXT_PUBLIC_CONTACT_API_URL`.
 - CI validates variable shape and checks endpoint string is bundled in `dist`.
+- Successful submit pushes `contact_form_submit` to `window.dataLayer`.
+- Successful submit routes to `/thank-you/`.
+- `/thank-you/` exists as a noindex confirmation page for conversion tracking and customer reassurance.
 
 ## Project Detail Content Contract
 - Current project detail content is hard-coded in `src/app/projects/[id]/ProjectDetailClient.tsx`.
@@ -165,6 +182,18 @@ Last updated: 2026-04-28
 - Historical implementation detail is `docs/WORKLOG.md`.
 - Fact conflicts are resolved by this file and current code.
 
+## Documentation Governance Contract
+- Local command: `npm run docs:check`.
+- Implementation: `scripts/check-docs-sync.mjs`.
+- CI gate: `.github/workflows/deploy.yml` runs `npm run docs:check` after lint and before static export.
+- The check validates:
+  - current `src/app/**/page.tsx` route files are listed in this architecture document.
+  - active docs describe the current Pages artifact deployment workflow.
+  - sitemap/blog/accessory/product generation contracts stay documented.
+  - `/contact` conversion behavior, `contact_form_submit`, and `/thank-you/` noindex behavior stay synchronized between code and docs.
+  - active `LAUNCH-*`, `P1-*`, and `MKT-*` tasks include required governance fields, including `Docs Impact`.
+- `docs/WORKLOG.md` remains historical; stale historical facts do not override this file or current code.
+
 ## Planned Evolution (P2, Not Implemented)
 - `ADM-LITE-001` lightweight admin portal remains backlog.
 - v1 intent: edit display-layer product overrides only.
@@ -176,3 +205,4 @@ Last updated: 2026-04-28
 - Static-export dynamic routes require explicit `generateStaticParams` coverage.
 - `dist` and generated data files are overwritten by build/generation commands.
 - Product photo prep expects raw images referenced by the audit CSV under `AUSHEN Product Photos/`.
+- New route page files must be reflected in the Route Architecture section so `npm run docs:check` stays green.

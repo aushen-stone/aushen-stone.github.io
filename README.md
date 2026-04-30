@@ -15,12 +15,14 @@ Open `http://localhost:3000`.
 
 ```bash
 npm run build:product-data
+npm run docs:check
 npm run build
 npm run lint
 npm run build:pages
 ```
 
 `build:pages` performs a static export and copies `out/` to `dist/` for GitHub Pages publishing.
+`docs:check` validates that active docs stay synchronized with current route, deployment, sitemap, and contact-conversion contracts.
 
 ## Product data and photo regeneration
 
@@ -48,7 +50,7 @@ npm run prepare:product-photos
 
 - Canonical public domain: `https://aushenstone.com.au/`.
 - Canonical metadata/sitemap source in code: `src/lib/seo.ts` (`SITE_URL`).
-- GitHub Pages is the publish channel (`dist` -> `gh-pages`), not the canonical domain contract.
+- GitHub Pages is the publish channel (`dist` uploaded as a Pages artifact), not the canonical domain contract.
 
 ## Contact form API configuration
 
@@ -106,9 +108,10 @@ Workflow steps:
 
 1. `npm ci`
 2. `npm run lint`
-3. `npm run build:pages`
-4. Upload `dist/` as the Pages artifact
-5. Deploy via `actions/deploy-pages`
+3. `npm run docs:check`
+4. `npm run build:pages`
+5. Upload `dist/` as the Pages artifact
+6. Deploy via `actions/deploy-pages`
 
 ## Required repository settings (manual)
 
@@ -122,9 +125,9 @@ Workflow steps:
 
 ## Common failure troubleshooting
 
-1. Permission error while publishing (`403` or push denied)
-   - Confirm `permissions: contents: write` exists in workflow.
-   - Confirm repository Actions permission is `Read and write`.
+1. Permission error while publishing
+   - Confirm GitHub Pages source is set to `GitHub Actions`.
+   - Confirm workflow permissions include `pages: write` and `id-token: write`.
 
 2. `_next` assets return `404`
    - Keep root-path static export setup (`trailingSlash: true`, no `basePath` for current setup).
