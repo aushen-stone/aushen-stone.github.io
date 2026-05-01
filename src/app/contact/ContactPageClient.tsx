@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { Footer } from "@/app/components/Footer";
+import { TrustSignalStrip } from "@/app/components/TrustSignalStrip";
 import { useRouter } from "next/navigation";
 import { MapPin, Phone, Clock, ArrowRight, Check } from "lucide-react";
 import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
@@ -476,6 +477,10 @@ export default function ContactPage() {
                      </a>
                    </p>
                 </div>
+             </div>
+
+             <div className="mt-12 border-y border-[#ddd7cd] py-8">
+               <TrustSignalStrip context="contact" showReviews />
              </div>
 
              {/* The "Map" Visual (Stylized Abstract Block) */}

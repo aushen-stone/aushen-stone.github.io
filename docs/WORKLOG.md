@@ -4,6 +4,54 @@ Last updated: 2026-05-01
 
 ## Completed and Landed
 
+### Trust Signal UI Rollout (2026-05-01)
+- Scope:
+  - implemented approved proof assets on the Contact page, homepage, and About page.
+  - closed `MKT-P1-001`, `MKT-P1-002`, and `MKT-P1-003`.
+- Behavior landed:
+  - `src/data/trustSignals.ts` centralizes the approved Google rating/count, old Google profile link, 20-year experience, showroom, distributor, and selected review excerpt data.
+  - `src/app/components/TrustSignalStrip.tsx` renders a reusable proof strip, Google review badge, selected review excerpts, and About showroom CTA.
+  - homepage now renders the proof strip after the brand banner.
+  - Contact now renders compact trust signals and selected review excerpts near the enquiry form.
+  - About now renders proof signals and a showroom CTA before the signature block.
+  - no review schema markup was added.
+- Files updated:
+  - `src/data/trustSignals.ts`
+  - `src/app/components/TrustSignalStrip.tsx`
+  - `src/app/page.tsx`
+  - `src/app/contact/ContactPageClient.tsx`
+  - `src/app/about/AboutPageClient.tsx`
+  - `docs/MARKETING_PROOF_ASSETS.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run docs:check`: pass
+  - `git diff --check`: pass
+  - `npx tsc --noEmit`: pass
+  - `npm run lint`: pass (`0 errors, 23 warnings`, existing `no-img-element` backlog)
+  - `npm run build:pages`: pass; static generation reports `159` pages.
+  - generated homepage, Contact, and About HTML contains the approved trust signal and review excerpt copy.
+
+### Marketing Proof Asset Register (2026-05-01)
+- Scope:
+  - researched Google review display options, legacy proof claims, and distributor/product coverage for `MKT-P3-003`.
+  - created a source-of-truth register for approved, pending, deferred, and do-not-use marketing proof claims.
+- Findings:
+  - Google does not provide a simple Google Business Profile review badge equivalent for embedding local business reviews.
+  - Places API can show up to five reviews with required attribution/compliance; Google Customer Reviews badge is a Merchant Center/store-rating product and not equivalent to Business Profile reviews.
+  - Google Search Central review snippet rules make self-serving LocalBusiness/Organization review markup on the business's own site ineligible for review-star rich results.
+  - public/legacy sources support `5.0 Google Reviews` / `20 reviews`, 20-year experience messaging, Cheltenham showroom, and Chemforce/FormBoss/HIDE product coverage.
+  - business owner approved 20-year experience messaging and distributor wording for Chemforce, HIDE, and FormBoss; project/customer counts and real proof photos remain deferred.
+- Files updated:
+  - `docs/MARKETING_PROOF_ASSETS.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run docs:check`: pass
+  - `git diff --check`: pass
+
 ### SEO Public Baseline Check and Robots Noindex Alignment (2026-05-01)
 - Scope:
   - checked production public SEO crawl/index baseline for `LAUNCH-P0-003`.

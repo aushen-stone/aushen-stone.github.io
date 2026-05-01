@@ -77,7 +77,7 @@ Last updated: 2026-05-01
 - `P1-DATA-LINK-001` project detail product-link mismatch: `Open` (project product slugs can route to non-generated product paths).
 - `P1-PROJECT-AUTH-001` project showcase authenticity/indexing risk: `Open` (`/projects` is indexable while project content is still hard-coded/mock).
 - `P1-IMG-001` remaining non-project/non-product placeholder visual: `Open` (`ServicesSection` templating image only).
-- Marketing board: `MKT-P0-001` implementation is `Done`; remaining marketing items stay in `NEXT_STEPS` with `marketing` tags.
+- Marketing board: `MKT-P0-001`, `MKT-P1-001`, `MKT-P1-002`, and `MKT-P1-003` are `Done`; `MKT-P3-003` proof assets are `In Progress` with approved claims documented in `docs/MARKETING_PROOF_ASSETS.md`; remaining marketing items stay in `NEXT_STEPS` with `marketing` tags.
 
 ## Documentation Consistency Rules
 - Active docs must not use line-number-based tracking.

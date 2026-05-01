@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { Footer } from "@/app/components/Footer";
+import { TrustSignalStrip } from "@/app/components/TrustSignalStrip";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 // === 组件: 杂志风分屏 Hero (Split Editorial Hero) ===
@@ -186,7 +187,10 @@ export default function OurStoryPage() {
       {/* 3. Manifesto (Olive Green Break) */}
       <Manifesto />
 
-      {/* 4. Signature (Clean White) */}
+      {/* 4. Proof and next step */}
+      <TrustSignalStrip context="about" showReviews />
+
+      {/* 5. Signature (Clean White) */}
       <SignatureBlock />
 
       <Footer />

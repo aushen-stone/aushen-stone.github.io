@@ -206,7 +206,7 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
   - If rewritten as enquiry CTA, copy and button affordance are validated on desktop/mobile.
 
 ### MKT-P1-001 - Add trust signals near the Contact form
-- Status: `Open`
+- Status: `Done`
 - Owner: `Business Owner / Marketing / Engineering`
 - Tags: `marketing`
 - Scope:
@@ -215,14 +215,16 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 - Evidence:
   - Advertising feedback flags `/contact` as lacking social proof at the point of enquiry.
   - Contact page implementation lives in `src/app/contact/ContactPageClient.tsx`.
+  - `src/app/contact/ContactPageClient.tsx` now renders approved trust signals and selected Google review excerpts via `TrustSignalStrip`.
+  - Proof claims and approved excerpts are sourced from `docs/MARKETING_PROOF_ASSETS.md` and `src/data/trustSignals.ts`.
 - Docs Impact: `NEXT_STEPS / WORKLOG`
 - Exit Criteria:
-  - Contact page includes verified trust signals adjacent to or near the enquiry form.
-  - All numerical claims and review references are business-approved.
-  - Mobile layout keeps form completion friction low.
+  - Contact page includes verified trust signals adjacent to or near the enquiry form. Completed.
+  - All numerical claims and review references are business-approved. Completed for the current visible claims.
+  - Mobile layout keeps form completion friction low. Completed with compact stacked proof layout.
 
 ### MKT-P1-002 - Add homepage social proof
-- Status: `Open`
+- Status: `Done`
 - Owner: `Business Owner / Marketing / Engineering`
 - Tags: `marketing`
 - Scope:
@@ -231,14 +233,16 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 - Evidence:
   - Advertising feedback flags the homepage as visually strong but missing third-party or measurable trust proof.
   - Homepage composition lives in `src/app/page.tsx` and shared homepage sections under `src/app/components/`.
+  - `src/app/page.tsx` now renders `TrustSignalStrip` after the brand banner.
+  - `src/data/trustSignals.ts` centralizes the approved Google rating, 20-year experience, showroom, distributor, and review excerpt data.
 - Docs Impact: `NEXT_STEPS / WORKLOG`
 - Exit Criteria:
-  - Homepage includes verified trust proof that can be scanned quickly.
-  - No unverified project counts, client logos, or review claims are introduced.
-  - Section is visually consistent with the current homepage.
+  - Homepage includes verified trust proof that can be scanned quickly. Completed.
+  - No unverified project counts, client logos, or review claims are introduced. Completed.
+  - Section is visually consistent with the current homepage. Completed.
 
 ### MKT-P1-003 - Add closing CTA to About page
-- Status: `Open`
+- Status: `Done`
 - Owner: `Engineering / Marketing`
 - Tags: `marketing`
 - Scope:
@@ -247,11 +251,12 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 - Evidence:
   - Advertising feedback flags the About page as ending without a clear next action.
   - About implementation lives in `src/app/about/AboutPageClient.tsx`.
+  - About now renders `TrustSignalStrip` with selected reviews and a showroom CTA before the final signature block.
 - Docs Impact: `NEXT_STEPS / WORKLOG`
 - Exit Criteria:
-  - About page ends with a clear conversion-oriented next step.
-  - CTA copy connects naturally to the 20+ year / sourcing / quality narrative.
-  - Links resolve to the intended destination and are verified on mobile.
+  - About page ends with a clear conversion-oriented next step. Completed.
+  - CTA copy connects naturally to the 20+ year / sourcing / quality narrative. Completed.
+  - Links resolve to the intended destination and are verified on mobile. Completed for `/contact/` route target.
 
 ### MKT-P1-004 - Rework homepage hero CTA copy and visibility
 - Status: `Open`
@@ -366,7 +371,7 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
   - Sample legacy posts are verified after regeneration.
 
 ### MKT-P3-003 - Confirm credentials and proof assets
-- Status: `Blocked`
+- Status: `In Progress`
 - Owner: `Business Owner / Marketing`
 - Tags: `marketing`
 - Scope:
@@ -375,11 +380,15 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 - Evidence:
   - Advertising feedback requests industry credentials and social proof.
   - These claims require business confirmation before public use.
+- `docs/MARKETING_PROOF_ASSETS.md` now records approved proof assets, Google review implementation constraints, sources, deferred claims, and do-not-use claims.
+- Business owner approved 20-year experience messaging and distributor wording for Chemforce, HIDE, and FormBoss.
+- Public sources support `5.0 Google Reviews` / `20 reviews`, legacy 20-year experience messaging, Cheltenham showroom, and Chemforce/FormBoss/HIDE coverage.
+- Official Google docs indicate there is no simple Google Business Profile review badge equivalent; viable options are a static linked badge, Places API reviews with attribution/compliance, or Google Customer Reviews for Merchant Center/store ratings.
 - Docs Impact: `NEXT_STEPS / WORKLOG`
 - Exit Criteria:
-  - Approved proof asset list is documented.
-  - Each claim has an owner-approved source.
-  - Approved assets are ready to feed `MKT-P1-001`, `MKT-P1-002`, and future landing pages.
+  - Approved proof asset list is documented. Completed in `docs/MARKETING_PROOF_ASSETS.md`.
+  - Each approved claim has an owner-approved source. Partially complete; exact review quotes, industry credentials, project/customer counts, and proof photos remain deferred or pending.
+  - Approved assets are ready to feed `MKT-P1-001`, `MKT-P1-002`, and future landing pages. Partially complete for Google rating, 20-year experience, showroom, and distributor claims.
 
 ## P2 Backlog (Not Launch-Blocking)
 - `ADM-LITE-001` lightweight admin portal remains backlog only.

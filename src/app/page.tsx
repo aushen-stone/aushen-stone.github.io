@@ -7,6 +7,7 @@ import { AccessoriesGatewaySection } from "@/app/components/AccessoriesGatewaySe
 import { ProjectShowcase } from "@/app/components/ProjectShowcase"
 import { ServicesSection } from "@/app/components/ServicesSection"
 import { CreativeHubSection } from "@/app/components/CreativeHubSection"
+import { TrustSignalStrip } from "@/app/components/TrustSignalStrip"
 import { Footer } from "@/app/components/Footer"
 import { buildMetadata } from "@/lib/seo";
 
@@ -22,6 +23,7 @@ export default function Home() {
     <main className="min-h-screen">
       <Hero />
       <BrandBanner />
+      <TrustSignalStrip />
       <BestSellers />
       <AccessoriesGatewaySection />
       <ProjectShowcase />
