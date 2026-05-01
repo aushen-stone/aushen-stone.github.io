@@ -33,8 +33,8 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
   - Owner-confirmed delivery target documented: Cloudflare Worker + Resend.
 
 ### LAUNCH-P0-003 - SEO crawl/index baseline verification
-- Status: `In Progress`
-- Owner: `TBD`
+- Status: `Done`
+- Owner: `Business Owner / Engineering`
 - Scope:
   - Confirm launch indexing policy and sitemap/robots accessibility on production domain.
 - Evidence:
@@ -45,11 +45,15 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
   - Production sitemap has `145` URLs, all on `https://aushenstone.com.au/`, and excludes `/cart/`, `/projects/brighton-residence/`, and `/thank-you/`.
   - Production page meta check confirmed indexable canonical metadata for `/`, `/products/blueocean/`, `/blog/...`, and `/accessories/chemforce/`; noindex metadata for `/cart/`, `/projects/brighton-residence/`, and `/thank-you/`.
   - Google Search Console HTML verification file is staged at `public/googlece4432dbf177d5bb.html`.
+  - Production Google verification file returns `200` at `/googlece4432dbf177d5bb.html`.
+  - Google Search Console verification succeeded on 2026-05-01.
+  - Google Search Console sitemap submission for `/sitemap.xml` is `Success`, last read 2026-05-01, with `145` discovered pages and `0` discovered videos.
+  - Legacy submitted sitemaps from the old WordPress site (`/page-sitemap.xml`, `/sitemap_index.xml`, `/products-sitemap.xml`, `/application-sitemap.xml`, `/post-sitemap.xml`) show `Couldn't fetch`; these are historical submissions, not the current canonical sitemap.
 - Docs Impact: `ARCHITECTURE / NEXT_STEPS / WORKLOG`
 - Exit Criteria:
-  - Production `robots.txt` and `sitemap.xml` are accessible and correct.
-  - `index` vs `noindex` behavior is validated for `/cart` and `/projects/[id]`.
-  - Search Console inspection and sitemap submission completed.
+  - Production `robots.txt` and `sitemap.xml` are accessible and correct. Completed.
+  - `index` vs `noindex` behavior is validated for `/cart` and `/projects/[id]`. Completed.
+  - Search Console verification and sitemap submission completed.
 
 ### LAUNCH-P0-004 - GA4 + Search Console launch telemetry validation
 - Status: `Blocked`

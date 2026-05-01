@@ -71,7 +71,7 @@ Last updated: 2026-05-01
 
 ## Active Risk Snapshot
 - `LAUNCH-P0-001` contact submit delivery: `Done` (production delivery owner-checked; Cloudflare Worker + Resend).
-- `LAUNCH-P0-003` crawl/index baseline validation: `In Progress` (code baseline landed; production verification pending).
+- `LAUNCH-P0-003` crawl/index baseline validation: `Done` (production robots/sitemap/meta checked; GSC HTML verification and `/sitemap.xml` submission succeeded).
 - `LAUNCH-P0-004` GA4 + Search Console validation: `Blocked` (telemetry owner/access pending).
 - `LAUNCH-P0-005` cutover + rollback runbook: `Blocked` (runbook owner and dry-run pending).
 - `P1-DATA-LINK-001` project detail product-link mismatch: `Open` (project product slugs can route to non-generated product paths).

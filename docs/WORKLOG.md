@@ -11,6 +11,7 @@ Last updated: 2026-05-01
 - Production checks:
   - `https://aushenstone.com.au/robots.txt`: `200`
   - `https://aushenstone.com.au/sitemap.xml`: `200`
+  - `https://aushenstone.com.au/googlece4432dbf177d5bb.html`: `200`
   - production sitemap contains `145` URLs, all on `https://aushenstone.com.au/`.
   - sitemap includes homepage, product detail, blog detail, accessory detail, privacy policy, and terms routes.
   - sitemap excludes `/cart/`, `/thank-you/`, and project detail routes such as `/projects/brighton-residence/`.
@@ -25,6 +26,11 @@ Last updated: 2026-05-01
 - Behavior landed:
   - removed `/cart` from the generated `robots.txt` disallow list so crawlers can read the page-level `noindex, follow` metadata.
   - added Google Search Console HTML verification file at `public/googlece4432dbf177d5bb.html`.
+- Google Search Console confirmation:
+  - HTML file verification succeeded on 2026-05-01.
+  - Submitted sitemap `/sitemap.xml` status is `Success`, last read 2026-05-01, with `145` discovered pages and `0` discovered videos.
+  - Old WordPress sitemap submissions (`/page-sitemap.xml`, `/sitemap_index.xml`, `/products-sitemap.xml`, `/application-sitemap.xml`, `/post-sitemap.xml`) show `Couldn't fetch`; these are historical submitted sitemap entries and do not affect the current canonical `/sitemap.xml`.
+  - Coverage report shows historical index noise (`330` Not found, `40` Page with redirect, `33` Excluded by noindex, `109` Crawled currently not indexed, `18` Discovered currently not indexed). Treat as post-launch cleanup/monitoring, not a blocker for `LAUNCH-P0-003`.
 - Files updated:
   - `src/app/robots.ts`
   - `public/googlece4432dbf177d5bb.html`
