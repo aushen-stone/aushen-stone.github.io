@@ -15,19 +15,22 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 ## P0 Launch Blockers
 
 ### LAUNCH-P0-001 - Contact form delivery must work end-to-end
-- Status: `Blocked`
-- Owner: `TBD`
+- Status: `Done`
+- Owner: `Business Owner / Engineering`
 - Scope:
   - `/contact` submits JSON to `NEXT_PUBLIC_CONTACT_API_URL`.
   - Submit lifecycle is visible (`Sending`, success, error) with honeypot field.
 - Evidence:
   - Runtime wiring exists in `src/app/contact/ContactPageClient.tsx`.
   - Build-time variable validation exists in `.github/workflows/deploy.yml`.
+  - GitHub Actions repository variable `NEXT_PUBLIC_CONTACT_API_URL` is configured.
+  - Production delivery has been owner-checked as working.
+  - Production delivery target is Cloudflare Worker + Resend.
 - Docs Impact: `ARCHITECTURE / README_AGENT / NEXT_STEPS / WORKLOG`
 - Exit Criteria:
-  - Production endpoint receives real submit payloads.
-  - Success and failure UX verified on production domain.
-  - Owner-confirmed delivery target (Worker/Resend or equivalent) documented.
+  - Production endpoint receives real submit payloads. Completed by owner verification.
+  - Success and failure UX verified on production domain. Completed by owner verification.
+  - Owner-confirmed delivery target documented: Cloudflare Worker + Resend.
 
 ### LAUNCH-P0-002 - Legacy WordPress URL migration with 301 redirects
 - Status: `Blocked`

@@ -4,6 +4,25 @@ Last updated: 2026-05-01
 
 ## Completed and Landed
 
+### Contact Delivery Confirmation (2026-05-01)
+- Scope:
+  - closed `LAUNCH-P0-001` after production contact delivery was confirmed.
+- Confirmation:
+  - GitHub Actions repository variable `NEXT_PUBLIC_CONTACT_API_URL` is configured.
+  - Production contact form delivery has been owner-checked as working.
+  - Production delivery target is Cloudflare Worker + Resend.
+- Code inspection:
+  - `.github/workflows/deploy.yml` validates `NEXT_PUBLIC_CONTACT_API_URL` exists, uses an HTTP(S) URL, and is bundled into `dist`.
+  - `src/app/contact/ContactPageClient.tsx` posts JSON to `NEXT_PUBLIC_CONTACT_API_URL`, handles success/error UI, pushes `contact_form_submit`, and routes successful submissions to `/thank-you/`.
+- Files updated:
+  - `docs/ARCHITECTURE.md`
+  - `docs/README_AGENT.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run docs:check`: pass
+  - `git diff --check`: pass
+
 ### Docs Governance v1 (2026-05-01)
 - Scope:
   - added a machine-checkable docs governance layer so active documentation cannot silently drift from route, deploy, sitemap, contact-conversion, or task-board facts.

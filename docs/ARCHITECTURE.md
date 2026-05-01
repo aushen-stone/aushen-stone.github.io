@@ -164,6 +164,7 @@ Last updated: 2026-05-01
 - Contact submit client: `src/app/contact/ContactPageClient.tsx`.
 - Build-time endpoint env var: `NEXT_PUBLIC_CONTACT_API_URL`.
 - CI validates variable shape and checks endpoint string is bundled in `dist`.
+- Production delivery target: Cloudflare Worker + Resend.
 - Successful submit pushes `contact_form_submit` to `window.dataLayer`.
 - Successful submit routes to `/thank-you/`.
 - `/thank-you/` exists as a noindex confirmation page for conversion tracking and customer reassurance.

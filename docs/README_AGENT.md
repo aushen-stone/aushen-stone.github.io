@@ -67,9 +67,10 @@ Last updated: 2026-05-01
 - Accessories use enquiry-driven CTAs and must not be forced into the stone sample-cart workflow.
 - Continuity reasoning for accessories should stay in docs and handoff notes; public pages should stay customer-facing and avoid migration language.
 - Successful `/contact` submissions push `contact_form_submit` to `window.dataLayer` and route to `/thank-you/`; production GA4/GTM validation remains under `LAUNCH-P0-004`.
+- Production contact delivery target is Cloudflare Worker + Resend; `NEXT_PUBLIC_CONTACT_API_URL` is configured in GitHub Actions repository variables.
 
 ## Active Risk Snapshot
-- `LAUNCH-P0-001` contact submit delivery: `Blocked` (production endpoint validation pending).
+- `LAUNCH-P0-001` contact submit delivery: `Done` (production delivery owner-checked; Cloudflare Worker + Resend).
 - `LAUNCH-P0-002` legacy URL redirects: `Blocked` (redirect owner/ruleset pending).
 - `LAUNCH-P0-003` crawl/index baseline validation: `In Progress` (code baseline landed; production verification pending).
 - `LAUNCH-P0-004` GA4 + Search Console validation: `Blocked` (telemetry owner/access pending).
