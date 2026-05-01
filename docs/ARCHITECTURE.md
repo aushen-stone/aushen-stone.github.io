@@ -70,6 +70,9 @@ Last updated: 2026-05-01
 - Metadata routes:
   - `src/app/robots.ts`
   - `src/app/sitemap.ts`
+- Search Console HTML verification file:
+  - `public/googlece4432dbf177d5bb.html`
+  - publishes at `/googlece4432dbf177d5bb.html`
 - Index policy:
   - `/cart`: `noindex,follow`
   - `/blog`: indexable
@@ -83,6 +86,7 @@ Last updated: 2026-05-01
 - Sitemap content:
   - core static routes, legal static routes, accessories routes, generated product detail routes, and generated blog detail routes.
   - Excluded from sitemap: `/cart`, `/projects/[id]`, `/thank-you`.
+- `robots.txt` allows crawling and points to the production sitemap; noindex pages are controlled by page metadata rather than robots blocking so crawlers can observe the noindex directive.
 
 ## Data Model and Flow
 - Product source of truth: `../docs/aushen_product_library.csv` (repo root `docs/`).

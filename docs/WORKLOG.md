@@ -4,6 +4,55 @@ Last updated: 2026-05-01
 
 ## Completed and Landed
 
+### SEO Public Baseline Check and Robots Noindex Alignment (2026-05-01)
+- Scope:
+  - checked production public SEO crawl/index baseline for `LAUNCH-P0-003`.
+  - aligned robots behavior so noindex pages are controlled by page metadata instead of crawler blocking.
+- Production checks:
+  - `https://aushenstone.com.au/robots.txt`: `200`
+  - `https://aushenstone.com.au/sitemap.xml`: `200`
+  - production sitemap contains `145` URLs, all on `https://aushenstone.com.au/`.
+  - sitemap includes homepage, product detail, blog detail, accessory detail, privacy policy, and terms routes.
+  - sitemap excludes `/cart/`, `/thank-you/`, and project detail routes such as `/projects/brighton-residence/`.
+  - sampled canonical and robots metadata:
+    - `/`: `index, follow`, canonical homepage
+    - `/products/blueocean/`: `index, follow`, canonical product URL
+    - sampled blog detail: `index, follow`, canonical blog URL
+    - `/accessories/chemforce/`: `index, follow`, canonical accessory URL
+    - `/cart/`: `noindex, follow`, canonical cart URL
+    - `/projects/brighton-residence/`: `noindex, follow`, canonical project URL
+    - `/thank-you/`: `noindex, nofollow`, canonical thank-you URL
+- Behavior landed:
+  - removed `/cart` from the generated `robots.txt` disallow list so crawlers can read the page-level `noindex, follow` metadata.
+  - added Google Search Console HTML verification file at `public/googlece4432dbf177d5bb.html`.
+- Files updated:
+  - `src/app/robots.ts`
+  - `public/googlece4432dbf177d5bb.html`
+  - `docs/ARCHITECTURE.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run docs:check`: pass
+  - `git diff --check`: pass
+  - `npx tsc --noEmit`: pass
+  - `npm run lint`: pass (`0 errors, 23 warnings`, existing `no-img-element` backlog)
+  - `npm run build:pages`: pass; static generation reports `159` pages.
+  - generated `dist/robots.txt` allows crawling and points to `https://aushenstone.com.au/sitemap.xml`.
+  - generated `dist/googlece4432dbf177d5bb.html` exists and matches `public/googlece4432dbf177d5bb.html`.
+  - generated `dist/sitemap.xml` excludes `/cart/`, `/thank-you/`, and project detail routes.
+  - generated `/cart/`, `/projects/brighton-residence/`, and `/thank-you/` HTML retains expected noindex metadata.
+
+### Active Board Cleanup - Redirect Blocker Removed (2026-05-01)
+- Scope:
+  - removed `LAUNCH-P0-002` legacy redirect migration from the active launch blocker board by owner direction.
+- Files updated:
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run docs:check`: pass
+  - `git diff --check`: pass
+
 ### Contact Delivery Confirmation (2026-05-01)
 - Scope:
   - closed `LAUNCH-P0-001` after production contact delivery was confirmed.

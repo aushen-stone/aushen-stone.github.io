@@ -32,19 +32,6 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
   - Success and failure UX verified on production domain. Completed by owner verification.
   - Owner-confirmed delivery target documented: Cloudflare Worker + Resend.
 
-### LAUNCH-P0-002 - Legacy WordPress URL migration with 301 redirects
-- Status: `Blocked`
-- Owner: `TBD`
-- Scope:
-  - High-priority legacy URLs must 301 to mapped new routes.
-- Evidence:
-  - No redirect execution layer is tracked as implemented in repo runtime.
-- Docs Impact: `ARCHITECTURE / NEXT_STEPS / WORKLOG`
-- Exit Criteria:
-  - Redirect map approved and owned.
-  - Representative high-priority legacy URLs return `301` to correct destination.
-  - Redirect execution method documented (Cloudflare/legacy host/equivalent).
-
 ### LAUNCH-P0-003 - SEO crawl/index baseline verification
 - Status: `In Progress`
 - Owner: `TBD`
@@ -54,6 +41,10 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
   - Metadata/canonical utilities: `src/lib/seo.ts`.
   - Metadata routes: `src/app/robots.ts`, `src/app/sitemap.ts`.
   - Route-level metadata wrappers exist for release routes and dynamic product/project detail routes.
+  - Production public check on 2026-05-01: `/robots.txt` and `/sitemap.xml` return `200`.
+  - Production sitemap has `145` URLs, all on `https://aushenstone.com.au/`, and excludes `/cart/`, `/projects/brighton-residence/`, and `/thank-you/`.
+  - Production page meta check confirmed indexable canonical metadata for `/`, `/products/blueocean/`, `/blog/...`, and `/accessories/chemforce/`; noindex metadata for `/cart/`, `/projects/brighton-residence/`, and `/thank-you/`.
+  - Google Search Console HTML verification file is staged at `public/googlece4432dbf177d5bb.html`.
 - Docs Impact: `ARCHITECTURE / NEXT_STEPS / WORKLOG`
 - Exit Criteria:
   - Production `robots.txt` and `sitemap.xml` are accessible and correct.
@@ -452,4 +443,4 @@ npm run build:pages
 1. Documentation remains English-first.
 2. Runtime changes are allowed when they are required to close active launch or contact-critical items.
 3. Missing business inputs are tracked as `Blocked` with `Owner: TBD`.
-4. WordPress cutover still requires an external redirect execution layer.
+4. Legacy redirect migration is intentionally not tracked as an active launch blocker.
