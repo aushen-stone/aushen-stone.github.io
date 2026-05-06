@@ -1,6 +1,6 @@
 # Next Steps - Aushen Web
 
-Last updated: 2026-05-01
+Last updated: 2026-05-07
 
 ## Release Goal
 Launch `aushenstone.com.au` on the current static Next.js stack while protecting lead capture and minimizing SEO loss during WordPress cutover.
@@ -179,7 +179,7 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
   - Make successful contact submissions reliably trackable for paid media and GA4.
   - Submit success pushes a stable `contact_form_submit` event and routes to `/thank-you/`.
 - Evidence:
-  - `src/app/contact/ContactPageClient.tsx` pushes `contact_form_submit` to `window.dataLayer` after a successful API response.
+  - `src/lib/contactSubmission.ts` pushes `contact_form_submit` to `window.dataLayer` after a successful contact API response.
   - `src/app/contact/ContactPageClient.tsx` routes successful submits to `/thank-you/`.
   - `src/app/thank-you/page.tsx` provides the noindex confirmation page.
 - Docs Impact: `ARCHITECTURE / README_AGENT / NEXT_STEPS / WORKLOG`
@@ -307,20 +307,22 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
   - No continuity slugs or generated product records are changed.
 
 ### MKT-P2-003 - Add in-page product enquiry path
-- Status: `Open`
+- Status: `Done`
 - Owner: `Engineering / Marketing`
 - Tags: `marketing`
 - Scope:
   - Reduce product-detail enquiry friction by adding an in-page enquiry drawer, modal, or short embedded form.
   - Reuse current product contact prefill and contact API behavior where practical.
 - Evidence:
-  - Product detail CTAs currently route to `/contact?source=product-detail`.
-  - Current handoff preserves product selection context but still leaves the product page.
+  - `src/app/products/[slug]/ProductDetailClient.tsx` now opens an inline product enquiry form from the product detail CTA area.
+  - Inline product enquiries submit through `src/lib/contactSubmission.ts` with `source: product-detail-inline`.
+  - Submitted message includes product, slug, application, finish, size, slip rating, and current page URL.
+  - The existing `/contact?source=product-detail` handoff remains as the consultation fallback path.
 - Docs Impact: `ARCHITECTURE / NEXT_STEPS / WORKLOG`
 - Exit Criteria:
-  - Users can start an enquiry from product detail without losing product context.
-  - Submitted enquiry includes product, application, finish, size, and page URL.
-  - Conversion tracking remains compatible with `MKT-P0-001`.
+  - Users can start an enquiry from product detail without losing product context. Completed.
+  - Submitted enquiry includes product, application, finish, size, and page URL. Completed.
+  - Conversion tracking remains compatible with `MKT-P0-001`. Completed via shared `contact_form_submit` event.
 
 ### MKT-P2-004 - Expand imagery for priority product pages
 - Status: `Open`
@@ -409,8 +411,9 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 - If not guaranteed, project detail must provide a documented fallback behavior.
 
 ### Contact Conversion Contract
-- Successful `/contact` submissions push `contact_form_submit` to `window.dataLayer`.
+- Successful contact submissions push `contact_form_submit` to `window.dataLayer` through `src/lib/contactSubmission.ts`.
 - Successful `/contact` submissions route to `/thank-you/`.
+- Successful inline product enquiries stay on the product detail page and use `source: product-detail-inline`.
 - `/thank-you/` is intentionally `noindex,nofollow` and excluded from sitemap.
 - Production observability remains governed by `LAUNCH-P0-004`.
 

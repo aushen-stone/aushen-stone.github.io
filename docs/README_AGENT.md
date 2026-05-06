@@ -1,6 +1,6 @@
 # README_AGENT - Single Entry for All Agents
 
-Last updated: 2026-05-01
+Last updated: 2026-05-07
 
 ## Purpose
 - Keep handoff low-overhead and execution-focused.
@@ -58,7 +58,8 @@ Last updated: 2026-05-01
 - Product browsing state is URL-led:
   - `/products` filter params are `q`, `material`, `application`, and `tone`; old `category` links remain readable but should not be emitted by new code.
   - `/products/[slug]` selector params are `application`, `finish`, and `size`, validated on the client against generated product data.
-  - product-list return context uses `sessionStorage` key `aushen_products_return_context_v1`; product-detail contact prefill uses `aushen_product_contact_prefill_v1`.
+  - product-list return context uses `sessionStorage` key `aushen_products_return_context_v1`; product-detail contact prefill fallback uses `aushen_product_contact_prefill_v1`.
+  - product detail inline enquiries submit through the shared contact helper with `source: product-detail-inline` and keep users on the product page after success.
 - Accessories are curated separately from CSV-generated stone products, with legacy Aushen accessories coverage used as the minimum Phase 1 baseline.
 - Accessories source files live inside the inner repo:
   - type contract: `src/types/accessory.ts`
@@ -66,7 +67,7 @@ Last updated: 2026-05-01
   - routes: `src/app/accessories/page.tsx`, `src/app/accessories/[slug]/page.tsx`
 - Accessories use enquiry-driven CTAs and must not be forced into the stone sample-cart workflow.
 - Continuity reasoning for accessories should stay in docs and handoff notes; public pages should stay customer-facing and avoid migration language.
-- Successful `/contact` submissions push `contact_form_submit` to `window.dataLayer` and route to `/thank-you/`; production GA4/GTM validation remains under `LAUNCH-P0-004`.
+- Successful contact submissions push `contact_form_submit` to `window.dataLayer`; `/contact` routes to `/thank-you/` after success, while inline product enquiries show in-page success. Production GA4/GTM validation remains under `LAUNCH-P0-004`.
 - Production contact delivery target is Cloudflare Worker + Resend; `NEXT_PUBLIC_CONTACT_API_URL` is configured in GitHub Actions repository variables.
 
 ## Active Risk Snapshot
@@ -77,7 +78,7 @@ Last updated: 2026-05-01
 - `P1-DATA-LINK-001` project detail product-link mismatch: `Open` (project product slugs can route to non-generated product paths).
 - `P1-PROJECT-AUTH-001` project showcase authenticity/indexing risk: `Open` (`/projects` is indexable while project content is still hard-coded/mock).
 - `P1-IMG-001` remaining non-project/non-product placeholder visual: `Open` (`ServicesSection` templating image only).
-- Marketing board: `MKT-P0-001`, `MKT-P1-001`, `MKT-P1-002`, and `MKT-P1-003` are `Done`; `MKT-P3-003` proof assets are `In Progress` with approved claims documented in `docs/MARKETING_PROOF_ASSETS.md`; remaining marketing items stay in `NEXT_STEPS` with `marketing` tags.
+- Marketing board: `MKT-P0-001`, `MKT-P1-001`, `MKT-P1-002`, `MKT-P1-003`, and `MKT-P2-003` are `Done`; `MKT-P3-003` proof assets are `In Progress` with approved claims documented in `docs/MARKETING_PROOF_ASSETS.md`; remaining marketing items stay in `NEXT_STEPS` with `marketing` tags.
 
 ## Documentation Consistency Rules
 - Active docs must not use line-number-based tracking.

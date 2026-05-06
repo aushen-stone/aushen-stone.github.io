@@ -1,6 +1,6 @@
 # Aushen Web - Architecture Overview
 
-Last updated: 2026-05-01
+Last updated: 2026-05-07
 
 ## Project Type
 - Next.js App Router frontend.
@@ -152,9 +152,11 @@ Last updated: 2026-05-01
   - `/products/[slug]` supports selector query params `application`, `finish`, and `size`.
   - selector params are validated against the current generated product before use, and invalid combinations are normalized to available options.
   - product detail canonical metadata remains the slug route; selector params are client-side UI state only.
-- Product detail contact handoff:
-  - product enquiry/consultation CTAs write the current product, application, finish, size, slip rating, and page URL to `sessionStorage` under `aushen_product_contact_prefill_v1`.
-  - `/contact?source=product-detail` reads that handoff as the initial message and clears it after successful submit.
+- Product detail enquiry paths:
+  - product detail includes an inline enquiry form that submits the current product, application, finish, size, slip rating, and page URL without leaving `/products/[slug]`.
+  - inline product enquiries use `source: product-detail-inline` and push the shared `contact_form_submit` conversion event after successful submit.
+  - consultation fallback CTAs still write the current product, application, finish, size, slip rating, and page URL to `sessionStorage` under `aushen_product_contact_prefill_v1`.
+  - `/contact?source=product-detail` reads that fallback handoff as the initial message and clears it after successful submit.
 - Accessories intentionally bypass the `Product` selector contract and use direct enquiry CTAs instead of sample ordering.
 - Sample cart contract (`src/types/cart.ts`):
   - storage key: `aushen_sample_cart_v1`
@@ -165,12 +167,13 @@ Last updated: 2026-05-01
   - sample size: `200x100mm`
 
 ## Contact Submission Contract
-- Contact submit client: `src/app/contact/ContactPageClient.tsx`.
+- Shared submit helper: `src/lib/contactSubmission.ts`.
+- Contact submit clients: `src/app/contact/ContactPageClient.tsx` and `src/app/products/[slug]/ProductDetailClient.tsx`.
 - Build-time endpoint env var: `NEXT_PUBLIC_CONTACT_API_URL`.
 - CI validates variable shape and checks endpoint string is bundled in `dist`.
 - Production delivery target: Cloudflare Worker + Resend.
 - Successful submit pushes `contact_form_submit` to `window.dataLayer`.
-- Successful submit routes to `/thank-you/`.
+- Successful `/contact` submit routes to `/thank-you/`; successful inline product enquiry stays on the product page and shows an in-page success state.
 - `/thank-you/` exists as a noindex confirmation page for conversion tracking and customer reassurance.
 
 ## Project Detail Content Contract

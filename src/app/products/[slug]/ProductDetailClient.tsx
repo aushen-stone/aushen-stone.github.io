@@ -16,6 +16,8 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
+  CheckCircle,
+  Loader2,
   Plus,
   Minus,
 } from "lucide-react";
@@ -38,6 +40,11 @@ import {
   PRODUCTS_RETURN_CONTEXT_STORAGE_KEY,
   type ProductsReturnContext,
 } from "@/types/productNavigation";
+import {
+  isContactEndpointConfigured,
+  pushContactConversionEvent,
+  submitContactEnquiry,
+} from "@/lib/contactSubmission";
 import type { AudienceMode, Product } from "@/types/product";
 
 type SelectOption = {
@@ -196,6 +203,19 @@ type ProductDetailViewProps = {
 
 type SampleFeedback = AddSampleResult | "unavailable";
 
+type InlineEnquiryFormState = {
+  firstName: string;
+  email: string;
+  phone: string;
+  message: string;
+  website: string;
+};
+
+type InlineEnquirySubmitState =
+  | { kind: "idle"; message: "" }
+  | { kind: "success"; message: string }
+  | { kind: "error"; message: string };
+
 type ProductSelectionState = {
   applicationId: string;
   finishId: string;
@@ -204,6 +224,7 @@ type ProductSelectionState = {
 
 const PRODUCT_DETAIL_SELECTION_PARAMS = ["application", "finish", "size"] as const;
 const PRODUCT_DETAIL_SELECTION_EVENT = "aushen_product_detail_selection_change";
+const PRODUCT_DETAIL_INLINE_CONTACT_SOURCE = "product-detail-inline";
 const PRODUCT_RETURN_CONTEXT_MAX_AGE_MS = 30 * 60 * 1000;
 
 const subscribeNoop = () => () => {};
@@ -387,6 +408,22 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
   const [audienceMode, setAudienceMode] = useState<AudienceMode>("homeowner");
   const [sampleFeedback, setSampleFeedback] = useState<SampleFeedback | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
+  const [isEnquirySubmitting, setIsEnquirySubmitting] = useState(false);
+  const [enquirySubmitState, setEnquirySubmitState] =
+    useState<InlineEnquirySubmitState>({
+      kind: "idle",
+      message: "",
+    });
+  const [enquiryFormState, setEnquiryFormState] =
+    useState<InlineEnquiryFormState>({
+      firstName: "",
+      email: "",
+      phone: "",
+      message: "",
+      website: "",
+    });
+  const firstEnquiryFieldRef = useRef<HTMLInputElement | null>(null);
 
   const selectedApplication =
     product.applicationIndex.find((application) => application.id === selectedApplicationId) ||
@@ -454,6 +491,18 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     }
   }, [selectedSelection]);
 
+  useEffect(() => {
+    if (!isEnquiryOpen) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      firstEnquiryFieldRef.current?.focus();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
+  }, [isEnquiryOpen]);
+
   const handleApplicationSelect = (applicationId: string) => {
     const nextApplication = product.applicationIndex.find(
       (application) => application.id === applicationId
@@ -484,6 +533,15 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
       size,
     });
   };
+
+  const updateEnquiryField =
+    (field: keyof InlineEnquiryFormState) =>
+    (value: string): void => {
+      setEnquiryFormState((previous) => ({ ...previous, [field]: value }));
+      if (enquirySubmitState.kind !== "idle") {
+        setEnquirySubmitState({ kind: "idle", message: "" });
+      }
+    };
 
   const handleAddSample = () => {
     if (!selectedFinish) {
@@ -560,22 +618,28 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     setActiveImageIndex((previous) => (previous + 1) % imageGallery.length);
   };
 
-  const buildProductContactMessage = () => {
-    const pageUrl =
-      typeof window === "undefined"
-        ? `/products/${product.slug}/`
-        : `${window.location.origin}${window.location.pathname}${window.location.search}`;
+  const getProductPageUrl = () =>
+    typeof window === "undefined"
+      ? `/products/${product.slug}/`
+      : `${window.location.origin}${window.location.pathname}${window.location.search}`;
 
+  const buildProductContextLines = () => [
+    `Product: ${displayName}`,
+    `Product slug: ${product.slug}`,
+    `Material: ${product.materialName || "-"}`,
+    `Application: ${selectedApplication?.label || "-"}`,
+    `Finish: ${selectedFinish?.name || "-"}`,
+    `Size: ${selectedSizeValue || "-"}`,
+    `Slip rating: ${selectedFinish?.slipRating || "-"}`,
+    `Page: ${getProductPageUrl()}`,
+  ];
+
+  const buildProductContactMessage = () => {
     return [
       "Hi Aushen team,",
       "",
       "I would like to enquire about this product:",
-      `Product: ${displayName}`,
-      `Application: ${selectedApplication?.label || "-"}`,
-      `Finish: ${selectedFinish?.name || "-"}`,
-      `Size: ${selectedSizeValue || "-"}`,
-      `Slip rating: ${selectedFinish?.slipRating || "-"}`,
-      `Page: ${pageUrl}`,
+      ...buildProductContextLines(),
       "",
       "Project suburb/address:",
       "Approximate quantity or area:",
@@ -595,6 +659,69 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
       );
     } catch {
       // Continue to the contact page even if handoff storage is unavailable.
+    }
+  };
+
+  const buildInlineEnquiryMessage = (customerMessage: string) => {
+    const trimmedMessage = customerMessage.trim();
+    return [
+      "Product enquiry from product detail page:",
+      ...buildProductContextLines(),
+      "",
+      "Customer notes:",
+      trimmedMessage || "-",
+    ].join("\n");
+  };
+
+  const handleInlineEnquirySubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+
+    if (!isContactEndpointConfigured()) {
+      setEnquirySubmitState({
+        kind: "error",
+        message:
+          "Contact endpoint is not configured. Please call or email Aushen directly.",
+      });
+      return;
+    }
+
+    setIsEnquirySubmitting(true);
+    setEnquirySubmitState({ kind: "idle", message: "" });
+
+    try {
+      await submitContactEnquiry({
+        firstName: enquiryFormState.firstName,
+        email: enquiryFormState.email,
+        phone: enquiryFormState.phone,
+        message: buildInlineEnquiryMessage(enquiryFormState.message),
+        userType: audienceMode === "professional" ? "pro" : "homeowner",
+        source: PRODUCT_DETAIL_INLINE_CONTACT_SOURCE,
+        website: enquiryFormState.website,
+      });
+
+      pushContactConversionEvent(PRODUCT_DETAIL_INLINE_CONTACT_SOURCE);
+      setEnquirySubmitState({
+        kind: "success",
+        message:
+          "Thanks, your product enquiry has been sent. Our team will contact you shortly.",
+      });
+      setEnquiryFormState({
+        firstName: "",
+        email: "",
+        phone: "",
+        message: "",
+        website: "",
+      });
+    } catch {
+      setEnquirySubmitState({
+        kind: "error",
+        message:
+          "We could not send your enquiry right now. Please call or email us directly.",
+      });
+    } finally {
+      setIsEnquirySubmitting(false);
     }
   };
 
@@ -732,15 +859,173 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                     >
                       {consultLabel}
                     </Link>
-                    <Link
-                      href="/contact?source=product-detail"
-                      onClick={persistProductContactPrefill}
+                    <button
+                      type="button"
+                      onClick={() => setIsEnquiryOpen((previous) => !previous)}
                       className="border border-gray-300 text-gray-900 py-3 px-4 sm:px-5 flex items-center justify-center gap-2.5 hover:border-gray-900 transition-all uppercase tracking-[0.12em] text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                      aria-label={enquireLabel}
+                      aria-label={isEnquiryOpen ? "Close product enquiry" : enquireLabel}
+                      aria-expanded={isEnquiryOpen}
+                      aria-controls="product-inline-enquiry"
                     >
-                      <ArrowDownLeft size={14} /> {enquireLabel}
-                    </Link>
+                      <ArrowDownLeft size={14} />
+                      {isEnquiryOpen ? "Close Enquiry" : enquireLabel}
+                    </button>
                   </div>
+
+                  <AnimatePresence initial={false}>
+                    {isEnquiryOpen && (
+                      <motion.div
+                        id="product-inline-enquiry"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.24, ease: [0.04, 0.62, 0.23, 0.98] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="border-t border-[#E6E0D8] pt-5">
+                          <div className="mb-4 flex items-start justify-between gap-4">
+                            <div>
+                              <p className="text-[10px] uppercase tracking-[0.18em] text-gray-500">
+                                Product enquiry
+                              </p>
+                              <h3 className="mt-2 font-serif text-xl text-gray-900">
+                                {displayName}
+                              </h3>
+                            </div>
+                            {enquirySubmitState.kind === "success" && (
+                              <CheckCircle
+                                size={20}
+                                className="mt-1 shrink-0 text-[#3B4034]"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </div>
+
+                          <dl className="mb-5 grid grid-cols-1 gap-3 border-y border-[#E6E0D8] py-4 text-sm sm:grid-cols-2">
+                            {techSpecs.map((spec) => (
+                              <div key={`inline-enquiry-${spec.label}`} className="min-w-0">
+                                <dt className="text-[10px] uppercase tracking-[0.14em] text-gray-500">
+                                  {spec.label}
+                                </dt>
+                                <dd className="mt-1 truncate font-serif text-base text-gray-900">
+                                  {spec.value}
+                                </dd>
+                              </div>
+                            ))}
+                          </dl>
+
+                          <form className="space-y-4" onSubmit={handleInlineEnquirySubmit}>
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                              <label className="flex flex-col gap-2">
+                                <span className="text-[10px] uppercase tracking-[0.14em] text-gray-500">
+                                  First name
+                                </span>
+                                <input
+                                  ref={firstEnquiryFieldRef}
+                                  type="text"
+                                  value={enquiryFormState.firstName}
+                                  onChange={(event) =>
+                                    updateEnquiryField("firstName")(event.target.value)
+                                  }
+                                  required
+                                  autoComplete="given-name"
+                                  className="h-11 border border-[#D8D2C8] bg-white px-3 text-sm text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                                />
+                              </label>
+
+                              <label className="flex flex-col gap-2">
+                                <span className="text-[10px] uppercase tracking-[0.14em] text-gray-500">
+                                  Email
+                                </span>
+                                <input
+                                  type="email"
+                                  value={enquiryFormState.email}
+                                  onChange={(event) =>
+                                    updateEnquiryField("email")(event.target.value)
+                                  }
+                                  required
+                                  autoComplete="email"
+                                  className="h-11 border border-[#D8D2C8] bg-white px-3 text-sm text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                                />
+                              </label>
+                            </div>
+
+                            <label className="flex flex-col gap-2">
+                              <span className="text-[10px] uppercase tracking-[0.14em] text-gray-500">
+                                Phone
+                              </span>
+                              <input
+                                type="tel"
+                                value={enquiryFormState.phone}
+                                onChange={(event) =>
+                                  updateEnquiryField("phone")(event.target.value)
+                                }
+                                autoComplete="tel"
+                                className="h-11 border border-[#D8D2C8] bg-white px-3 text-sm text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                              />
+                            </label>
+
+                            <label className="flex flex-col gap-2">
+                              <span className="text-[10px] uppercase tracking-[0.14em] text-gray-500">
+                                Project notes
+                              </span>
+                              <textarea
+                                value={enquiryFormState.message}
+                                onChange={(event) =>
+                                  updateEnquiryField("message")(event.target.value)
+                                }
+                                rows={4}
+                                placeholder="Suburb, quantity, timing, or selection questions"
+                                className="min-h-28 resize-y border border-[#D8D2C8] bg-white px-3 py-3 text-sm leading-6 text-gray-900 placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                              />
+                            </label>
+
+                            <div className="sr-only" aria-hidden="true">
+                              <label htmlFor="product-enquiry-website">Website</label>
+                              <input
+                                id="product-enquiry-website"
+                                type="text"
+                                tabIndex={-1}
+                                autoComplete="off"
+                                value={enquiryFormState.website}
+                                onChange={(event) =>
+                                  updateEnquiryField("website")(event.target.value)
+                                }
+                              />
+                            </div>
+
+                            {enquirySubmitState.kind !== "idle" && (
+                              <p
+                                role={
+                                  enquirySubmitState.kind === "error" ? "alert" : "status"
+                                }
+                                className={`text-sm leading-6 ${
+                                  enquirySubmitState.kind === "error"
+                                    ? "text-red-700"
+                                    : "text-[#3B4034]"
+                                }`}
+                              >
+                                {enquirySubmitState.message}
+                              </p>
+                            )}
+
+                            <button
+                              type="submit"
+                              disabled={isEnquirySubmitting}
+                              className="inline-flex min-h-11 w-full items-center justify-between bg-[#1a1c18] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.14em] text-[#F8F5F1] transition-colors hover:bg-[#3B4034] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              {isEnquirySubmitting ? "Sending" : "Send Enquiry"}
+                              {isEnquirySubmitting ? (
+                                <Loader2 size={15} className="animate-spin" />
+                              ) : (
+                                <ArrowRight size={15} />
+                              )}
+                            </button>
+                          </form>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {sampleFeedbackMessage && (

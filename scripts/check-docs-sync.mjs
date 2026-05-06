@@ -117,9 +117,14 @@ function checkSitemapAndSeoContract() {
 }
 
 function checkContactConversionContract() {
-  requireIncludes("src/app/contact/ContactPageClient.tsx", "contact_form_submit");
-  requireIncludes("src/app/contact/ContactPageClient.tsx", "dataLayer");
+  requireIncludes("src/lib/contactSubmission.ts", "contact_form_submit");
+  requireIncludes("src/lib/contactSubmission.ts", "dataLayer");
+  requireIncludes("src/app/contact/ContactPageClient.tsx", "submitContactEnquiry");
+  requireIncludes("src/app/contact/ContactPageClient.tsx", "pushContactConversionEvent");
   requireIncludes("src/app/contact/ContactPageClient.tsx", 'router.push("/thank-you/")');
+  requireIncludes("src/app/products/[slug]/ProductDetailClient.tsx", "product-detail-inline");
+  requireIncludes("src/app/products/[slug]/ProductDetailClient.tsx", "submitContactEnquiry");
+  requireIncludes("src/app/products/[slug]/ProductDetailClient.tsx", "pushContactConversionEvent");
 
   if (!exists("src/app/thank-you/page.tsx")) {
     fail("src/app/thank-you/page.tsx is missing");

@@ -1,8 +1,35 @@
 # Worklog - Aushen Web
 
-Last updated: 2026-05-01
+Last updated: 2026-05-07
 
 ## Completed and Landed
+
+### Product Detail Inline Enquiry (2026-05-07)
+- Scope:
+  - closed `MKT-P2-003` by adding an in-page enquiry path to product detail pages.
+  - kept the existing `/contact?source=product-detail` handoff as a consultation fallback.
+- Behavior landed:
+  - `src/lib/contactSubmission.ts` now centralizes contact endpoint submission and `contact_form_submit` dataLayer tracking.
+  - `src/app/contact/ContactPageClient.tsx` uses the shared contact submission helper without changing the public `/contact` success flow.
+  - `src/app/products/[slug]/ProductDetailClient.tsx` now opens an inline enquiry form from the product CTA card.
+  - inline product submissions include product name, slug, selected application, finish, size, slip rating, and current product URL.
+  - inline product submissions use `source: product-detail-inline`, push `contact_form_submit` after success, and keep the user on the product page.
+- Files updated:
+  - `src/lib/contactSubmission.ts`
+  - `src/app/contact/ContactPageClient.tsx`
+  - `src/app/products/[slug]/ProductDetailClient.tsx`
+  - `scripts/check-docs-sync.mjs`
+  - `docs/ARCHITECTURE.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run docs:check`: pass
+  - `git diff --check`: pass
+  - `npx tsc --noEmit`: pass
+  - `npm run lint`: pass (`0 errors, 23 warnings`, existing `no-img-element` backlog)
+  - `npm run build:pages`: pass; static generation reports `159` pages.
+  - static/source check confirms `product-detail-inline`, `Product enquiry`, `Send Enquiry`, shared `submitContactEnquiry`, and `contact_form_submit` references are present in the expected code/docs paths.
 
 ### Trust Signal UI Rollout (2026-05-01)
 - Scope:

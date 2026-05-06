@@ -12,6 +12,11 @@ import {
 } from "@/types/cart";
 import { PRODUCT_CONTACT_HANDOFF_KEY } from "@/types/productNavigation";
 import { CONTACT_INFO } from "@/data/contact";
+import {
+  isContactEndpointConfigured,
+  pushContactConversionEvent,
+  submitContactEnquiry,
+} from "@/lib/contactSubmission";
 
 type UserType = "homeowner" | "pro";
 
@@ -29,24 +34,6 @@ type SubmitState =
   | { kind: "idle"; message: "" }
   | { kind: "success"; message: string }
   | { kind: "error"; message: string };
-
-const CONTACT_API_URL = process.env.NEXT_PUBLIC_CONTACT_API_URL?.trim() ?? "";
-const CONTACT_CONVERSION_EVENT = "contact_form_submit";
-
-type DataLayerWindow = Window & {
-  dataLayer?: Array<Record<string, unknown>>;
-};
-
-function pushContactConversionEvent(source: string): void {
-  if (typeof window === "undefined") return;
-
-  const conversionWindow = window as DataLayerWindow;
-  conversionWindow.dataLayer = conversionWindow.dataLayer || [];
-  conversionWindow.dataLayer.push({
-    event: CONTACT_CONVERSION_EVENT,
-    form_source: source,
-  });
-}
 
 function readSampleCartPrefill(): string {
   if (typeof window === "undefined") return "";
@@ -306,7 +293,7 @@ export default function ContactPage() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!CONTACT_API_URL) {
+    if (!isContactEndpointConfigured()) {
       setSubmitState({
         kind: "error",
         message:
@@ -319,33 +306,16 @@ export default function ContactPage() {
     setSubmitState({ kind: "idle", message: "" });
 
     try {
-      const response = await fetch(CONTACT_API_URL, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName: formState.firstName.trim(),
-          lastName: formState.lastName.trim(),
-          email: formState.email.trim(),
-          phone: formState.phone.trim(),
-          message: formState.message.trim(),
-          userType,
-          source: formState.source,
-          website: formState.website.trim(),
-        }),
+      await submitContactEnquiry({
+        firstName: formState.firstName,
+        lastName: formState.lastName,
+        email: formState.email,
+        phone: formState.phone,
+        message: formState.message,
+        userType,
+        source: formState.source,
+        website: formState.website,
       });
-
-      let payload: { ok?: boolean; error?: string } | null = null;
-      try {
-        payload = await response.json();
-      } catch {
-        // Ignore JSON parse failures and fallback to generic error handling.
-      }
-
-      if (!response.ok || payload?.ok !== true) {
-        throw new Error(payload?.error || "submit_failed");
-      }
 
       setSubmitState({
         kind: "success",
