@@ -52,15 +52,31 @@ export function Hero() {
             </FadeIn>
           </h1>
 
-          {/* 按钮：延迟 0.6s 最后浮现 */}
-          <FadeIn delay={0.6} className="mt-8 sm:mt-10 md:mt-12">
-            <Link
-              href="/contact"
-              className="group w-full sm:w-auto border border-white/80 px-[var(--btn-px)] py-[var(--btn-py)] text-white text-[11px] sm:text-sm uppercase tracking-[0.16em] sm:tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-3"
-            >
-              Make Appointments
-              <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-            </Link>
+          <FadeIn delay={0.55} className="mt-6 max-w-xl">
+            <p className="text-sm leading-6 text-white/75 sm:text-base sm:leading-7">
+              Natural stone, paving, pool coping and wall cladding advice from
+              the Aushen showroom team.
+            </p>
+          </FadeIn>
+
+          {/* 按钮：延迟 0.7s 最后浮现 */}
+          <FadeIn delay={0.7} className="mt-8 sm:mt-10 md:mt-12">
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/contact/"
+                className="group inline-flex min-h-12 w-full items-center justify-center gap-3 bg-white px-[var(--btn-px)] py-[var(--btn-py)] text-[11px] uppercase tracking-[0.16em] text-black transition-all duration-300 hover:bg-[#F8F5F1] sm:w-auto sm:text-sm sm:tracking-widest"
+              >
+                Talk to a Stone Specialist
+                <ArrowRight className="h-4 w-4 opacity-80 transition-transform group-hover:translate-x-1" />
+              </Link>
+              <Link
+                href="/products/"
+                className="group inline-flex min-h-12 w-full items-center justify-center gap-3 border border-white/80 px-[var(--btn-px)] py-[var(--btn-py)] text-[11px] uppercase tracking-[0.16em] text-white transition-all duration-300 hover:bg-white hover:text-black sm:w-auto sm:text-sm sm:tracking-widest"
+              >
+                Browse Products
+                <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
+              </Link>
+            </div>
           </FadeIn>
         </div>
 

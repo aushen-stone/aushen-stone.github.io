@@ -4,6 +4,30 @@ Last updated: 2026-05-07
 
 ## Completed and Landed
 
+### Footer and Hero Marketing CTA Alignment (2026-05-07)
+- Scope:
+  - closed `MKT-P0-002` by replacing the misleading Footer newsletter-style module with real enquiry/showroom actions.
+  - closed `MKT-P1-004` by replacing the homepage hero `Make Appointments` CTA with advertising-led lead-generation CTAs.
+- Behavior landed:
+  - Footer now uses `Need help choosing stone?` with `Start an Enquiry` linking to `/contact/` and `Get Directions` linking to the Cheltenham showroom map.
+  - Footer no longer renders a newsletter-style email input without a newsletter backend.
+  - Homepage hero now uses `Talk to a Stone Specialist` as the primary CTA to `/contact/`.
+  - Homepage hero now uses `Browse Products` as the secondary CTA to `/products/`.
+  - Homepage hero includes short supporting copy for natural stone, paving, pool coping, wall cladding, and showroom advice intent.
+- Files updated:
+  - `src/app/components/Footer.tsx`
+  - `src/app/components/Hero.tsx`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run docs:check`: pass
+  - `git diff --check`: pass
+  - `npx tsc --noEmit`: pass
+  - `npm run lint`: pass (`0 errors, 23 warnings`, existing `no-img-element` backlog)
+  - `npm run build:pages`: pass; static generation reports `159` pages.
+  - generated homepage HTML contains `Talk to a Stone Specialist`, `Browse Products`, `Need help choosing stone?`, `Start an Enquiry`, and `Get Directions`.
+
 ### Sample Drawer Direct Request Flow (2026-05-07)
 - Scope:
   - removed the cart-page detour from the primary sample request flow.

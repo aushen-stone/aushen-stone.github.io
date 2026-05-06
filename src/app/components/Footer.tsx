@@ -2,14 +2,11 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ArrowUpRight, Instagram, Facebook, Linkedin, Twitter } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { CONTACT_INFO } from "@/data/contact";
 
 export function Footer() {
-  const router = useRouter();
-
   // Footer 元素专用的微动效果
   const smoothEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
   const footerItemVariant: Variants = {
@@ -137,37 +134,36 @@ export function Footer() {
           </ul>
         </motion.div>
 
-        {/* Column 4: Newsletter */}
+        {/* Column 4: Showroom CTA */}
         <motion.div variants={footerItemVariant} className="md:col-span-4 flex flex-col justify-between h-full gap-6">
           <div>
             <h4 className="font-serif text-2xl sm:text-3xl md:text-4xl leading-tight mb-2">
-              Stay Inspired.
+              Need help choosing stone?
             </h4>
             <p className="text-white/40 text-sm mb-8">
-              Join our community of architects and designers.
+              Send us your project details or visit the Cheltenham showroom.
             </p>
           </div>
 
-          <form
-            className="group relative"
-            onSubmit={(event) => {
-              event.preventDefault();
-              router.push("/contact");
-            }}
-          >
-            <input
-              type="email"
-              placeholder="Email Address"
-              className="w-full bg-transparent border-b border-white/20 py-4 text-base sm:text-lg text-white placeholder:text-white/20 focus:outline-none focus:border-white transition-colors"
-            />
-            <button
-              type="submit"
-              className="absolute right-0 top-1/2 -translate-y-1/2 p-2 hover:bg-white hover:text-black rounded-full transition-all duration-300"
-              aria-label="Go to contact page"
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/contact/"
+              className="group inline-flex min-h-12 items-center justify-between gap-4 bg-[#F8F5F1] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-[#1a1c18] transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
             >
-              <ArrowUpRight size={20} />
-            </button>
-          </form>
+              Start an Enquiry
+              <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Link>
+            <a
+              href={CONTACT_INFO.mapDirectionsUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="group inline-flex min-h-12 items-center justify-between gap-4 border border-white/20 px-5 py-3 text-[11px] font-medium uppercase tracking-[0.16em] text-white/75 transition-colors hover:border-white/60 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
+              aria-label={`Get directions to ${CONTACT_INFO.addressLabel}`}
+            >
+              Get Directions
+              <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
+          </div>
         </motion.div>
 
       </motion.div>

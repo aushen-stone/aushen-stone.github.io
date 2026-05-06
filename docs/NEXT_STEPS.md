@@ -190,7 +190,7 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
   - Production GA4/GTM verification remains tracked under `LAUNCH-P0-004`.
 
 ### MKT-P0-002 - Align Footer newsletter module with real behavior
-- Status: `Open`
+- Status: `Done`
 - Owner: `Business Owner / Engineering`
 - Tags: `marketing`
 - Scope:
@@ -198,12 +198,13 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
   - Choose either a real newsletter capture path or rewrite the module as a project enquiry/contact CTA.
 - Evidence:
   - Footer copy and input live in `src/app/components/Footer.tsx`.
-  - Current submit intent routes users to `/contact` rather than subscribing them.
+  - Former newsletter-style input was removed.
+  - Footer now uses truthful action CTAs: `Start an Enquiry` to `/contact/` and `Get Directions` to the Cheltenham showroom map.
 - Docs Impact: `NEXT_STEPS / WORKLOG`
 - Exit Criteria:
-  - Footer CTA text matches the actual action.
-  - If newsletter capture is retained, the collection destination and owner are documented.
-  - If rewritten as enquiry CTA, copy and button affordance are validated on desktop/mobile.
+  - Footer CTA text matches the actual action. Completed.
+  - If newsletter capture is retained, the collection destination and owner are documented. Not retained.
+  - If rewritten as enquiry CTA, copy and button affordance are validated on desktop/mobile. Completed.
 
 ### MKT-P1-001 - Add trust signals near the Contact form
 - Status: `Done`
@@ -259,20 +260,22 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
   - Links resolve to the intended destination and are verified on mobile. Completed for `/contact/` route target.
 
 ### MKT-P1-004 - Rework homepage hero CTA copy and visibility
-- Status: `Open`
+- Status: `Done`
 - Owner: `Marketing / Engineering`
 - Tags: `marketing`
 - Scope:
   - Review the hero CTA wording and first-fold visibility.
   - Candidate copy: “Book a Showroom Visit”, “Talk to a Stone Specialist”, or “Start Your Stone Selection”.
 - Evidence:
-  - Current hero CTA text is `Make Appointments` in `src/app/components/Hero.tsx`.
-  - Advertising feedback describes the CTA as high-commitment and not prominent enough in the first fold.
+  - Former hero CTA text was `Make Appointments` in `src/app/components/Hero.tsx`.
+  - Hero now uses an advertising-led primary CTA, `Talk to a Stone Specialist`, linking to `/contact/`.
+  - Hero now includes a secondary `Browse Products` CTA linking to `/products/`.
+  - Short supporting copy clarifies natural stone, paving, pool coping, wall cladding, and showroom advice intent.
 - Docs Impact: `NEXT_STEPS / WORKLOG`
 - Exit Criteria:
-  - Hero CTA copy is business-approved and customer-natural.
-  - CTA is visible and usable across common desktop/mobile first-fold viewports.
-  - CTA destination supports lead capture or showroom booking intent.
+  - Hero CTA copy is business-approved and customer-natural. Completed.
+  - CTA is visible and usable across common desktop/mobile first-fold viewports. Completed.
+  - CTA destination supports lead capture or showroom booking intent. Completed.
 
 ### MKT-P2-001 - Write differentiated descriptions for core product pages
 - Status: `Open`
