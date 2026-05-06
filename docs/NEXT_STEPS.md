@@ -315,6 +315,7 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
   - Reuse current product contact prefill and contact API behavior where practical.
 - Evidence:
   - `src/app/products/[slug]/ProductDetailClient.tsx` now opens an inline product enquiry form from the product detail CTA area.
+  - The product detail CTA hierarchy now makes `Check Availability` the primary conversion action, with `Request Sample` and `Book Showroom Visit` as secondary actions.
   - Inline product enquiries submit through `src/lib/contactSubmission.ts` with `source: product-detail-inline`.
   - Submitted message includes product, slug, application, finish, size, slip rating, and current page URL.
   - The existing `/contact?source=product-detail` handoff remains as the consultation fallback path.

@@ -11,7 +11,6 @@ import React, {
 } from "react";
 import { Footer } from "@/app/components/Footer";
 import {
-  ArrowDownLeft,
   ArrowLeft,
   ArrowRight,
   ChevronLeft,
@@ -371,9 +370,9 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
   const professionalSummary = override?.professionalSummary || DEFAULT_PROFESSIONAL_SUMMARY;
   const professionalNotes = override?.professionalNotes || DEFAULT_PROFESSIONAL_NOTES;
 
-  const sampleLabel = override?.ctaOverride?.sample || "Order Free Sample";
-  const enquireLabel = override?.ctaOverride?.enquire || "Enquire";
-  const consultLabel = override?.ctaOverride?.consult || "Book Consultation";
+  const sampleLabel = override?.ctaOverride?.sample || "Request Sample";
+  const enquireLabel = override?.ctaOverride?.enquire || "Check Availability";
+  const consultLabel = override?.ctaOverride?.consult || "Book Showroom Visit";
   const returnContextHref = useSyncExternalStore(
     subscribeNoop,
     () => getProductsReturnHrefSnapshot(product.slug),
@@ -834,42 +833,64 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <button
-                    type="button"
-                    onClick={handleAddSample}
-                    disabled={!selectedFinish}
-                    className="w-full bg-[#1a1c18] text-[#F8F5F1] py-3.5 sm:py-4 px-5 sm:px-6 flex items-center justify-between group hover:bg-[#3B4034] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:opacity-50 disabled:cursor-not-allowed"
-                    aria-label={sampleLabel}
-                  >
-                    <span className="uppercase tracking-[0.14em] text-[11px] font-medium">
-                      {sampleLabel}
-                    </span>
-                    <ArrowRight
-                      size={16}
-                      className="transition-transform duration-300 group-hover:translate-x-1.5"
-                    />
-                  </button>
+                  <div className="overflow-hidden border border-[#1a1c18] bg-[#1a1c18] text-[#F8F5F1]">
+                    <div className="p-5 sm:p-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-[0.2em] text-white/55">
+                            Selected stone enquiry
+                          </p>
+                          <h3 className="mt-2 max-w-xl font-serif text-[1.55rem] leading-tight sm:text-[1.85rem]">
+                            Check availability for {displayName}
+                          </h3>
+                        </div>
+                        {enquirySubmitState.kind === "success" && (
+                          <CheckCircle
+                            size={22}
+                            className="mt-1 shrink-0 text-[#DDE6CC]"
+                            aria-hidden="true"
+                          />
+                        )}
+                      </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <Link
-                      href="/contact?source=product-detail"
-                      onClick={persistProductContactPrefill}
-                      className="border border-gray-300 text-gray-900 py-3 px-4 sm:px-5 flex items-center justify-center gap-2.5 hover:border-gray-900 transition-all uppercase tracking-[0.12em] text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                      aria-label={consultLabel}
-                    >
-                      {consultLabel}
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => setIsEnquiryOpen((previous) => !previous)}
-                      className="border border-gray-300 text-gray-900 py-3 px-4 sm:px-5 flex items-center justify-center gap-2.5 hover:border-gray-900 transition-all uppercase tracking-[0.12em] text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                      aria-label={isEnquiryOpen ? "Close product enquiry" : enquireLabel}
-                      aria-expanded={isEnquiryOpen}
-                      aria-controls="product-inline-enquiry"
-                    >
-                      <ArrowDownLeft size={14} />
-                      {isEnquiryOpen ? "Close Enquiry" : enquireLabel}
-                    </button>
+                      <p className="mt-4 text-sm leading-6 text-white/70">
+                        Send the selected application, finish and size to Aushen.
+                        We&apos;ll confirm availability, samples and showroom options.
+                      </p>
+
+                      <dl className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        {techSpecs.map((spec) => (
+                          <div
+                            key={`availability-${spec.label}`}
+                            className="border border-white/10 bg-white/[0.06] px-3 py-2"
+                          >
+                            <dt className="text-[9px] uppercase tracking-[0.16em] text-white/45">
+                              {spec.label}
+                            </dt>
+                            <dd className="mt-1 truncate font-serif text-sm text-white">
+                              {spec.value}
+                            </dd>
+                          </div>
+                        ))}
+                      </dl>
+
+                      <button
+                        type="button"
+                        onClick={() => setIsEnquiryOpen((previous) => !previous)}
+                        className="group mt-5 inline-flex min-h-12 w-full items-center justify-between bg-[#F8F5F1] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.14em] text-[#1a1c18] transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
+                        aria-label={isEnquiryOpen ? "Close product enquiry" : enquireLabel}
+                        aria-expanded={isEnquiryOpen}
+                        aria-controls="product-inline-enquiry"
+                      >
+                        {isEnquiryOpen ? "Close Enquiry" : enquireLabel}
+                        <ArrowRight
+                          size={16}
+                          className={`transition-transform duration-300 ${
+                            isEnquiryOpen ? "-rotate-90" : "group-hover:translate-x-1.5"
+                          }`}
+                        />
+                      </button>
+                    </div>
                   </div>
 
                   <AnimatePresence initial={false}>
@@ -880,39 +901,13 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.24, ease: [0.04, 0.62, 0.23, 0.98] }}
-                        className="overflow-hidden"
+                        className="-mt-3 overflow-hidden"
                       >
-                        <div className="border-t border-[#E6E0D8] pt-5">
-                          <div className="mb-4 flex items-start justify-between gap-4">
-                            <div>
-                              <p className="text-[10px] uppercase tracking-[0.18em] text-gray-500">
-                                Product enquiry
-                              </p>
-                              <h3 className="mt-2 font-serif text-xl text-gray-900">
-                                {displayName}
-                              </h3>
-                            </div>
-                            {enquirySubmitState.kind === "success" && (
-                              <CheckCircle
-                                size={20}
-                                className="mt-1 shrink-0 text-[#3B4034]"
-                                aria-hidden="true"
-                              />
-                            )}
-                          </div>
-
-                          <dl className="mb-5 grid grid-cols-1 gap-3 border-y border-[#E6E0D8] py-4 text-sm sm:grid-cols-2">
-                            {techSpecs.map((spec) => (
-                              <div key={`inline-enquiry-${spec.label}`} className="min-w-0">
-                                <dt className="text-[10px] uppercase tracking-[0.14em] text-gray-500">
-                                  {spec.label}
-                                </dt>
-                                <dd className="mt-1 truncate font-serif text-base text-gray-900">
-                                  {spec.value}
-                                </dd>
-                              </div>
-                            ))}
-                          </dl>
+                        <div className="border border-[#1a1c18] border-t-0 bg-[#F8F5F1] p-5 sm:p-6">
+                          <p className="mb-5 text-sm leading-6 text-gray-600">
+                            Product details are included automatically. Add your
+                            contact details and any timing, quantity or suburb notes.
+                          </p>
 
                           <form className="space-y-4" onSubmit={handleInlineEnquirySubmit}>
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -1012,9 +1007,9 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                             <button
                               type="submit"
                               disabled={isEnquirySubmitting}
-                              className="inline-flex min-h-11 w-full items-center justify-between bg-[#1a1c18] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.14em] text-[#F8F5F1] transition-colors hover:bg-[#3B4034] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60"
+                              className="inline-flex min-h-12 w-full items-center justify-between bg-[#1a1c18] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.14em] text-[#F8F5F1] transition-colors hover:bg-[#3B4034] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1] disabled:cursor-not-allowed disabled:opacity-60"
                             >
-                              {isEnquirySubmitting ? "Sending" : "Send Enquiry"}
+                              {isEnquirySubmitting ? "Sending" : "Send Availability Request"}
                               {isEnquirySubmitting ? (
                                 <Loader2 size={15} className="animate-spin" />
                               ) : (
@@ -1026,6 +1021,26 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                       </motion.div>
                     )}
                   </AnimatePresence>
+
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <button
+                      type="button"
+                      onClick={handleAddSample}
+                      disabled={!selectedFinish}
+                      className="border border-gray-300 text-gray-900 py-3 px-4 sm:px-5 flex items-center justify-center gap-2.5 hover:border-gray-900 transition-all uppercase tracking-[0.12em] text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:opacity-50 disabled:cursor-not-allowed"
+                      aria-label={sampleLabel}
+                    >
+                      {sampleLabel}
+                    </button>
+                    <Link
+                      href="/contact?source=product-detail"
+                      onClick={persistProductContactPrefill}
+                      className="border border-transparent text-gray-600 py-3 px-4 sm:px-5 flex items-center justify-center gap-2.5 hover:text-gray-900 transition-all uppercase tracking-[0.12em] text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                      aria-label={consultLabel}
+                    >
+                      {consultLabel}
+                    </Link>
+                  </div>
                 </div>
 
                 {sampleFeedbackMessage && (

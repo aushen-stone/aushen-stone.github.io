@@ -4,6 +4,26 @@ Last updated: 2026-05-07
 
 ## Completed and Landed
 
+### Product Detail CTA Emphasis (2026-05-07)
+- Scope:
+  - strengthened the product detail inline enquiry UI from a plain secondary button into the primary marketing conversion block.
+- Behavior landed:
+  - product detail CTA hierarchy now leads with `Check Availability for [Product Name]`.
+  - selected material, application, finish, size, and slip rating are visible inside the dark conversion block before the user opens the form.
+  - `Request Sample` and `Book Showroom Visit` are now secondary actions below the primary availability enquiry.
+  - inline enquiry submission behavior remains unchanged: `source: product-detail-inline`, shared contact endpoint, shared `contact_form_submit`, and in-page success.
+- Files updated:
+  - `src/app/products/[slug]/ProductDetailClient.tsx`
+  - `docs/NEXT_STEPS.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run docs:check`: pass
+  - `git diff --check`: pass
+  - `npx tsc --noEmit`: pass
+  - `npm run lint`: pass (`0 errors, 23 warnings`, existing `no-img-element` backlog)
+  - `npm run build:pages`: pass; static generation reports `159` pages.
+  - generated `dist/products/blueocean/index.html` contains `Check availability for`, `Request Sample`, and `Book Showroom Visit`.
+
 ### Product Detail Inline Enquiry (2026-05-07)
 - Scope:
   - closed `MKT-P2-003` by adding an in-page enquiry path to product detail pages.
