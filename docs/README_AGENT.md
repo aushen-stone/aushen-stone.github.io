@@ -68,6 +68,7 @@ Last updated: 2026-05-07
 - Accessories use enquiry-driven CTAs and must not be forced into the stone sample-cart workflow.
 - Continuity reasoning for accessories should stay in docs and handoff notes; public pages should stay customer-facing and avoid migration language.
 - Successful contact submissions push `contact_form_submit` to `window.dataLayer`; `/contact` routes to `/thank-you/` after success, while inline product enquiries show in-page success. Production GA4/GTM validation remains under `LAUNCH-P0-004`.
+- Sample requests should use the sample drawer as the primary path. `src/app/components/cart/SampleCartDrawer.tsx` submits directly through the shared contact helper with `source: sample-drawer`; `/cart` remains a noindex fallback page.
 - Production contact delivery target is Cloudflare Worker + Resend; `NEXT_PUBLIC_CONTACT_API_URL` is configured in GitHub Actions repository variables.
 
 ## Active Risk Snapshot

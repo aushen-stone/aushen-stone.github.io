@@ -165,15 +165,18 @@ Last updated: 2026-05-07
   - variant key semantics: `productSlug + finishId`
   - line limit: `10`
   - sample size: `200x100mm`
+  - primary sample request flow is the sample drawer: selected sample lines submit directly through the shared contact endpoint with `source: sample-drawer`.
+  - `/cart` remains a noindex fallback/review page, not the primary sample request path.
 
 ## Contact Submission Contract
 - Shared submit helper: `src/lib/contactSubmission.ts`.
-- Contact submit clients: `src/app/contact/ContactPageClient.tsx` and `src/app/products/[slug]/ProductDetailClient.tsx`.
+- Contact submit clients: `src/app/contact/ContactPageClient.tsx`, `src/app/products/[slug]/ProductDetailClient.tsx`, and `src/app/components/cart/SampleCartDrawer.tsx`.
 - Build-time endpoint env var: `NEXT_PUBLIC_CONTACT_API_URL`.
 - CI validates variable shape and checks endpoint string is bundled in `dist`.
 - Production delivery target: Cloudflare Worker + Resend.
 - Successful submit pushes `contact_form_submit` to `window.dataLayer`.
 - Successful `/contact` submit routes to `/thank-you/`; successful inline product enquiry stays on the product page and shows an in-page success state.
+- Successful sample drawer request stays inside the drawer, shows an in-drawer success state, and clears selected sample lines.
 - `/thank-you/` exists as a noindex confirmation page for conversion tracking and customer reassurance.
 
 ## Project Detail Content Contract

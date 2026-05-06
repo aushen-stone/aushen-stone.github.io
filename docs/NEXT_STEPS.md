@@ -415,6 +415,7 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 - Successful contact submissions push `contact_form_submit` to `window.dataLayer` through `src/lib/contactSubmission.ts`.
 - Successful `/contact` submissions route to `/thank-you/`.
 - Successful inline product enquiries stay on the product detail page and use `source: product-detail-inline`.
+- Successful sample drawer requests stay inside the drawer and use `source: sample-drawer`.
 - `/thank-you/` is intentionally `noindex,nofollow` and excluded from sitemap.
 - Production observability remains governed by `LAUNCH-P0-004`.
 

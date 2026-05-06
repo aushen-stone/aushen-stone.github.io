@@ -125,6 +125,9 @@ function checkContactConversionContract() {
   requireIncludes("src/app/products/[slug]/ProductDetailClient.tsx", "product-detail-inline");
   requireIncludes("src/app/products/[slug]/ProductDetailClient.tsx", "submitContactEnquiry");
   requireIncludes("src/app/products/[slug]/ProductDetailClient.tsx", "pushContactConversionEvent");
+  requireIncludes("src/app/components/cart/SampleCartDrawer.tsx", "sample-drawer");
+  requireIncludes("src/app/components/cart/SampleCartDrawer.tsx", "submitContactEnquiry");
+  requireIncludes("src/app/components/cart/SampleCartDrawer.tsx", "pushContactConversionEvent");
 
   if (!exists("src/app/thank-you/page.tsx")) {
     fail("src/app/thank-you/page.tsx is missing");

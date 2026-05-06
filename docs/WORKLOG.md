@@ -4,6 +4,30 @@ Last updated: 2026-05-07
 
 ## Completed and Landed
 
+### Sample Drawer Direct Request Flow (2026-05-07)
+- Scope:
+  - removed the cart-page detour from the primary sample request flow.
+  - made the sample drawer the primary place to review selected samples and submit contact details.
+- Behavior landed:
+  - `src/app/components/cart/SampleCartDrawer.tsx` now renders a direct sample request form when sample lines are present.
+  - sample drawer submissions use the shared contact endpoint with `source: sample-drawer` and push the shared `contact_form_submit` conversion event after success.
+  - successful sample drawer requests show an in-drawer success state and clear the selected sample lines.
+  - the drawer no longer promotes `View Cart`; `/cart` remains available as a noindex fallback/review page.
+- Files updated:
+  - `src/app/components/cart/SampleCartDrawer.tsx`
+  - `scripts/check-docs-sync.mjs`
+  - `docs/ARCHITECTURE.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run docs:check`: pass
+  - `git diff --check`: pass
+  - `npx tsc --noEmit`: pass
+  - `npm run lint`: pass (`0 errors, 23 warnings`, existing `no-img-element` backlog)
+  - `npm run build:pages`: pass; static generation reports `159` pages.
+  - source check confirms `sample-drawer`, `Request selected samples`, `Request Samples`, shared `submitContactEnquiry`, and shared `contact_form_submit` references are present.
+
 ### Product Detail CTA Emphasis (2026-05-07)
 - Scope:
   - strengthened the product detail inline enquiry UI from a plain secondary button into the primary marketing conversion block.
