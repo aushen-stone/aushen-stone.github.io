@@ -44,7 +44,7 @@ npm run prepare:product-photos
 - Blueocean phase-1 split convention:
   - `blueocean` remains the continuity slug.
   - `blueocean-honed` is the dedicated honed product slug.
-  - Remaining Blueocean special finishes still sit under `blueocean` until a later reclassification pass.
+  - BlueOcean cladding rows have been removed from the continuity slug; remaining non-cladding Blueocean special finishes still sit under `blueocean` until a later reclassification pass.
 
 ## Canonical domain and hosting model
 

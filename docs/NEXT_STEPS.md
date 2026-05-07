@@ -398,7 +398,7 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 
 ## P2 Backlog (Not Launch-Blocking)
 - `ADM-LITE-001` lightweight admin portal remains backlog only.
-- `P2-DATA-BLUEOCEAN-001` reclassify remaining Blueocean special finishes (`Polished`, `Rockface`, `Ripple`, and other non-honed carryovers) out of the continuity slug once the business grouping is confirmed.
+- `P2-DATA-BLUEOCEAN-001` reclassify remaining non-cladding Blueocean special finishes (`Polished` and other non-honed carryovers) out of the continuity slug once the business grouping is confirmed. BlueOcean cladding rows were removed from the source CSV on 2026-05-07 and should not be restored without business confirmation.
 - `P2-ACCESSORIES-MAPEI-001` evaluate `Mapei` as a later accessories expansion after Phase 1 coverage is stable.
 - Project detail content typing/CMS migration remains backlog.
 - Full e2e suite expansion remains backlog.
@@ -437,7 +437,7 @@ Launch `aushenstone.com.au` on the current static Next.js stack while protecting
 - `blueocean` remains the phase-1 continuity slug and must stay routable.
 - `blueocean-honed` is a dedicated generated product route sourced from `Blueocean Honed` rows in the outer CSV.
 - Public display names are applied through `ProductOverride.displayName`: `blueocean` -> `BlueOcean Sawn`; `blueocean-honed` -> `BlueOcean Honed`.
-- Remaining Blueocean special finishes are intentionally still grouped under `blueocean` until `P2-DATA-BLUEOCEAN-001` is executed.
+- BlueOcean cladding rows were removed from `blueocean` on 2026-05-07; remaining non-cladding Blueocean special finishes are intentionally still grouped under `blueocean` until `P2-DATA-BLUEOCEAN-001` is executed.
 
 ## Verification Commands
 ```bash

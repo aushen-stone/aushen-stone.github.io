@@ -2048,62 +2048,6 @@ export const PRODUCTS: Product[] = [
         ]
       },
       {
-        "id": "rockface-p5",
-        "name": "Rockface",
-        "slipRating": "P5",
-        "applications": [
-          {
-            "id": "cladding--wall-cladding",
-            "label": "Cladding / Wall Cladding",
-            "category": "Cladding",
-            "categorySlug": "cladding",
-            "subtype": "Wall Cladding",
-            "subtypeSlug": "wall-cladding",
-            "sizes": [
-              {
-                "raw": "600/400/200x200x20-45",
-                "unit": "mm"
-              }
-            ]
-          },
-          {
-            "id": "cladding--corner-return",
-            "label": "Cladding / Corner Return",
-            "category": "Cladding",
-            "categorySlug": "cladding",
-            "subtype": "Corner Return",
-            "subtypeSlug": "corner-return",
-            "sizes": [
-              {
-                "raw": "200x200x20mm",
-                "unit": "mm"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "ripple-p5",
-        "name": "Ripple",
-        "slipRating": "P5",
-        "applications": [
-          {
-            "id": "cladding--wall-cladding",
-            "label": "Cladding / Wall Cladding",
-            "category": "Cladding",
-            "categorySlug": "cladding",
-            "subtype": "Wall Cladding",
-            "subtypeSlug": "wall-cladding",
-            "sizes": [
-              {
-                "raw": "600x300x20mm",
-                "unit": "mm"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "id": "polished-p3",
         "name": "Polished",
         "slipRating": "P3",
@@ -2590,59 +2534,6 @@ export const PRODUCTS: Product[] = [
               },
               {
                 "raw": "1600-2000x810x60mm",
-                "unit": "mm"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "cladding--wall-cladding",
-        "label": "Cladding / Wall Cladding",
-        "category": "Cladding",
-        "categorySlug": "cladding",
-        "subtype": "Wall Cladding",
-        "subtypeSlug": "wall-cladding",
-        "finishes": [
-          {
-            "id": "rockface-p5",
-            "name": "Rockface",
-            "slipRating": "P5",
-            "sizes": [
-              {
-                "raw": "600/400/200x200x20-45",
-                "unit": "mm"
-              }
-            ]
-          },
-          {
-            "id": "ripple-p5",
-            "name": "Ripple",
-            "slipRating": "P5",
-            "sizes": [
-              {
-                "raw": "600x300x20mm",
-                "unit": "mm"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "cladding--corner-return",
-        "label": "Cladding / Corner Return",
-        "category": "Cladding",
-        "categorySlug": "cladding",
-        "subtype": "Corner Return",
-        "subtypeSlug": "corner-return",
-        "finishes": [
-          {
-            "id": "rockface-p5",
-            "name": "Rockface",
-            "slipRating": "P5",
-            "sizes": [
-              {
-                "raw": "200x200x20mm",
                 "unit": "mm"
               }
             ]

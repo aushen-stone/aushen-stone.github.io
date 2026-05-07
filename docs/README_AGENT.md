@@ -41,13 +41,14 @@ Last updated: 2026-05-07
 
 ## Catalog Continuity Notes
 - Product structural source of truth remains outer-repo CSV: `../docs/aushen_product_library.csv`.
-- `blueocean` is the phase-1 continuity slug and still carries `Sawn` plus remaining Blueocean special finishes.
+- `blueocean` is the phase-1 continuity slug and still carries `Sawn` plus remaining non-cladding Blueocean special finishes.
 - `blueocean-honed` is a first-class product slug generated from `Blueocean Honed` rows in the outer CSV.
 - Public display naming is override-layer only: `blueocean` displays as `BlueOcean Sawn`; `blueocean-honed` displays as `BlueOcean Honed`; CSV product names and route slugs remain unchanged.
+- BlueOcean cladding rows (`Rockface` / `Ripple`) were removed from the outer CSV on 2026-05-07 and must not be reintroduced under `blueocean` without business confirmation.
 - Blueocean photo audit mapping is intentionally split:
   - `SAI/Blueocean Sawn.jpg` -> `blueocean`
   - `SAI/Blueocean Honed.jpg` -> `blueocean-honed`
-- Remaining Blueocean special-finish reclassification is deferred and tracked in `docs/NEXT_STEPS.md`.
+- Remaining non-cladding Blueocean special-finish reclassification is deferred and tracked in `docs/NEXT_STEPS.md`.
 - Travertine supplier suffixes are public-display overrides only:
   - `beige-travertine-sai` -> `Beige Travertine`
   - `classic-travertine-sai` -> `Classic Travertine`

@@ -4,6 +4,24 @@ Last updated: 2026-05-07
 
 ## Completed and Landed
 
+### BlueOcean Cladding Data Correction (2026-05-07)
+- Scope:
+  - removed BlueOcean cladding applications from the source product CSV while preserving the `blueocean` continuity slug and `BlueOcean Sawn` public display name.
+- Behavior landed:
+  - `blueocean` no longer exposes `Cladding / Wall Cladding` or `Cladding / Corner Return` in product detail application options or generated product filter data.
+  - `blueocean-honed` remains unchanged.
+- Files updated:
+  - `../docs/aushen_product_library.csv`
+  - `src/data/products.generated.ts`
+  - `README.md`
+  - `docs/ARCHITECTURE.md`
+  - `docs/NEXT_STEPS.md`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+- Validation:
+  - `npm run build:product-data`: pass; generated `72` products.
+  - source check confirms `blueocean` application labels no longer include cladding.
+
 ### Footer and Hero Marketing CTA Alignment (2026-05-07)
 - Scope:
   - closed `MKT-P0-002` by replacing the misleading Footer newsletter-style module with real enquiry/showroom actions.

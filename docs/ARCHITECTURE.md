@@ -105,7 +105,7 @@ Last updated: 2026-05-07
   - `Blueocean` in the outer CSV continues to generate the continuity slug `blueocean`.
   - `Blueocean Honed` in the outer CSV generates the dedicated slug `blueocean-honed`.
   - Public display names are override-layer only: `blueocean` displays as `BlueOcean Sawn`, and `blueocean-honed` displays as `BlueOcean Honed`.
-  - Remaining Blueocean special finishes are intentionally still grouped under `blueocean` until a later reclassification pass.
+  - BlueOcean cladding rows were removed from the continuity slug on 2026-05-07; remaining non-cladding Blueocean special finishes are intentionally still grouped under `blueocean` until a later reclassification pass.
 - Travertine supplier suffix display contract:
   - CSV/generated names for supplier-distinguished travertine SKUs can retain suffixes such as `(SAI)` and `(Artma)` to preserve continuity slugs and image mapping keys.
   - Public-facing product names remove those supplier suffixes through `src/data/product_display_names.ts`.
