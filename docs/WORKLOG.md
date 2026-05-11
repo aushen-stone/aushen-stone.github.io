@@ -4,6 +4,22 @@ Last updated: 2026-05-07
 
 ## Completed and Landed
 
+### Barwon Jasper Kakadu Roman Product Photos (2026-05-11)
+- Scope:
+  - added owner-supplied product images for `barwon`, `jasper`, `kakadu`, and `roman`.
+- Behavior landed:
+  - product cards and detail pages now resolve mapped cover images for Barwon, Jasper, Kakadu, and Roman instead of the placeholder.
+  - photo audit missing-product gap is reduced from five products to one (`angola-black`).
+- Files updated:
+  - `public/product-photos/barwon-01.webp`
+  - `public/product-photos/jasper-01.webp`
+  - `public/product-photos/kakadu-01.webp`
+  - `public/product-photos/roman-01.webp`
+  - `src/data/product_images.generated.ts`
+  - `docs/photo_audit_2026-02-17/*`
+  - `docs/README_AGENT.md`
+  - `docs/WORKLOG.md`
+
 ### BlueOcean Cladding Data Correction (2026-05-07)
 - Scope:
   - removed BlueOcean cladding applications from the source product CSV while preserving the `blueocean` continuity slug and `BlueOcean Sawn` public display name.

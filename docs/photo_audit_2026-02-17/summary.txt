@@ -1,6 +1,6 @@
 total_products=72
-total_photos=95
-mapped_image_rows=73
-mapped_products=67
-missing_products=5
+total_photos=99
+mapped_image_rows=77
+mapped_products=71
+missing_products=1
 unclear_or_extra_images=22

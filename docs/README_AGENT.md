@@ -37,7 +37,7 @@ Last updated: 2026-05-07
 - `npm run build`: pass
 - `npx tsc --noEmit`: pass (after build)
 - `npm run build:pages`: pass
-- Product catalog/photo generation was not rerun in this docs sync; current inspected state is `72` generated products, `67` products with mapped images, and `5` products missing mapped images.
+- Current inspected state is `72` generated products, `71` products with mapped images, and `1` product missing a mapped image.
 
 ## Catalog Continuity Notes
 - Product structural source of truth remains outer-repo CSV: `../docs/aushen_product_library.csv`.

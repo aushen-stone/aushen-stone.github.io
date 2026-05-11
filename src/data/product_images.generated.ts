@@ -13,6 +13,9 @@ export const PRODUCT_IMAGE_GALLERIES: Record<string, string[]> = {
   "atlantic-grey": [
     "/product-photos/atlantic-grey-01.webp"
   ],
+  "barwon": [
+    "/product-photos/barwon-01.webp"
+  ],
   "beachport": [
     "/product-photos/beachport-01.webp"
   ],
@@ -91,6 +94,12 @@ export const PRODUCT_IMAGE_GALLERIES: Record<string, string[]> = {
   "jamieson": [
     "/product-photos/jamieson-01.webp"
   ],
+  "jasper": [
+    "/product-photos/jasper-01.webp"
+  ],
+  "kakadu": [
+    "/product-photos/kakadu-01.webp"
+  ],
   "ken-black": [
     "/product-photos/ken-black-01.webp"
   ],
@@ -138,6 +147,9 @@ export const PRODUCT_IMAGE_GALLERIES: Record<string, string[]> = {
   ],
   "reefstone-warm-grey": [
     "/product-photos/reefstone-warm-grey-01.webp"
+  ],
+  "roman": [
+    "/product-photos/roman-01.webp"
   ],
   "sahara-beige": [
     "/product-photos/sahara-beige-01.webp"
@@ -215,6 +227,7 @@ export const PRODUCT_COVER_IMAGES: Record<string, string> = {
   "antline": "/product-photos/antline-01.webp",
   "ash-grey": "/product-photos/ash-grey-01.webp",
   "atlantic-grey": "/product-photos/atlantic-grey-01.webp",
+  "barwon": "/product-photos/barwon-01.webp",
   "beachport": "/product-photos/beachport-01.webp",
   "beige-travertine-sai": "/product-photos/beige-travertine-sai-01.webp",
   "belgium-blue": "/product-photos/belgium-blue-01.webp",
@@ -240,6 +253,8 @@ export const PRODUCT_COVER_IMAGES: Record<string, string> = {
   "honey-limestone": "/product-photos/honey-limestone-01.webp",
   "hotham": "/product-photos/hotham-01.webp",
   "jamieson": "/product-photos/jamieson-01.webp",
+  "jasper": "/product-photos/jasper-01.webp",
+  "kakadu": "/product-photos/kakadu-01.webp",
   "ken-black": "/product-photos/ken-black-01.webp",
   "lux-black": "/product-photos/lux-black-01.webp",
   "monte-carlo": "/product-photos/monte-carlo-01.webp",
@@ -256,6 +271,7 @@ export const PRODUCT_COVER_IMAGES: Record<string, string> = {
   "reefstone-dark-grey": "/product-photos/reefstone-dark-grey-01.webp",
   "reefstone-neutral-grey": "/product-photos/reefstone-neutral-grey-01.webp",
   "reefstone-warm-grey": "/product-photos/reefstone-warm-grey-01.webp",
+  "roman": "/product-photos/roman-01.webp",
   "sahara-beige": "/product-photos/sahara-beige-01.webp",
   "sandy-beige": "/product-photos/sandy-beige-01.webp",
   "seagrass": "/product-photos/seagrass-01.webp",
