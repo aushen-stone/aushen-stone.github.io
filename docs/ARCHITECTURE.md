@@ -102,9 +102,9 @@ Last updated: 2026-05-07
   - display-only product names can be supplied through `ProductOverride.displayName`
 - Product photo mapping refresh command: `npm run prepare:product-photos`.
 - Generated files are build artifacts and must not be edited manually.
-- Optional CMS source: Supabase `cms_products` and `cms_blog_posts` tables.
+- Optional CMS source: Supabase `cms_products`, `cms_blog_posts`, `cms_pages` and `cms_projects` tables.
 - Admin route: `/admin/` (static client application protected by Supabase Auth + RLS).
-- Build sync: `scripts/sync-cms-data.ts` writes `cms-*.generated.ts` files from published rows.
+- Build sync: `scripts/sync-cms-data.ts` writes product, blog and site-content generated files from published rows.
 - Legacy generated data remains the fallback when CMS build secrets are not configured.
 - CMS setup and deployment contract: `docs/CMS_SETUP.md`.
 - Blueocean phase-1 split contract:

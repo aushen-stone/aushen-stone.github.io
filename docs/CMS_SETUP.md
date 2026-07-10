@@ -5,7 +5,9 @@ The `/admin/` interface is a static client application. Supabase Auth and Row Le
 ## 1. Create and migrate Supabase
 
 1. Create a Supabase project.
-2. Run `supabase/migrations/202607100001_cms.sql` in the Supabase SQL editor or through the Supabase CLI.
+2. Run both migrations in filename order through the Supabase SQL editor or CLI:
+   - `supabase/migrations/202607100001_cms.sql`
+   - `supabase/migrations/202607100002_pages_projects.sql`
 3. In Authentication, create the initial email/password user.
 4. Copy that user's UUID and grant admin access:
 
@@ -42,7 +44,7 @@ Run:
 npm run cms:seed
 ```
 
-The command upserts the legacy generated products and blog posts by slug, so it can be safely rerun during initial setup.
+The command upserts products, blog posts, Home, Services, Our Story and Projects, so it can be safely rerun during initial setup.
 
 ## 4. Deploy the publish Edge Function
 
@@ -81,6 +83,8 @@ When an admin selects **Publish site**, the Edge Function sends a `cms_publish` 
 - Publishing a record makes it eligible for the next static build.
 - Selecting **Publish site** starts GitHub Actions; public changes normally appear after several minutes.
 - Deleting a row removes it from the next build.
+- Home, Services and Our Story are block-based singleton pages. Add, remove or reorder their `blocks` in Advanced JSON.
+- Projects are repeatable records with gallery, credits, tags and linked-product fields in Advanced JSON.
 - If Supabase build secrets are absent locally, `cms:sync` skips and the existing generated content remains the fallback.
 
 ## Security checklist

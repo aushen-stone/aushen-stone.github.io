@@ -2,6 +2,7 @@ import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { BlogPost } from "../src/types/blog";
 import type { Product, ProductOverride } from "../src/types/product";
+import type { ManagedPage, ManagedProject } from "../src/types/siteContent";
 
 type ProductRow = {
   slug: string;
@@ -9,6 +10,8 @@ type ProductRow = {
   content: Product & { description?: string };
 };
 type BlogRow = { content: BlogPost };
+type PageRow = { page_key: ManagedPage["key"]; title: string; hero_image_url: string | null; content: { blocks?: ManagedPage["blocks"] } };
+type ProjectRow = { content: ManagedProject };
 
 const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -29,13 +32,17 @@ async function readRows<T>(table: string): Promise<T[]> {
   return (await response.json()) as T[];
 }
 
-const [productRows, blogRows] = await Promise.all([
+const [productRows, blogRows, pageRows, projectRows] = await Promise.all([
   readRows<ProductRow>("cms_products"),
   readRows<BlogRow>("cms_blog_posts"),
+  readRows<PageRow>("cms_pages"),
+  readRows<ProjectRow>("cms_projects"),
 ]);
 
 const products = productRows.map((row) => row.content);
 const posts = blogRows.map((row) => row.content);
+const pages = Object.fromEntries(pageRows.map((row) => [row.page_key, { key: row.page_key, title: row.title, heroImageUrl: row.hero_image_url, blocks: row.content.blocks ?? [] }])) as Partial<Record<ManagedPage["key"], ManagedPage>>;
+const projects = projectRows.map((row) => row.content);
 
 // Fail the deployment instead of publishing malformed dynamic routes.
 for (const product of products) {
@@ -46,6 +53,11 @@ for (const product of products) {
 for (const post of posts) {
   if (!post.slug || !post.title || typeof post.bodyHtml !== "string") {
     throw new Error(`Invalid published blog payload: ${post.slug || "missing-slug"}`);
+  }
+}
+for (const project of projects) {
+  if (!project.slug || !project.title || !Array.isArray(project.gallery)) {
+    throw new Error(`Invalid published project payload: ${project.slug || "missing-slug"}`);
   }
 }
 const overrides = Object.fromEntries(
@@ -74,6 +86,10 @@ await Promise.all([
     path.join(root, "src/data/cms-product-overrides.generated.ts"),
     `${generatedBanner}import type { ProductOverride } from "@/types/product";\nexport const CMS_PRODUCT_OVERRIDES: Record<string, ProductOverride> = ${JSON.stringify(overrides, null, 2)};\n`
   ),
+  writeFile(
+    path.join(root, "src/data/cms-site.generated.ts"),
+    `${generatedBanner}import type { ManagedPage, ManagedProject } from "@/types/siteContent";\nexport const CMS_MANAGED_PAGES: Partial<Record<ManagedPage["key"], ManagedPage>> = ${JSON.stringify(pages, null, 2)};\nexport const CMS_MANAGED_PROJECTS: ManagedProject[] = ${JSON.stringify(projects, null, 2)};\nexport const CMS_SITE_CONTENT_SYNCED = true;\n`
+  ),
 ]);
 
-console.log(`cms:sync wrote ${products.length} products and ${posts.length} blog posts`);
+console.log(`cms:sync wrote ${products.length} products, ${posts.length} blog posts, ${Object.keys(pages).length} pages and ${projects.length} projects`);

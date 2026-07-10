@@ -1,6 +1,7 @@
 import type { CmsEntityType } from "@/types/cms";
 import type { BlogPost } from "@/types/blog";
 import type { Product } from "@/types/product";
+import type { ManagedPage, ManagedProject } from "@/types/siteContent";
 
 export type CmsContentInput = {
   title: string;
@@ -23,8 +24,10 @@ export const slugifyCmsValue = (value: string) =>
 
 export function buildCmsContent(entity: "products", input: CmsContentInput): Product & { description: string };
 export function buildCmsContent(entity: "blog", input: CmsContentInput): BlogPost;
-export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string }) | BlogPost;
-export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string }) | BlogPost {
+export function buildCmsContent(entity: "projects", input: CmsContentInput): ManagedProject;
+export function buildCmsContent(entity: "home" | "services" | "about", input: CmsContentInput): { blocks: ManagedPage["blocks"] };
+export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string }) | BlogPost | ManagedProject | { blocks: ManagedPage["blocks"] };
+export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string }) | BlogPost | ManagedProject | { blocks: ManagedPage["blocks"] } {
   // Advanced JSON preserves legacy nested fields while common fields stay easy to edit.
   const advanced = JSON.parse(input.advancedJson || "{}") as Record<string, unknown>;
   if (entity === "products") {
@@ -41,6 +44,30 @@ export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): 
         : [],
       description: input.summary,
     } as Product & { description: string };
+  }
+
+  if (entity === "projects") {
+    const projectCategory = input.secondaryLabel || input.categories.split(",")[0]?.trim() || "Residential";
+    return {
+      ...advanced,
+      slug: input.slug,
+      title: input.title,
+      category: projectCategory,
+      location: String(advanced.location ?? "Melbourne, Victoria"),
+      year: String(advanced.year ?? new Date().getFullYear()),
+      image: input.imageUrl || String(advanced.image ?? ""),
+      aspect: String(advanced.aspect ?? "aspect-[16/10]"),
+      gridArea: (advanced.gridArea === "right" || advanced.gridArea === "center" ? advanced.gridArea : "left"),
+      tags: Array.isArray(advanced.tags) ? advanced.tags as string[] : [projectCategory],
+      credits: typeof advanced.credits === "object" && advanced.credits ? advanced.credits as ManagedProject["credits"] : { architect: "", builder: "", landscaper: "", photographer: "" },
+      description: input.summary,
+      gallery: Array.isArray(advanced.gallery) ? advanced.gallery as ManagedProject["gallery"] : input.imageUrl ? [{ type: "full", src: input.imageUrl, alt: input.title }] : [],
+      products: Array.isArray(advanced.products) ? advanced.products as ManagedProject["products"] : [],
+    } as ManagedProject;
+  }
+
+  if (entity === "home" || entity === "services" || entity === "about") {
+    return { blocks: Array.isArray(advanced.blocks) ? advanced.blocks as ManagedPage["blocks"] : [] };
   }
 
   const categoryRefs = input.categories

@@ -1,5 +1,11 @@
 export type CmsStatus = "draft" | "published";
-export type CmsEntityType = "products" | "blog";
+export type CmsEntityType =
+  | "products"
+  | "blog"
+  | "projects"
+  | "home"
+  | "services"
+  | "about";
 
 export type CmsRow = {
   id: string;
