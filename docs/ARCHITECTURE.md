@@ -32,6 +32,7 @@ Last updated: 2026-05-07
 - Homepage composition: `src/app/page.tsx`.
 - Server wrapper routes (metadata ownership):
   - `src/app/about/page.tsx`
+  - `src/app/admin/page.tsx`
   - `src/app/accessories/page.tsx`
   - `src/app/accessories/[slug]/page.tsx`
   - `src/app/blog/page.tsx`
@@ -101,6 +102,11 @@ Last updated: 2026-05-07
   - display-only product names can be supplied through `ProductOverride.displayName`
 - Product photo mapping refresh command: `npm run prepare:product-photos`.
 - Generated files are build artifacts and must not be edited manually.
+- Optional CMS source: Supabase `cms_products` and `cms_blog_posts` tables.
+- Admin route: `/admin/` (static client application protected by Supabase Auth + RLS).
+- Build sync: `scripts/sync-cms-data.ts` writes `cms-*.generated.ts` files from published rows.
+- Legacy generated data remains the fallback when CMS build secrets are not configured.
+- CMS setup and deployment contract: `docs/CMS_SETUP.md`.
 - Blueocean phase-1 split contract:
   - `Blueocean` in the outer CSV continues to generate the continuity slug `blueocean`.
   - `Blueocean Honed` in the outer CSV generates the dedicated slug `blueocean-honed`.

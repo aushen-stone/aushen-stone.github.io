@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build --webpack",
-    "build:pages": "next build --webpack && rm -rf dist && cp -R out dist",
+    "build": "npm run cms:sync && next build --webpack",
+    "build:pages": "npm run cms:sync && next build --webpack && rm -rf dist && cp -R out dist",
     "build:blog-data": "python3 scripts/build-blog-data.py",
     "build:product-data": "tsx scripts/build-product-data.ts",
     "prepare:product-photos": "python3 scripts/prepare-product-photos.py",
+    "cms:sync": "tsx scripts/sync-cms-data.ts",
+    "cms:seed": "tsx scripts/seed-cms.ts",
     "start": "next start",
     "lint": "eslint",
     "test": "node --import tsx --test tests/**/*.test.ts",
@@ -17,6 +19,7 @@
     "docs:check": "node scripts/check-docs-sync.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.110.2",
     "framer-motion": "^12.23.26",
     "lucide-react": "^0.561.0",
     "next": "16.0.10",

@@ -11,6 +11,17 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+## CMS admin
+
+The GitHub Pages-compatible CMS lives at `/admin/` and uses Supabase Auth, Database, Storage, and an Edge Function-triggered static rebuild. Setup and security instructions are in `docs/CMS_SETUP.md`.
+
+Key commands:
+
+```bash
+npm run cms:seed  # one-time import of existing content
+npm run cms:sync  # build-time download of published CMS content
+```
+
 ## Build and quality commands
 
 ```bash
@@ -116,6 +127,8 @@ Workflow steps:
 4. `npm run build:pages`
 5. Upload `dist/` as the Pages artifact
 6. Deploy via `actions/deploy-pages`
+
+CMS publishing also triggers this workflow through the `cms_publish` repository dispatch.
 
 ## Required repository settings (manual)
 

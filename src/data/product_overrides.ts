@@ -3,6 +3,7 @@ import {
   PRODUCT_IMAGE_GALLERIES,
 } from "@/data/product_images.generated";
 import { PRODUCT_DISPLAY_NAMES } from "@/data/product_display_names";
+import { CMS_PRODUCT_OVERRIDES } from "@/data/cms-product-overrides.generated";
 import type { ProductOverride } from "@/types/product";
 
 export const DEFAULT_PRODUCT_IMAGE = "/Application001.webp";
@@ -74,6 +75,7 @@ const buildProductOverrides = (): Record<string, ProductOverride> => {
   const slugs = new Set([
     ...Object.keys(GENERATED_IMAGE_OVERRIDES),
     ...Object.keys(MANUAL_PRODUCT_OVERRIDES),
+    ...Object.keys(CMS_PRODUCT_OVERRIDES),
   ]);
   const result: Record<string, ProductOverride> = {};
 
@@ -81,6 +83,7 @@ const buildProductOverrides = (): Record<string, ProductOverride> => {
     result[slug] = {
       ...(GENERATED_IMAGE_OVERRIDES[slug] || {}),
       ...(MANUAL_PRODUCT_OVERRIDES[slug] || {}),
+      ...(CMS_PRODUCT_OVERRIDES[slug] || {}),
     };
   });
 
