@@ -9,7 +9,10 @@ import {
   useRef,
   useState,
 } from "react";
-import { getProductDisplayNameBySlug } from "@/data/product_display_names";
+import {
+  buildSampleContactPrefill,
+  hydrateSampleCart,
+} from "@/lib/sampleCart";
 import {
   MAX_SAMPLE_LINES,
   SAMPLE_CART_STORAGE_KEY,
@@ -36,31 +39,6 @@ type SampleCartContextValue = {
 
 const SampleCartContext = createContext<SampleCartContextValue | null>(null);
 
-function isSampleCartLine(value: unknown): value is SampleCartLine {
-  if (!value || typeof value !== "object") return false;
-  const candidate = value as Record<string, unknown>;
-  return (
-    typeof candidate.productSlug === "string" &&
-    typeof candidate.productName === "string" &&
-    typeof candidate.finishId === "string" &&
-    typeof candidate.finishName === "string" &&
-    candidate.sampleSize === SAMPLE_SIZE &&
-    typeof candidate.addedAt === "string"
-  );
-}
-
-function normalizeSampleCartLine(line: SampleCartLine): SampleCartLine {
-  const productName = getProductDisplayNameBySlug(line.productSlug, line.productName);
-  if (productName === line.productName) {
-    return line;
-  }
-
-  return {
-    ...line,
-    productName,
-  };
-}
-
 export function SampleCartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<SampleCartLine[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -79,10 +57,7 @@ export function SampleCartProvider({ children }: { children: React.ReactNode }) 
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
-          const hydratedLines = parsed
-            .filter(isSampleCartLine)
-            .slice(0, MAX_SAMPLE_LINES)
-            .map(normalizeSampleCartLine);
+          const hydratedLines = hydrateSampleCart(parsed);
           linesRef.current = hydratedLines;
           setLines(hydratedLines);
         }
@@ -152,28 +127,7 @@ export function SampleCartProvider({ children }: { children: React.ReactNode }) 
   }, []);
 
   const buildContactPrefillMessage = useCallback(() => {
-    if (linesRef.current.length === 0) return "";
-    const sampleLabel = linesRef.current.length === 1 ? "a sample" : "samples";
-
-    const rows = linesRef.current
-      .map(
-        (line, index) =>
-          `${index + 1}. ${line.productName} - ${line.finishName} (${line.sampleSize})`
-      )
-      .join("\n");
-
-    return [
-      "Hi Aushen team,",
-      "",
-      `Can I please get ${sampleLabel} for the following:`,
-      rows,
-      "",
-      "Project suburb/address:",
-      "Preferred delivery or consultation timing:",
-      "Best contact time:",
-      "",
-      "Thank you.",
-    ].join("\n");
+    return buildSampleContactPrefill(linesRef.current);
   }, []);
 
   const value = useMemo<SampleCartContextValue>(

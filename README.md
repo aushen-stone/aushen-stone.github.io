@@ -16,6 +16,8 @@ Open `http://localhost:3000`.
 ```bash
 npm run build:product-data
 npm run docs:check
+npm test
+npm run test:e2e
 npm run build
 npm run lint
 npm run build:pages
@@ -23,6 +25,7 @@ npm run build:pages
 
 `build:pages` performs a static export and copies `out/` to `dist/` for GitHub Pages publishing.
 `docs:check` validates that active docs stay synchronized with current route, deployment, sitemap, and contact-conversion contracts.
+`test` runs fast unit tests for reusable cart and SEO logic. `test:e2e` runs the core homepage, product search, and mobile navigation flows in desktop and mobile Chromium via Playwright.
 
 ## Product data and photo regeneration
 

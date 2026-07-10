@@ -193,6 +193,13 @@ Last updated: 2026-05-07
 - Historical implementation detail is `docs/WORKLOG.md`.
 - Fact conflicts are resolved by this file and current code.
 
+## Automated Testing Contract
+- Unit command: `npm test`.
+- Browser command: `npm run test:e2e`.
+- Unit coverage focuses on reusable cart persistence, enquiry copy, canonical URL, and structured-data logic.
+- Playwright covers homepage conversion paths and JSON-LD, shareable product search state, and mobile navigation in desktop and mobile Chromium.
+- CI installs Chromium and runs both suites before the production export.
+
 ## Documentation Governance Contract
 - Local command: `npm run docs:check`.
 - Implementation: `scripts/check-docs-sync.mjs`.

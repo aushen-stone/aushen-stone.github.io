@@ -2,6 +2,7 @@
   "name": "aushen-web",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack",
@@ -11,6 +12,8 @@
     "prepare:product-photos": "python3 scripts/prepare-product-photos.py",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --import tsx --test tests/**/*.test.ts",
+    "test:e2e": "playwright test",
     "docs:check": "node scripts/check-docs-sync.mjs"
   },
   "dependencies": {
@@ -22,6 +25,7 @@
     "react-fast-marquee": "^1.6.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
