@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PRODUCTS } from "@/data/products.generated";
+import { PRODUCTS } from "@/data/products";
 import { getProductDisplayName } from "@/data/product_display_names";
 import {
   DEFAULT_PRODUCT_DESCRIPTION,
