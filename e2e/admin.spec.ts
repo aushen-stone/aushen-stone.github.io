@@ -26,3 +26,13 @@ test("admin demo keeps product and blog navigation available on mobile", async (
   await page.getByRole("button", { name: "Products", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Products" })).toBeVisible();
 });
+
+test("admin demo exposes projects and managed pages", async ({ page }) => {
+  await page.goto("/admin/?demo=1");
+  await page.getByRole("button", { name: "Projects", exact: true }).first().click();
+  await expect(page.getByText("Brighton Residence")).toBeVisible();
+  await page.getByRole("button", { name: "Home", exact: true }).first().click();
+  await expect(page.getByRole("button", { name: "Edit page" })).toBeVisible();
+  await page.getByRole("button", { name: "Edit page" }).click();
+  await expect(page.getByText("Advanced JSON")).toBeVisible();
+});

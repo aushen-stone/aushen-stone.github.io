@@ -39,3 +39,33 @@ test("buildCmsContent creates blog category references", () => {
   ]);
   assert.equal(content.heroImageUrl, "https://example.com/hero.webp");
 });
+
+test("buildCmsContent creates project records with gallery fallbacks", () => {
+  const content = buildCmsContent("projects", {
+    title: "Garden House",
+    slug: "garden-house",
+    secondaryLabel: "Residential",
+    imageUrl: "https://example.com/project.webp",
+    summary: "A garden project.",
+    bodyHtml: "",
+    categories: "",
+    advancedJson: "{}",
+  });
+  assert.equal(content.category, "Residential");
+  assert.equal(content.gallery[0]?.src, "https://example.com/project.webp");
+});
+
+test("buildCmsContent preserves managed page blocks", () => {
+  const content = buildCmsContent("home", {
+    title: "Home",
+    slug: "home",
+    secondaryLabel: "",
+    imageUrl: "",
+    summary: "",
+    bodyHtml: "",
+    categories: "",
+    advancedJson: JSON.stringify({ blocks: [{ id: "hero", type: "hero", title: "Hello" }] }),
+  });
+  assert.equal(content.blocks.length, 1);
+  assert.equal(content.blocks[0]?.type, "hero");
+});

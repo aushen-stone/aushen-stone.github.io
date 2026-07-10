@@ -13,7 +13,7 @@ Open `http://localhost:3000`.
 
 ## CMS admin
 
-The GitHub Pages-compatible CMS lives at `/admin/` and uses Supabase Auth, Database, Storage, and an Edge Function-triggered static rebuild. Setup and security instructions are in `docs/CMS_SETUP.md`.
+The GitHub Pages-compatible CMS lives at `/admin/` and manages products, blog posts, Home, Projects, Services and Our Story. It uses Supabase Auth, Database, Storage, and an Edge Function-triggered static rebuild. Setup and security instructions are in `docs/CMS_SETUP.md`.
 
 Key commands:
 

@@ -3,10 +3,12 @@
 
 import {
   BookOpen,
+  BriefcaseBusiness,
   Box,
   ExternalLink,
   FileText,
   Image as ImageIcon,
+  House,
   Loader2,
   LogOut,
   Pencil,
@@ -15,12 +17,14 @@ import {
   Search,
   Trash2,
   Upload,
+  Wrench,
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { buildCmsContent, slugifyCmsValue } from "@/lib/cmsContent";
 import type { CmsEntityType, CmsRow, CmsStatus } from "@/types/cms";
+import { DEFAULT_MANAGED_PAGES, DEFAULT_MANAGED_PROJECTS } from "@/data/site-content.defaults";
 
 type EditorState = {
   id?: string;
@@ -47,6 +51,25 @@ const EMPTY_EDITOR: EditorState = {
   advancedJson: "{}",
 };
 
+const PAGE_ENTITIES = new Set<CmsEntityType>(["home", "services", "about"]);
+const ENTITY_LABELS: Record<CmsEntityType, string> = {
+  products: "Products",
+  blog: "Blog",
+  projects: "Projects",
+  home: "Home",
+  services: "Services",
+  about: "Our Story",
+};
+
+const tableForEntity = (entity: CmsEntityType) =>
+  entity === "products"
+    ? "cms_products"
+    : entity === "blog"
+      ? "cms_blog_posts"
+      : entity === "projects"
+        ? "cms_projects"
+        : "cms_pages";
+
 const DEMO_ROWS: Record<CmsEntityType, CmsRow[]> = {
   products: [
     { id: "demo-1", slug: "grey-apricot", title: "Grey Apricot Marble", status: "published", imageUrl: "/product-photos/grey-apricot-01.webp", secondaryLabel: "Marble", content: { name: "Grey Apricot Marble", slug: "grey-apricot", description: "Warm architectural marble.", finishes: [], applicationIndex: [] }, updatedAt: "2026-07-10T01:30:00Z" },
@@ -56,6 +79,10 @@ const DEMO_ROWS: Record<CmsEntityType, CmsRow[]> = {
   blog: [
     { id: "demo-blog", slug: "choosing-stone-for-outdoor-spaces", title: "Choosing Stone for Outdoor Spaces", status: "draft", imageUrl: "/AushenShop.webp", secondaryLabel: "Blog post", content: { excerpt: "A practical material guide.", bodyHtml: "<p>A practical material guide.</p>", categories: [{ name: "Stone", slug: "stone" }] }, updatedAt: "2026-07-10T02:00:00Z" },
   ],
+  projects: DEFAULT_MANAGED_PROJECTS.slice(0, 3).map((project, index) => ({ id: `demo-project-${index}`, slug: project.slug, title: project.title, status: "published", imageUrl: project.image, secondaryLabel: project.category, content: project, updatedAt: "2026-07-10T02:00:00Z" })),
+  home: [{ id: "home", slug: "home", title: "Home", status: "published", imageUrl: DEFAULT_MANAGED_PAGES.home.heroImageUrl ?? null, secondaryLabel: "Managed page", content: { blocks: DEFAULT_MANAGED_PAGES.home.blocks }, updatedAt: "2026-07-10T02:00:00Z" }],
+  services: [{ id: "services", slug: "services", title: "Services", status: "published", imageUrl: DEFAULT_MANAGED_PAGES.services.heroImageUrl ?? null, secondaryLabel: "Managed page", content: { blocks: DEFAULT_MANAGED_PAGES.services.blocks }, updatedAt: "2026-07-10T02:00:00Z" }],
+  about: [{ id: "about", slug: "about", title: "Our Story", status: "published", imageUrl: DEFAULT_MANAGED_PAGES.about.heroImageUrl ?? null, secondaryLabel: "Managed page", content: { blocks: DEFAULT_MANAGED_PAGES.about.blocks }, updatedAt: "2026-07-10T02:00:00Z" }],
 };
 
 function editorFromRow(row: CmsRow): EditorState {
@@ -110,21 +137,27 @@ export default function AdminPageClient() {
     setMessage("");
     try {
       const supabase = getSupabaseBrowserClient();
-      const table = entity === "products" ? "cms_products" : "cms_blog_posts";
-      const { data, error } = await supabase
-        .from(table)
-        .select("*")
-        .order("updated_at", { ascending: false });
+      const table = tableForEntity(entity);
+      let request = supabase.from(table).select("*").order("updated_at", { ascending: false });
+      if (PAGE_ENTITIES.has(entity)) request = request.eq("page_key", entity);
+      const { data, error } = await request;
       if (error) throw error;
 
       setRows(
         (data ?? []).map((row) => ({
-          id: row.id,
-          slug: row.slug,
+          id: row.id ?? row.page_key,
+          slug: row.slug ?? row.page_key,
           title: row.title,
           status: row.status,
           imageUrl: entity === "products" ? row.image_url : row.hero_image_url,
-          secondaryLabel: entity === "products" ? row.material : "Blog post",
+          secondaryLabel:
+            entity === "products"
+              ? row.material
+              : entity === "projects"
+                ? row.category
+                : PAGE_ENTITIES.has(entity)
+                  ? "Managed page"
+                  : "Blog post",
           content: row.content,
           updatedAt: row.updated_at,
         }))
@@ -188,7 +221,7 @@ export default function AdminPageClient() {
     try {
       if (demoMode) {
         const content = buildCmsContent(entity, editor);
-        const demoRow: CmsRow = { id: editor.id ?? crypto.randomUUID(), slug: editor.slug, title: editor.title, status: editor.status, imageUrl: editor.imageUrl || null, secondaryLabel: entity === "products" ? editor.secondaryLabel : "Blog post", content, updatedAt: new Date().toISOString() };
+        const demoRow: CmsRow = { id: editor.id ?? crypto.randomUUID(), slug: editor.slug, title: editor.title, status: editor.status, imageUrl: editor.imageUrl || null, secondaryLabel: entity === "products" || entity === "projects" ? editor.secondaryLabel : PAGE_ENTITIES.has(entity) ? "Managed page" : "Blog post", content, updatedAt: new Date().toISOString() };
         setRows((current) => editor.id ? current.map((row) => row.id === editor.id ? demoRow : row) : [demoRow, ...current]);
         setEditor(null);
         setMessage("Demo saved locally. Production writes require Supabase configuration.");
@@ -198,22 +231,29 @@ export default function AdminPageClient() {
       const { data: auth } = await supabase.auth.getUser();
       const content = buildCmsContent(entity, editor);
       const base = {
-        slug: editor.slug,
         title: editor.title,
         status: editor.status,
         content,
         updated_by: auth.user?.id,
         updated_at: new Date().toISOString(),
       };
-      // Branching keeps each table payload explicit and prevents accidental cross-table fields.
-      const operation = entity === "products"
-        ? editor.id
-          ? supabase.from("cms_products").update({ ...base, material: editor.secondaryLabel, image_url: editor.imageUrl || null }).eq("id", editor.id)
-          : supabase.from("cms_products").insert({ ...base, material: editor.secondaryLabel, image_url: editor.imageUrl || null })
-        : editor.id
-          ? supabase.from("cms_blog_posts").update({ ...base, hero_image_url: editor.imageUrl || null }).eq("id", editor.id)
-          : supabase.from("cms_blog_posts").insert({ ...base, hero_image_url: editor.imageUrl || null });
-      const { error } = await operation;
+      // Each table payload is explicit so page keys and repeatable slugs cannot cross tables.
+      let error: { message: string } | null = null;
+      if (entity === "products") {
+        ({ error } = editor.id
+          ? await supabase.from("cms_products").update({ ...base, slug: editor.slug, material: editor.secondaryLabel, image_url: editor.imageUrl || null }).eq("id", editor.id)
+          : await supabase.from("cms_products").insert({ ...base, slug: editor.slug, material: editor.secondaryLabel, image_url: editor.imageUrl || null }));
+      } else if (entity === "blog") {
+        ({ error } = editor.id
+          ? await supabase.from("cms_blog_posts").update({ ...base, slug: editor.slug, hero_image_url: editor.imageUrl || null }).eq("id", editor.id)
+          : await supabase.from("cms_blog_posts").insert({ ...base, slug: editor.slug, hero_image_url: editor.imageUrl || null }));
+      } else if (entity === "projects") {
+        ({ error } = editor.id
+          ? await supabase.from("cms_projects").update({ ...base, slug: editor.slug, category: editor.secondaryLabel || editor.categories.split(",")[0]?.trim() || "Residential", hero_image_url: editor.imageUrl || null }).eq("id", editor.id)
+          : await supabase.from("cms_projects").insert({ ...base, slug: editor.slug, category: editor.secondaryLabel || editor.categories.split(",")[0]?.trim() || "Residential", hero_image_url: editor.imageUrl || null }));
+      } else {
+        ({ error } = await supabase.from("cms_pages").upsert({ ...base, page_key: entity, hero_image_url: editor.imageUrl || null }, { onConflict: "page_key" }));
+      }
       if (error) throw error;
       setEditor(null);
       setMessage("Saved. Publish the site when the content is ready.");
@@ -234,8 +274,11 @@ export default function AdminPageClient() {
       setBusy(false);
       return;
     }
-    const table = entity === "products" ? "cms_products" : "cms_blog_posts";
-    const { error } = await getSupabaseBrowserClient().from(table).delete().eq("id", row.id);
+    const table = tableForEntity(entity);
+    const deleteRequest = getSupabaseBrowserClient().from(table).delete();
+    const { error } = PAGE_ENTITIES.has(entity)
+      ? await deleteRequest.eq("page_key", entity)
+      : await deleteRequest.eq("id", row.id);
     setMessage(error ? error.message : "Deleted. Publish the site to remove it publicly.");
     await loadRows();
     setBusy(false);
@@ -297,19 +340,21 @@ export default function AdminPageClient() {
         <nav className="mt-12 space-y-2">
           <AdminNav icon={<Box size={18} />} label="Products" active={entity === "products"} onClick={() => { setEntity("products"); setEditor(null); }} />
           <AdminNav icon={<BookOpen size={18} />} label="Blog" active={entity === "blog"} onClick={() => { setEntity("blog"); setEditor(null); }} />
-          <AdminNav icon={<ImageIcon size={18} />} label="Media" disabled />
+          <AdminNav icon={<BriefcaseBusiness size={18} />} label="Projects" active={entity === "projects"} onClick={() => { setEntity("projects"); setEditor(null); }} />
+          <AdminNav icon={<House size={18} />} label="Home" active={entity === "home"} onClick={() => { setEntity("home"); setEditor(null); }} />
+          <AdminNav icon={<Wrench size={18} />} label="Services" active={entity === "services"} onClick={() => { setEntity("services"); setEditor(null); }} />
+          <AdminNav icon={<ImageIcon size={18} />} label="Our Story" active={entity === "about"} onClick={() => { setEntity("about"); setEditor(null); }} />
         </nav>
         <button onClick={() => void getSupabaseBrowserClient().auth.signOut()} className="mt-auto flex items-center gap-3 border-t border-white/15 pt-6 text-sm text-white/80 hover:text-white"><LogOut size={18} />Sign out</button>
       </aside>
 
       <main className="min-w-0 flex-1 overflow-y-auto px-5 py-7 sm:px-8 lg:px-10">
-        <div className="mb-6 flex items-center gap-2 md:hidden">
-          <button onClick={() => { setEntity("products"); setEditor(null); }} className={`h-10 px-4 text-xs uppercase tracking-[0.1em] ${entity === "products" ? "bg-[#283020] text-white" : "border border-[#D8D2C8] bg-white"}`}>Products</button>
-          <button onClick={() => { setEntity("blog"); setEditor(null); }} className={`h-10 px-4 text-xs uppercase tracking-[0.1em] ${entity === "blog" ? "bg-[#283020] text-white" : "border border-[#D8D2C8] bg-white"}`}>Blog</button>
+        <div className="mb-6 flex items-center gap-2 overflow-x-auto pb-2 md:hidden">
+          {(Object.keys(ENTITY_LABELS) as CmsEntityType[]).map((item) => <button key={item} onClick={() => { setEntity(item); setEditor(null); }} className={`h-10 shrink-0 px-4 text-xs uppercase tracking-[0.1em] ${entity === item ? "bg-[#283020] text-white" : "border border-[#D8D2C8] bg-white"}`}>{ENTITY_LABELS[item]}</button>)}
           {!demoMode ? <button aria-label="Sign out" onClick={() => void getSupabaseBrowserClient().auth.signOut()} className="ml-auto grid h-10 w-10 place-items-center border border-[#D8D2C8] bg-white"><LogOut size={16} /></button> : null}
         </div>
         <header className="flex flex-wrap items-center justify-between gap-4">
-          <div><h1 className="font-serif text-4xl sm:text-5xl">{entity === "products" ? "Products" : "Blog"}</h1><p className="mt-2 text-sm text-gray-500">{demoMode ? "admin@aushenstone.com · local demo" : userEmail}</p></div>
+          <div><h1 className="font-serif text-4xl sm:text-5xl">{ENTITY_LABELS[entity]}</h1><p className="mt-2 text-sm text-gray-500">{demoMode ? "admin@aushenstone.com · local demo" : userEmail}</p></div>
           <a href="/" target="_blank" className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-black">View site <ExternalLink size={15} /></a>
         </header>
 
@@ -324,7 +369,7 @@ export default function AdminPageClient() {
           <div className="flex flex-wrap items-center gap-3">
             <label className="relative min-w-64 flex-1"><Search className="absolute left-3 top-3.5 text-gray-400" size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={`Search ${entity}...`} className="h-11 w-full border border-[#D8D2C8] bg-white pl-10 pr-4 text-sm outline-none focus:border-[#3B4034]" /></label>
             <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as typeof statusFilter)} className="h-11 border border-[#D8D2C8] bg-white px-4 text-sm"><option value="all">All status</option><option value="published">Published</option><option value="draft">Draft</option></select>
-            <button onClick={() => setEditor({ ...EMPTY_EDITOR })} className="inline-flex h-11 items-center gap-2 bg-[#283020] px-5 text-xs uppercase tracking-[0.12em] text-white"><Plus size={16} /> Add {entity === "products" ? "product" : "post"}</button>
+            <button onClick={() => { const existing = PAGE_ENTITIES.has(entity) ? rows[0] : null; setEditor(existing ? editorFromRow(existing) : { ...EMPTY_EDITOR, title: PAGE_ENTITIES.has(entity) ? ENTITY_LABELS[entity] : "", slug: PAGE_ENTITIES.has(entity) ? entity : "", advancedJson: PAGE_ENTITIES.has(entity) ? JSON.stringify({ blocks: [] }, null, 2) : "{}" }); }} className="inline-flex h-11 items-center gap-2 bg-[#283020] px-5 text-xs uppercase tracking-[0.12em] text-white"><Plus size={16} /> {PAGE_ENTITIES.has(entity) ? "Edit page" : `Add ${entity === "products" ? "product" : entity === "blog" ? "post" : "project"}`}</button>
           </div>
 
           <div className="mt-5 overflow-x-auto border border-[#D8D2C8] bg-white">
