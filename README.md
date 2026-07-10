@@ -80,6 +80,7 @@ GitHub Pages workflow build:
 ## Google Tag Manager
 
 Google Tag Manager is injected globally from `src/app/layout.tsx`.
+It is enabled for production builds only so production container tags cannot interfere with local development pages.
 
 - Default container ID in code: `GTM-NNH55QC`
 - Optional override env var: `NEXT_PUBLIC_GTM_ID`
