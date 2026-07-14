@@ -1,0 +1,9 @@
+# These browser-facing functions validate the signed-in user's JWT inside the
+# handler and then enforce membership in admin_users. The legacy Edge Function
+# gateway verifier cannot validate Supabase's new asymmetric auth tokens, so it
+# must be disabled to let the request reach that application-level check.
+[functions.manage-cms-users]
+verify_jwt = false
+
+[functions.trigger-pages-deploy]
+verify_jwt = false
