@@ -51,6 +51,10 @@ export type ProjectGalleryItem = { type: "full" | "half"; src: string; alt: stri
 export type ProjectProduct = { name: string; category: string; image: string; slug: string };
 
 export type ManagedProject = {
+  // Legacy project cards use a numeric display key. Keep it optional so newly
+  // created CMS projects can rely on their slug while migrated records remain
+  // type-safe after the static sync.
+  id?: number;
   slug: string;
   title: string;
   category: string;
