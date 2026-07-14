@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabaseClient";
-import { buildCmsContent, slugifyCmsValue } from "@/lib/cmsContent";
+import { applyLegacyPageHeroImage, buildCmsContent, slugifyCmsValue } from "@/lib/cmsContent";
 import type { CmsEntityType, CmsRow, CmsStatus } from "@/types/cms";
 import { DEFAULT_MANAGED_PAGES, DEFAULT_MANAGED_PROJECTS } from "@/data/site-content.defaults";
 import { DEFAULT_LEGACY_PAGES } from "@/data/legacy-page.defaults";
@@ -330,7 +330,27 @@ export default function AdminPageClient() {
     if (error) setMessage(error.message);
     else {
       const { data } = supabase.storage.from("cms-media").getPublicUrl(objectPath);
-      setEditor((current) => (current ? { ...current, imageUrl: data.publicUrl } : current));
+      setEditor((current) => {
+        if (!current) return current;
+        if (entity === "products" || entity === "blog" || entity === "projects") {
+          return { ...current, imageUrl: data.publicUrl };
+        }
+        let advanced: Record<string, unknown> = {};
+        try {
+          advanced = JSON.parse(current.advancedJson) as Record<string, unknown>;
+        } catch {
+          // Save validation will report invalid advanced JSON.
+        }
+        return {
+          ...current,
+          imageUrl: data.publicUrl,
+          advancedJson: JSON.stringify(
+            applyLegacyPageHeroImage(entity, advanced, data.publicUrl),
+            null,
+            2
+          ),
+        };
+      });
     }
     setBusy(false);
   };

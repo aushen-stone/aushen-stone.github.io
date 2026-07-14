@@ -3,15 +3,21 @@ import path from "node:path";
 import type { BlogPost } from "../src/types/blog";
 import type { Product, ProductOverride } from "../src/types/product";
 import type { LegacyPageContentMap, ManagedPage, ManagedProject } from "../src/types/siteContent";
+import { applyLegacyPageHeroImage } from "../src/lib/cmsContent";
 
 type ProductRow = {
   slug: string;
   image_url: string | null;
   content: Product & { description?: string };
 };
-type BlogRow = { content: BlogPost };
-type PageRow = { page_key: ManagedPage["key"]; title: string; hero_image_url: string | null; content: { blocks?: ManagedPage["blocks"] } };
-type ProjectRow = { content: ManagedProject };
+type BlogRow = { hero_image_url: string | null; content: BlogPost };
+type PageRow = {
+  page_key: ManagedPage["key"];
+  title: string;
+  hero_image_url: string | null;
+  content: Record<string, unknown> & { blocks?: ManagedPage["blocks"] };
+};
+type ProjectRow = { hero_image_url: string | null; content: ManagedProject };
 
 const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
 // Static builds only read published rows, so the publishable key plus RLS is
@@ -50,13 +56,26 @@ const [productRows, blogRows, pageRows, projectRows] = await Promise.all([
 ]);
 
 const products = productRows.map((row) => row.content);
-const posts = blogRows.map((row) => row.content);
+// Keep the dedicated image columns authoritative. This also protects content
+// edited directly in Supabase or migrated from an older CMS payload shape.
+const posts = blogRows.map((row) => ({
+  ...row.content,
+  heroImageUrl: row.hero_image_url ?? row.content.heroImageUrl,
+}));
 const pages = Object.fromEntries(pageRows.map((row) => [row.page_key, { key: row.page_key, title: row.title, heroImageUrl: row.hero_image_url, blocks: row.content.blocks ?? [] }])) as Partial<Record<ManagedPage["key"], ManagedPage>>;
 // The page payload is also emitted verbatim for the legacy component adapters.
 // Old `{ blocks: [...] }` rows remain harmless because every adapter validates
 // optional fields and falls back to the original hard-coded copy.
-const legacyPages = Object.fromEntries(pageRows.map((row) => [row.page_key, row.content])) as LegacyPageContentMap;
-const projects = projectRows.map((row) => row.content);
+const legacyPages = Object.fromEntries(
+  pageRows.map((row) => [
+    row.page_key,
+    applyLegacyPageHeroImage(row.page_key, row.content, row.hero_image_url),
+  ])
+) as LegacyPageContentMap;
+const projects = projectRows.map((row) => ({
+  ...row.content,
+  image: row.hero_image_url ?? row.content.image,
+}));
 
 // Fail the deployment instead of publishing malformed dynamic routes.
 for (const product of products) {

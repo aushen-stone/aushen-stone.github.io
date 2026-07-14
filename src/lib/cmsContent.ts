@@ -22,6 +22,32 @@ export const slugifyCmsValue = (value: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
+export function applyLegacyPageHeroImage(
+  entity: "home" | "services" | "about",
+  content: Record<string, unknown>,
+  imageUrl: string | null
+) {
+  if (!imageUrl) return content;
+  // Services has a text-only hero. Its existing page-level image represents
+  // the first fabrication card, so keep that established mapping editable.
+  if (entity === "services") {
+    const fabrication = content.fabrication;
+    if (!fabrication || typeof fabrication !== "object" || Array.isArray(fabrication)) return content;
+    const items = (fabrication as { items?: unknown }).items;
+    if (!Array.isArray(items) || !items[0] || typeof items[0] !== "object" || Array.isArray(items[0])) return content;
+    return {
+      ...content,
+      fabrication: {
+        ...fabrication,
+        items: [{ ...items[0], image: imageUrl }, ...items.slice(1)],
+      },
+    };
+  }
+  const hero = content.hero;
+  if (!hero || typeof hero !== "object" || Array.isArray(hero)) return content;
+  return { ...content, hero: { ...hero, image: imageUrl } };
+}
+
 export function buildCmsContent(entity: "products", input: CmsContentInput): Product & { description: string };
 export function buildCmsContent(entity: "blog", input: CmsContentInput): BlogPost;
 export function buildCmsContent(entity: "projects", input: CmsContentInput): ManagedProject;
