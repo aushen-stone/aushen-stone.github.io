@@ -2,6 +2,7 @@ import {
   PRODUCT_COVER_IMAGES,
   PRODUCT_IMAGE_GALLERIES,
 } from "@/data/product_images.generated";
+import { CMS_PRODUCT_OVERRIDES } from "@/data/cms-product-overrides.generated";
 import { PRODUCT_DISPLAY_NAMES } from "@/data/product_display_names";
 import type { ProductOverride } from "@/types/product";
 
@@ -74,6 +75,7 @@ const buildProductOverrides = (): Record<string, ProductOverride> => {
   const slugs = new Set([
     ...Object.keys(GENERATED_IMAGE_OVERRIDES),
     ...Object.keys(MANUAL_PRODUCT_OVERRIDES),
+    ...Object.keys(CMS_PRODUCT_OVERRIDES),
   ]);
   const result: Record<string, ProductOverride> = {};
 
@@ -81,6 +83,9 @@ const buildProductOverrides = (): Record<string, ProductOverride> => {
     result[slug] = {
       ...(GENERATED_IMAGE_OVERRIDES[slug] || {}),
       ...(MANUAL_PRODUCT_OVERRIDES[slug] || {}),
+      // Published CMS values intentionally win while every untouched field
+      // keeps the legacy generated/manual fallback used by the existing site.
+      ...(CMS_PRODUCT_OVERRIDES[slug] || {}),
     };
   });
 
