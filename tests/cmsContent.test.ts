@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildCmsContent, slugifyCmsValue } from "../src/lib/cmsContent";
+import { applyLegacyPageHeroImage, buildCmsContent, slugifyCmsValue } from "../src/lib/cmsContent";
 
 test("slugifyCmsValue creates route-safe slugs", () => {
   assert.equal(slugifyCmsValue("Grey Apricot & Marble"), "grey-apricot-and-marble");
@@ -74,4 +74,14 @@ test("buildCmsContent preserves legacy page-specific data", () => {
   });
   assert.deepEqual(content.hero?.titleLines, ["Find your crafted", "architectural surfaces."]);
   assert.equal(content.hero?.image, "/AushenShop.webp");
+});
+
+test("applyLegacyPageHeroImage updates visible legacy page heroes only", () => {
+  const home = applyLegacyPageHeroImage("home", { hero: { title: "Home", image: "/old.jpg" } }, "/new.jpg");
+  assert.deepEqual(home, { hero: { title: "Home", image: "/new.jpg" } });
+  const services = { hero: { title: "Services" }, fabrication: { items: [{ title: "Profiling", image: "/old.jpg" }] } };
+  assert.deepEqual(applyLegacyPageHeroImage("services", services, "/new.jpg"), {
+    hero: { title: "Services" },
+    fabrication: { items: [{ title: "Profiling", image: "/new.jpg" }] },
+  });
 });
