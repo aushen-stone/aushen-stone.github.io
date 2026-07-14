@@ -68,6 +68,14 @@ export default function ServicesPage() {
   const fabricationServices = content?.fabrication?.items?.length
     ? content.fabrication.items
     : FABRICATION_SERVICES;
+  const consultation = content?.consultation;
+  const logistics = content?.logistics;
+  const logisticsItems = logistics?.items?.length === 3 ? logistics.items : [
+    { title: "Trusted Installer Network", text: "We don't install, but we know who does it best. Access our curated list of verified professionals.", icon: "network" as const },
+    { title: "Flexible Logistics", text: "Tight access? No problem. We coordinate crane trucks to ensure your stone is delivered safely.", icon: "logistics" as const },
+    { title: "After-Care Support", text: "Detailed advice on sealing, cleaning, and maintaining your stone for decades to come.", icon: "support" as const },
+  ];
+  const cta = content?.cta;
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen selection:bg-[#1a1c18] selection:text-white">
@@ -204,31 +212,31 @@ export default function ServicesPage() {
             <div className="lg:col-span-7 relative -mt-24 md:-mt-48 z-20">
               <div className="relative aspect-[4/3] bg-gray-200 overflow-hidden shadow-2xl">
                  <img
-                   src="/task-a-2026-02-24/svc-consultation.webp"
-                   alt="Showroom Consultation"
+                   src={consultation?.image || "/task-a-2026-02-24/svc-consultation.webp"}
+                   alt={consultation?.imageAlt || "Showroom Consultation"}
                    className="w-full h-full object-cover"
                  />
               </div>
               <div className="absolute -bottom-10 -right-10 bg-white p-8 shadow-xl max-w-xs hidden md:block border border-gray-100">
-                 <p className="font-serif italic text-2xl text-[#1a1c18] mb-4">&quot;Bring your plans, the coffee is on us.&quot;</p>
+                 <p className="font-serif italic text-2xl text-[#1a1c18] mb-4">&quot;{consultation?.quote || "Bring your plans, the coffee is on us."}&quot;</p>
                  <div className="h-[1px] w-12 bg-[#1a1c18]/20"></div>
               </div>
             </div>
 
             {/* Content */}
             <div className="lg:col-span-5 lg:pl-12 pt-12 md:pt-0">
-               <span className="text-[#3B4034] text-[10px] uppercase tracking-widest mb-4 block">Design Consultation</span>
+               <span className="text-[#3B4034] text-[10px] uppercase tracking-widest mb-4 block">{consultation?.eyebrow || "Design Consultation"}</span>
                <h2 className="font-serif text-4xl md:text-5xl text-[#1a1c18] mb-8 leading-tight">
-                 Not sure where <br/> to start?
+                 {consultation?.heading || "Not sure where to start?"}
                </h2>
                <p className="text-gray-600 leading-loose mb-8 font-light">
-                 Navigating natural stone options can be overwhelming. Our experienced team is here to guide you through color palettes, finishes, and technical suitability for your specific project.
+                 {consultation?.text || "Navigating natural stone options can be overwhelming. Our experienced team is here to guide you through color palettes, finishes, and technical suitability for your specific project."}
                </p>
                <Link
-                 href="/contact"
+                 href={consultation?.href || "/contact"}
                  className="group w-full sm:w-auto inline-flex items-center justify-center gap-4 bg-[#1a1c18] text-white px-6 sm:px-8 py-4 uppercase tracking-[0.14em] sm:tracking-[0.2em] text-[11px] sm:text-xs hover:bg-[#3B4034] transition-colors shadow-xl shadow-gray-900/10"
                >
-                 Book a Consultation
+                 {consultation?.label || "Book a Consultation"}
                  <ArrowUpRight size={16} className="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
                </Link>
             </div>
@@ -244,8 +252,8 @@ export default function ServicesPage() {
         <div className="max-w-[1600px] mx-auto pt-24">
 
            <div className="mb-12 flex items-end justify-between">
-              <h2 className="font-serif text-3xl text-[#1a1c18]">Seamless Delivery</h2>
-              <span className="hidden md:block text-[10px] uppercase tracking-widest text-gray-400">Step 03 — Final Mile</span>
+              <h2 className="font-serif text-3xl text-[#1a1c18]">{logistics?.heading || "Seamless Delivery"}</h2>
+              <span className="hidden md:block text-[10px] uppercase tracking-widest text-gray-400">{logistics?.stepLabel || "Step 03 — Final Mile"}</span>
            </div>
 
            {/* Refinement: Grid Lines using Borders instead of Gap */}
@@ -254,33 +262,33 @@ export default function ServicesPage() {
               {/* Card 1 */}
               <div className="group border-b border-gray-200 border-r border-gray-200 p-8 md:p-12 hover:bg-white transition-colors duration-500">
                  <div className="mb-8 w-12 h-12 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
-                    <BlueprintIcon type="network" />
+                    <BlueprintIcon type={logisticsItems[0].icon} />
                  </div>
-                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">Trusted Installer Network</h3>
+                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">{logisticsItems[0].title}</h3>
                  <p className="text-sm text-gray-500 leading-relaxed font-light">
-                    We don&apos;t install, but we know who does it best. Access our curated list of verified professionals.
+                    {logisticsItems[0].text}
                  </p>
               </div>
 
               {/* Card 2 */}
               <div className="group border-b border-gray-200 border-r border-gray-200 p-8 md:p-12 hover:bg-white transition-colors duration-500">
                  <div className="mb-8 w-12 h-12 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
-                    <BlueprintIcon type="logistics" />
+                    <BlueprintIcon type={logisticsItems[1].icon} />
                  </div>
-                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">Flexible Logistics</h3>
+                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">{logisticsItems[1].title}</h3>
                  <p className="text-sm text-gray-500 leading-relaxed font-light">
-                    Tight access? No problem. We coordinate crane trucks to ensure your stone is delivered safely.
+                    {logisticsItems[1].text}
                  </p>
               </div>
 
               {/* Card 3 */}
               <div className="group border-b border-gray-200 border-r border-gray-200 p-8 md:p-12 hover:bg-white transition-colors duration-500">
                  <div className="mb-8 w-12 h-12 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
-                    <BlueprintIcon type="support" />
+                    <BlueprintIcon type={logisticsItems[2].icon} />
                  </div>
-                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">After-Care Support</h3>
+                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">{logisticsItems[2].title}</h3>
                  <p className="text-sm text-gray-500 leading-relaxed font-light">
-                    Detailed advice on sealing, cleaning, and maintaining your stone for decades to come.
+                    {logisticsItems[2].text}
                  </p>
               </div>
 
@@ -294,21 +302,21 @@ export default function ServicesPage() {
       <section className="bg-[#1a1c18] text-[#F8F5F1] py-24 border-t border-white/10">
          <div className="max-w-[1600px] mx-auto page-padding-x flex flex-col md:flex-row items-center justify-between gap-8">
             <div>
-               <h2 className="font-serif text-3xl md:text-5xl mb-2">Ready to begin?</h2>
-               <p className="text-white/40 font-light">Let&apos;s discuss your project over coffee.</p>
+               <h2 className="font-serif text-3xl md:text-5xl mb-2">{cta?.heading || "Ready to begin?"}</h2>
+               <p className="text-white/40 font-light">{cta?.text || "Let's discuss your project over coffee."}</p>
             </div>
             <div className="flex w-full sm:w-auto flex-col sm:flex-row gap-3 sm:gap-4">
                <Link
-                 href="/contact"
+                 href={cta?.primaryHref || "/contact"}
                  className="w-full sm:w-auto border border-white/20 px-6 sm:px-8 py-4 text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] hover:bg-white hover:text-[#1a1c18] transition-colors"
                >
-                  Contact Us
+                  {cta?.primaryLabel || "Contact Us"}
                </Link>
                <Link
-                 href="/contact"
+                 href={cta?.secondaryHref || "/contact"}
                  className="w-full sm:w-auto bg-white text-[#1a1c18] px-6 sm:px-8 py-4 text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] hover:bg-[#F0F2E4] transition-colors"
                >
-                  Visit Showroom
+                  {cta?.secondaryLabel || "Visit Showroom"}
                </Link>
             </div>
          </div>

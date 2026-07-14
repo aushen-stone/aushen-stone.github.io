@@ -7,7 +7,7 @@ import { ArrowUpRight, MoveDown } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { CMS_MANAGED_PROJECTS } from "@/data/cms-site.generated";
 
-type ProjectItem = {
+export type ProjectItem = {
   id: number;
   slug: string;
   title: string;
@@ -19,7 +19,7 @@ type ProjectItem = {
 };
 
 // --- MOCK DATA ---
-const PROJECTS: ProjectItem[] = [
+export const LEGACY_PROJECTS: ProjectItem[] = [
   {
     id: 1,
     slug: "brighton-residence",
@@ -90,7 +90,7 @@ const VISIBLE_PROJECTS: ProjectItem[] = CMS_MANAGED_PROJECTS.length
       aspect: project.aspect,
       gridArea: project.gridArea,
     }))
-  : PROJECTS;
+  : LEGACY_PROJECTS;
 
 const CATEGORIES = ["All", "Residential", "Commercial", "Landscape"];
 

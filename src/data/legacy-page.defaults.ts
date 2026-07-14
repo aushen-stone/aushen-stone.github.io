@@ -17,6 +17,29 @@ export const DEFAULT_LEGACY_PAGES: Required<LegacyPageContentMap> = {
       logo: "/AushenLogoLetterS.webp",
       text: "At Aushen, we craft and curate only the best natural stone, architectural surfaces and outdoor furniture. We celebrate the imperfections and textural richness that can only be found in nature.",
     },
+    projectShowcase: {
+      titlePrefix: "Get Inspired by",
+      titleEmphasis: "Our Favorite",
+      titleSuffix: "Projects",
+      text: "Explore our curated portfolio of residential and commercial spaces, showcasing the timeless beauty of natural stone in harmony with modern architecture.",
+      image: "/Application001.webp",
+      linkLabel: "Explore More",
+      linkHref: "/projects",
+    },
+    accessories: {
+      eyebrow: "Accessories",
+      heading: "The finishing pieces behind the stone.",
+      text: "From sealing and maintenance to flush access covers and edge restraint, these are the supporting systems we pair with stone projects.",
+      primaryLabel: "Explore Accessories",
+      primaryHref: "/accessories/",
+      secondaryLabel: "Talk to Us",
+      secondaryHref: "/contact/",
+      items: {
+        chemforce: { eyebrow: "Stone care", blurb: "Sealers, enhancers, and cleaners for protecting and maintaining finished surfaces.", note: "Protection, enhancement, and remedial cleaning" },
+        hide: { eyebrow: "Access covers", blurb: "Flush lids and covers that sit back into paving, tile, and pool surrounds.", note: "Tile-in, paved, and recessed cover systems" },
+        formboss: { eyebrow: "Edging systems", blurb: "Steel edging and support details that sharpen the transition into landscape.", note: "Garden edging, planters, and install hardware" },
+      },
+    },
     services: {
       heading: "What we do",
       introPrefix: "At Aushen, we do ",
@@ -26,6 +49,17 @@ export const DEFAULT_LEGACY_PAGES: Required<LegacyPageContentMap> = {
         { id: 1, title: "Templating Service", description: "Precision digital templating for perfect fits.", image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1000&auto=format&fit=crop", icon: "scan" },
         { id: 2, title: "Local Processing", description: "Expert stone cutting and finishing in-house.", image: "/local-processing.jpg", icon: "layers" },
         { id: 3, title: "Design Consultation", description: "Collaborative sessions to bring vision to life.", image: "/design_consulation.png", icon: "users" },
+      ],
+    },
+    creativeHub: {
+      marquee: "Our Space, Your Creative Hub",
+      images: [
+        { src: "/Homeowners.webp", alt: "Creative Hub Showroom Area" },
+        { src: "/Professionals.webp", alt: "Material Selection Table" },
+      ],
+      audiences: [
+        { title: "Home Owners", lead: "Feeling overwhelmed and stressed of your garden renovation?", text: "Our experienced garden design team is here ready to guide you through the material selection process, ensuring your vision comes to life effortlessly.", label: "Book A Consultation", href: "/contact" },
+        { title: "Professionals", lead: "Need an inspiring space with all material samples ready to discuss the project with your clients?", text: "Whether you are a builder, landscaper, or designer, we are committed to offering a space free of charge, with coffee on us.", label: "Book The Space", href: "/contact" },
       ],
     },
   },
@@ -45,6 +79,17 @@ export const DEFAULT_LEGACY_PAGES: Required<LegacyPageContentMap> = {
         { id: "bespoke", title: "Bespoke Custom", description: "Need a hole for a light fixture? A specific drain cutout? Or a custom-engraved piece? We handle all technical modifications in-house to save you time on site.", features: ["Core Drilling", "Skimmer Box Lids", "Custom Grates"], image: "/task-a-2026-02-24/svc-bespoke.webp" },
       ],
     },
+    consultation: { image: "/task-a-2026-02-24/svc-consultation.webp", imageAlt: "Showroom Consultation", quote: "Bring your plans, the coffee is on us.", eyebrow: "Design Consultation", heading: "Not sure where to start?", text: "Navigating natural stone options can be overwhelming. Our experienced team is here to guide you through color palettes, finishes, and technical suitability for your specific project.", label: "Book A Consultation", href: "/contact" },
+    logistics: {
+      heading: "Seamless Delivery",
+      stepLabel: "Step 03 — Final Mile",
+      items: [
+        { title: "Trusted Installer Network", text: "We don't install, but we know who does it best. Access our curated list of verified professionals.", icon: "network" },
+        { title: "Flexible Logistics", text: "Tight access? No problem. We coordinate crane trucks to ensure your stone is delivered safely.", icon: "logistics" },
+        { title: "After-Care Support", text: "Detailed advice on sealing, cleaning, and maintaining your stone for decades to come.", icon: "support" },
+      ],
+    },
+    cta: { heading: "Ready to begin?", text: "Let's discuss your project over coffee.", primaryLabel: "Contact Us", primaryHref: "/contact", secondaryLabel: "Visit Showroom", secondaryHref: "/contact" },
   },
   about: {
     hero: {

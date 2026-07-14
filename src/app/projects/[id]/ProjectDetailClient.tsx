@@ -20,7 +20,7 @@ type ProjectProduct = {
   slug: string;
 };
 
-type ProjectDetailRecord = {
+export type ProjectDetailRecord = {
   slug: string;
   title: string;
   location: string;
@@ -60,7 +60,7 @@ const SHARED_GALLERY: ProjectGalleryItem[] = [
   },
 ];
 
-const PROJECT_DETAILS: ProjectDetailRecord[] = [
+export const LEGACY_PROJECT_DETAILS: ProjectDetailRecord[] = [
   {
     slug: "brighton-residence",
     title: "Brighton Residence",
@@ -237,7 +237,7 @@ const VISIBLE_PROJECT_DETAILS: ProjectDetailRecord[] = CMS_MANAGED_PROJECTS.leng
       gallery: project.gallery,
       products: project.products,
     }))
-  : PROJECT_DETAILS;
+  : LEGACY_PROJECT_DETAILS;
 
 function ProjectHero({ project }: { project: ProjectDetailRecord }) {
   const ref = useRef(null);
