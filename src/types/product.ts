@@ -61,6 +61,7 @@ export type Product = {
   slug: string;
   materialId: string;
   materialName: string;
+  description?: string;
   finishes: FinishVariant[];
   applicationIndex: ApplicationIndexEntry[];
   media?: MediaStatus;
