@@ -10,8 +10,6 @@ import { CreativeHubSection } from "@/app/components/CreativeHubSection"
 import { TrustSignalStrip } from "@/app/components/TrustSignalStrip"
 import { Footer } from "@/app/components/Footer"
 import { buildMetadata } from "@/lib/seo";
-import { ManagedPageRenderer } from "@/app/components/ManagedPageRenderer";
-import { getManagedPage } from "@/data/siteContent";
 
 export const metadata: Metadata = buildMetadata({
   title: "Aushen Stone | Natural Stone Supplier in Melbourne",
@@ -21,9 +19,6 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default function Home() {
-  const managedPage = getManagedPage("home");
-  if (managedPage) return <ManagedPageRenderer page={managedPage} />;
-
   return (
     <main className="min-h-screen">
       <Hero />

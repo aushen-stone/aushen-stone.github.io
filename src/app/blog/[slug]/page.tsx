@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogDetailPage from "./BlogDetailPage";
-import { BLOG_POSTS } from "@/data/blog";
+import { BLOG_POSTS } from "@/data/blog.generated";
 import { getBlogPostBySlug, getRelatedBlogPosts } from "@/lib/blog";
 import { buildMetadata } from "@/lib/seo";
 

@@ -1,12 +1,27 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import ProjectDetailClient from "./ProjectDetailClient";
-import { MANAGED_PROJECTS } from "@/data/siteContent";
 
 export const dynamicParams = false;
 
+const STATIC_PROJECT_IDS = [
+  "brighton-residence",
+  "toorak-pool-house",
+  "mornington-peninsula-winery",
+  "hawthorn-courtyard",
+  "sorrento-coastal-home",
+] as const;
+
+const PROJECT_TITLES: Record<(typeof STATIC_PROJECT_IDS)[number], string> = {
+  "brighton-residence": "Brighton Residence",
+  "toorak-pool-house": "Toorak Pool House",
+  "mornington-peninsula-winery": "Mornington Peninsula Winery",
+  "hawthorn-courtyard": "Hawthorn Courtyard",
+  "sorrento-coastal-home": "Sorrento Coastal Home",
+};
+
 export function generateStaticParams() {
-  return MANAGED_PROJECTS.map((project) => ({ id: project.slug }));
+  return STATIC_PROJECT_IDS.map((id) => ({ id }));
 }
 
 type ProjectDetailPageProps = {
@@ -17,7 +32,7 @@ export async function generateMetadata({
   params,
 }: ProjectDetailPageProps): Promise<Metadata> {
   const { id } = await params;
-  const projectTitle = MANAGED_PROJECTS.find((project) => project.slug === id)?.title ?? "Project";
+  const projectTitle = PROJECT_TITLES[id as keyof typeof PROJECT_TITLES] ?? "Project";
 
   return buildMetadata({
     title: `${projectTitle} | Projects | Aushen Stone`,

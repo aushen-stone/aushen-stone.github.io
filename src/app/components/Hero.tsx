@@ -2,7 +2,6 @@
 "use client"; // 动效组件必须在客户端运行
 
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -28,12 +27,9 @@ export function Hero() {
 
       {/* 1. 背景图层 (应用视差动画) */}
       <motion.div style={{ y, opacity }} className="absolute inset-0">
-        <Image
+        <img
           src="/AushenShop.webp"
-          alt="Aushen Stone showroom interior"
-          fill
-          priority
-          sizes="100vw"
+          alt="Showroom Interior"
           // 关键点：scale-110 稍微放大图片，防止视差滚动时露出边缘空白
           className="w-full h-full object-cover brightness-[0.85] scale-110"
         />

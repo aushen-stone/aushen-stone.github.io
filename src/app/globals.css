@@ -96,23 +96,6 @@ body {
   overflow: hidden;
 }
 
-/* Shared admin form primitive: keeps dense editor controls visually consistent. */
-.admin-input {
-  min-height: 3rem;
-  width: 100%;
-  border: 1px solid #d8d2c8;
-  background: #fff;
-  padding-left: 0.875rem;
-  padding-right: 0.875rem;
-  font-size: 0.875rem;
-  outline: none;
-}
-
-.admin-input:focus {
-  border-color: #3b4034;
-  box-shadow: 0 0 0 1px #3b4034;
-}
-
 .blog-richtext {
   color: #3f443a;
   font-size: 1rem;

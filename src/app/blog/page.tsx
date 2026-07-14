@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import BlogPageClient from "./BlogPageClient";
-import { BLOG_CATEGORIES, BLOG_POSTS } from "@/data/blog";
+import { BLOG_CATEGORIES, BLOG_POSTS } from "@/data/blog.generated";
 import { buildMetadata } from "@/lib/seo";
 import type { BlogPostPreview } from "@/types/blog";
 
