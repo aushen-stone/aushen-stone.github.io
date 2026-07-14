@@ -3,6 +3,7 @@
 
 import { ScanLine, Layers, Users } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
+import { CMS_LEGACY_PAGES } from "@/data/cms-site.generated";
 import { FadeIn } from "./animations/FadeIn";
 
 const SERVICES = [
@@ -29,6 +30,8 @@ const SERVICES = [
   },
 ];
 
+const SERVICE_ICONS = { scan: ScanLine, layers: Layers, users: Users };
+
 const smoothEase: [number, number, number, number] = [0.21, 0.47, 0.32, 0.98];
 
 // 复用同样的动画配置，保持全站统一感
@@ -50,6 +53,10 @@ const itemVariants: Variants = {
 };
 
 export function ServicesSection() {
+  const content = CMS_LEGACY_PAGES.home?.services;
+  const services = content?.items?.length
+    ? content.items.map((item) => ({ ...item, icon: SERVICE_ICONS[item.icon] }))
+    : SERVICES;
   return (
     <section className="py-16 sm:py-24 md:py-32 page-padding-x bg-white">
       <div className="max-w-[1400px] mx-auto">
@@ -57,10 +64,10 @@ export function ServicesSection() {
         {/* --- 头部文案 --- */}
         <FadeIn className="text-center mb-14 sm:mb-20 space-y-4">
           <h2 className="font-serif display-lg text-[#1a1a1a]">
-            What we do
+            {content?.heading || "What we do"}
           </h2>
           <p className="text-gray-500 text-sm md:text-base">
-            At Aushen, we do <span className="font-bold text-gray-800">more</span> than just sell stone and tiles.
+            {content?.introPrefix || "At Aushen, we do "}<span className="font-bold text-gray-800">{content?.introEmphasis || "more"}</span>{content?.introSuffix || " than just sell stone and tiles."}
           </p>
         </FadeIn>
 
@@ -72,7 +79,7 @@ export function ServicesSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
         >
-          {SERVICES.map((service) => (
+          {services.map((service) => (
             // 单个服务项
             <motion.div key={service.id} className="group flex flex-col items-center text-center cursor-default" variants={itemVariants}>
               

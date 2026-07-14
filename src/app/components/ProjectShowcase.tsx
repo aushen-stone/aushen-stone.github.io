@@ -4,8 +4,10 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { CMS_LEGACY_PAGES } from "@/data/cms-site.generated";
 
 export function ProjectShowcase() {
+  const content = CMS_LEGACY_PAGES.home?.projectShowcase;
   return (
     <section className="bg-[#F0F2E4] w-full">
       <div className="grid grid-cols-1 md:grid-cols-2">
@@ -21,7 +23,7 @@ export function ProjectShowcase() {
             className="h-full w-full"
           >
             <img
-              src="/Application001.webp"
+              src={content?.image || "/Application001.webp"}
               alt="Aerial view of pool project"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
             />
@@ -49,8 +51,8 @@ export function ProjectShowcase() {
               }}
               className="font-serif display-xl text-[#1a1a1a] leading-[1.08] mb-6 sm:mb-8"
             >
-              Get Inspired by <br className="hidden lg:block"/>
-              <span className="italic font-light opacity-80">Our Favorite</span> Projects
+              {content?.titlePrefix || "Get Inspired by"} <br className="hidden lg:block"/>
+              <span className="italic font-light opacity-80">{content?.titleEmphasis || "Our Favorite"}</span> {content?.titleSuffix || "Projects"}
             </motion.h2>
 
             <motion.p
@@ -60,7 +62,7 @@ export function ProjectShowcase() {
               }}
               className="text-gray-600 text-sm md:text-base leading-relaxed mb-8 sm:mb-12 max-w-md"
             >
-              Explore our curated portfolio of residential and commercial spaces, showcasing the timeless beauty of natural stone in harmony with modern architecture.
+              {content?.text || "Explore our curated portfolio of residential and commercial spaces, showcasing the timeless beauty of natural stone in harmony with modern architecture."}
             </motion.p>
 
             <motion.div
@@ -70,10 +72,10 @@ export function ProjectShowcase() {
               }}
             >
               <Link
-                href="/projects"
+                href={content?.linkHref || "/projects"}
                 className="group inline-flex items-center gap-2 sm:gap-3 text-[11px] sm:text-xs uppercase tracking-[0.16em] sm:tracking-[0.22em] font-medium text-gray-900 pb-2 border-b border-gray-900 hover:text-gray-600 hover:border-gray-600 transition-all"
               >
-                Explore More
+                {content?.linkLabel || "Explore More"}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </motion.div>

@@ -4,9 +4,11 @@ import { useRef } from "react";
 import { Footer } from "@/app/components/Footer";
 import { TrustSignalStrip } from "@/app/components/TrustSignalStrip";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { CMS_LEGACY_PAGES } from "@/data/cms-site.generated";
 
 // === 组件: 杂志风分屏 Hero (Split Editorial Hero) ===
 function EditorialHero() {
+  const content = CMS_LEGACY_PAGES.about?.hero;
   return (
     <section className="relative min-h-[var(--hero-min-height)] md:min-h-screen bg-[#F8F5F1] pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-20 page-padding-x flex flex-col md:flex-row items-center overflow-hidden">
 
@@ -17,13 +19,13 @@ function EditorialHero() {
            animate={{ opacity: 1, y: 0 }}
            transition={{ duration: 1 }}
          >
-           <span className="text-[#3B4034] text-xs uppercase tracking-[0.3em] mb-6 block">Since 2003</span>
+           <span className="text-[#3B4034] text-xs uppercase tracking-[0.3em] mb-6 block">{content?.eyebrow || "Since 2003"}</span>
            <h1 className="font-serif text-[clamp(2.2rem,8vw,6rem)] text-[#1a1c18] leading-[0.95] mb-6 sm:mb-8">
-             The Stone <br/>
-             <span className="italic text-gray-400">Keeper.</span>
+             {content?.title || "The Stone"} <br/>
+             <span className="italic text-gray-400">{content?.emphasis || "Keeper."}</span>
            </h1>
            <p className="text-gray-600 text-base sm:text-lg font-light leading-relaxed max-w-md">
-             We are not just suppliers. We are curators of geology, bridging the gap between the ancient quarry and the modern home.
+             {content?.text || "We are not just suppliers. We are curators of geology, bridging the gap between the ancient quarry and the modern home."}
            </p>
          </motion.div>
 
@@ -33,7 +35,7 @@ function EditorialHero() {
            transition={{ delay: 0.8 }}
            className="mt-8 sm:mt-12 flex items-center gap-4 text-[#1a1c18]/40"
          >
-            <span className="text-[10px] uppercase tracking-widest">Scroll the timeline</span>
+            <span className="text-[10px] uppercase tracking-widest">{content?.scrollLabel || "Scroll the timeline"}</span>
             <div className="w-8 h-[1px] bg-[#1a1c18]/20"></div>
          </motion.div>
       </div>
@@ -47,7 +49,7 @@ function EditorialHero() {
            className="w-full h-full overflow-hidden shadow-2xl relative"
          >
             <img
-              src="/task-a-2026-02-24/about-hero-quarry.webp"
+              src={content?.image || "/task-a-2026-02-24/about-hero-quarry.webp"}
               alt="Raw Nature"
               className="w-full h-full object-cover"
             />
@@ -61,6 +63,7 @@ function EditorialHero() {
 
 // === 组件: 橄榄绿宣言块 (The Manifesto Block) ===
 function Manifesto() {
+  const content = CMS_LEGACY_PAGES.about?.manifesto;
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]); // Parallax
@@ -73,10 +76,10 @@ function Manifesto() {
        <div className="max-w-[1200px] mx-auto text-center relative z-10" ref={ref}>
           <motion.div style={{ y }}>
              <p className="font-serif italic text-[clamp(1.7rem,5vw,3.8rem)] leading-tight opacity-90">
-               &quot;We reject 90% of what we find. Not out of arrogance, but out of respect for the home you are building.&quot;
+               &quot;{content?.quote || "We reject 90% of what we find. Not out of arrogance, but out of respect for the home you are building."}&quot;
              </p>
              <div className="mt-12">
-               <span className="inline-block px-4 py-2 border border-[#F0F2E4]/30 rounded-full text-[10px] uppercase tracking-[0.2em]">Our Philosophy</span>
+               <span className="inline-block px-4 py-2 border border-[#F0F2E4]/30 rounded-full text-[10px] uppercase tracking-[0.2em]">{content?.label || "Our Philosophy"}</span>
              </div>
           </motion.div>
        </div>
@@ -86,7 +89,7 @@ function Manifesto() {
 
 // === 组件: 时光流 (The Timeline Stream) ===
 function TimelineSection() {
-  const items = [
+  const defaultItems = [
     {
       year: "The Origin",
       title: "Global Sourcing",
@@ -108,7 +111,10 @@ function TimelineSection() {
       image: "/task-a-2026-02-24/about-place-showroom.webp", // 展厅
       align: "left"
     }
-  ];
+  ] as const;
+  const items = CMS_LEGACY_PAGES.about?.timeline?.length
+    ? CMS_LEGACY_PAGES.about.timeline
+    : defaultItems;
 
   return (
     <section className="bg-[#E8E6E1] py-20 sm:py-28 md:py-32 page-padding-x relative">
@@ -155,11 +161,12 @@ function TimelineSection() {
 
 // === 组件: 签名 (保持白色背景的干净结尾) ===
 function SignatureBlock() {
+  const content = CMS_LEGACY_PAGES.about?.signature;
   return (
     <section className="bg-[#F8F5F1] py-20 sm:py-28 md:py-32 text-center border-t border-white">
        <div className="max-w-2xl mx-auto page-padding-x">
           <p className="font-serif text-2xl text-gray-400 italic mb-8">
-            &quot;We invite you to experience the difference yourself.&quot;
+            &quot;{content?.quote || "We invite you to experience the difference yourself."}&quot;
           </p>
           {/* Jun 的签名复用之前的 */}
           <div className="w-32 h-16 mx-auto opacity-80">

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Footer } from "@/app/components/Footer";
 import { MoveDown, CheckCircle2, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { CMS_LEGACY_PAGES } from "@/data/cms-site.generated";
 
 // --- MOCK DATA ---
 const FABRICATION_SERVICES = [
@@ -63,6 +64,18 @@ function BlueprintIcon({ type }: { type: 'network' | 'logistics' | 'support' }) 
 
 export default function ServicesPage() {
   const [activeService, setActiveService] = useState(0);
+  const content = CMS_LEGACY_PAGES.services;
+  const fabricationServices = content?.fabrication?.items?.length
+    ? content.fabrication.items
+    : FABRICATION_SERVICES;
+  const consultation = content?.consultation;
+  const logistics = content?.logistics;
+  const logisticsItems = logistics?.items?.length === 3 ? logistics.items : [
+    { title: "Trusted Installer Network", text: "We don't install, but we know who does it best. Access our curated list of verified professionals.", icon: "network" as const },
+    { title: "Flexible Logistics", text: "Tight access? No problem. We coordinate crane trucks to ensure your stone is delivered safely.", icon: "logistics" as const },
+    { title: "After-Care Support", text: "Detailed advice on sealing, cleaning, and maintaining your stone for decades to come.", icon: "support" as const },
+  ];
+  const cta = content?.cta;
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen selection:bg-[#1a1c18] selection:text-white">
@@ -76,16 +89,16 @@ export default function ServicesPage() {
         <div className="max-w-[1600px] mx-auto relative z-10 flex flex-col md:flex-row items-end justify-between gap-12">
           <div className="max-w-3xl">
             <span className="block text-white/40 text-[10px] uppercase tracking-[0.3em] mb-6 pl-1 border-l border-white/20">
-              Our Expertise
+              {content?.hero?.eyebrow || "Our Expertise"}
             </span>
             <h1 className="font-serif text-[clamp(2.2rem,8vw,6rem)] text-[#F8F5F1] leading-[0.9] tracking-tight">
-              Beyond <br/> <span className="italic text-white/30 ml-4 md:ml-12">The Stone</span>
+              {content?.hero?.title || "Beyond"} <br/> <span className="italic text-white/30 ml-4 md:ml-12">{content?.hero?.emphasis || "The Stone"}</span>
             </h1>
           </div>
 
           <div className="flex flex-col items-end gap-8">
              <p className="text-white/60 text-sm font-light max-w-sm text-right leading-loose hidden md:block">
-               We don&apos;t just supply natural stone. We craft, customize, and curate it to fit your vision perfectly.
+               {content?.hero?.text || "We don't just supply natural stone. We craft, customize, and curate it to fit your vision perfectly."}
              </p>
              <div className="flex items-center gap-3 text-white/30 text-[10px] uppercase tracking-widest animate-pulse">
                 Process <MoveDown size={14} />
@@ -100,14 +113,14 @@ export default function ServicesPage() {
       <section className="bg-[#1a1c18] text-[#F8F5F1] pt-24 sm:pt-32 pb-32 sm:pb-48 page-padding-x relative border-t border-white/5 z-10">
         <div className="max-w-[1600px] mx-auto">
           <div className="mb-20">
-             <span className="text-[#3B4034] bg-[#F0F2E4] px-2 py-1 text-[10px] uppercase tracking-widest rounded mb-4 inline-block">The Workshop</span>
-             <h2 className="font-serif text-3xl md:text-5xl">Precision Fabrication</h2>
+             <span className="text-[#3B4034] bg-[#F0F2E4] px-2 py-1 text-[10px] uppercase tracking-widest rounded mb-4 inline-block">{content?.fabrication?.eyebrow || "The Workshop"}</span>
+             <h2 className="font-serif text-3xl md:text-5xl">{content?.fabrication?.heading || "Precision Fabrication"}</h2>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
             {/* Service List with Numbers */}
             <div className="lg:col-span-5 flex flex-col gap-0">
-               {FABRICATION_SERVICES.map((service, index) => (
+               {fabricationServices.map((service, index) => (
                  <div
                    key={service.id}
                    className={`group py-10 border-b border-white/10 transition-all duration-500 ${
@@ -174,7 +187,7 @@ export default function ServicesPage() {
                      transition={{ duration: 0.7 }}
                      className="absolute inset-0 w-full h-full"
                    >
-                     <img src={FABRICATION_SERVICES[activeService].image} alt={FABRICATION_SERVICES[activeService].title} className="w-full h-full object-cover opacity-80" />
+                     <img src={fabricationServices[activeService].image} alt={fabricationServices[activeService].title} className="w-full h-full object-cover opacity-80" />
                      <div className="absolute inset-0 bg-[#1a1c18]/20 mix-blend-multiply"></div>
                    </motion.div>
                  </AnimatePresence>
@@ -199,31 +212,31 @@ export default function ServicesPage() {
             <div className="lg:col-span-7 relative -mt-24 md:-mt-48 z-20">
               <div className="relative aspect-[4/3] bg-gray-200 overflow-hidden shadow-2xl">
                  <img
-                   src="/task-a-2026-02-24/svc-consultation.webp"
-                   alt="Showroom Consultation"
+                   src={consultation?.image || "/task-a-2026-02-24/svc-consultation.webp"}
+                   alt={consultation?.imageAlt || "Showroom Consultation"}
                    className="w-full h-full object-cover"
                  />
               </div>
               <div className="absolute -bottom-10 -right-10 bg-white p-8 shadow-xl max-w-xs hidden md:block border border-gray-100">
-                 <p className="font-serif italic text-2xl text-[#1a1c18] mb-4">&quot;Bring your plans, the coffee is on us.&quot;</p>
+                 <p className="font-serif italic text-2xl text-[#1a1c18] mb-4">&quot;{consultation?.quote || "Bring your plans, the coffee is on us."}&quot;</p>
                  <div className="h-[1px] w-12 bg-[#1a1c18]/20"></div>
               </div>
             </div>
 
             {/* Content */}
             <div className="lg:col-span-5 lg:pl-12 pt-12 md:pt-0">
-               <span className="text-[#3B4034] text-[10px] uppercase tracking-widest mb-4 block">Design Consultation</span>
+               <span className="text-[#3B4034] text-[10px] uppercase tracking-widest mb-4 block">{consultation?.eyebrow || "Design Consultation"}</span>
                <h2 className="font-serif text-4xl md:text-5xl text-[#1a1c18] mb-8 leading-tight">
-                 Not sure where <br/> to start?
+                 {consultation?.heading || "Not sure where to start?"}
                </h2>
                <p className="text-gray-600 leading-loose mb-8 font-light">
-                 Navigating natural stone options can be overwhelming. Our experienced team is here to guide you through color palettes, finishes, and technical suitability for your specific project.
+                 {consultation?.text || "Navigating natural stone options can be overwhelming. Our experienced team is here to guide you through color palettes, finishes, and technical suitability for your specific project."}
                </p>
                <Link
-                 href="/contact"
+                 href={consultation?.href || "/contact"}
                  className="group w-full sm:w-auto inline-flex items-center justify-center gap-4 bg-[#1a1c18] text-white px-6 sm:px-8 py-4 uppercase tracking-[0.14em] sm:tracking-[0.2em] text-[11px] sm:text-xs hover:bg-[#3B4034] transition-colors shadow-xl shadow-gray-900/10"
                >
-                 Book a Consultation
+                 {consultation?.label || "Book a Consultation"}
                  <ArrowUpRight size={16} className="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
                </Link>
             </div>
@@ -239,8 +252,8 @@ export default function ServicesPage() {
         <div className="max-w-[1600px] mx-auto pt-24">
 
            <div className="mb-12 flex items-end justify-between">
-              <h2 className="font-serif text-3xl text-[#1a1c18]">Seamless Delivery</h2>
-              <span className="hidden md:block text-[10px] uppercase tracking-widest text-gray-400">Step 03 — Final Mile</span>
+              <h2 className="font-serif text-3xl text-[#1a1c18]">{logistics?.heading || "Seamless Delivery"}</h2>
+              <span className="hidden md:block text-[10px] uppercase tracking-widest text-gray-400">{logistics?.stepLabel || "Step 03 — Final Mile"}</span>
            </div>
 
            {/* Refinement: Grid Lines using Borders instead of Gap */}
@@ -249,33 +262,33 @@ export default function ServicesPage() {
               {/* Card 1 */}
               <div className="group border-b border-gray-200 border-r border-gray-200 p-8 md:p-12 hover:bg-white transition-colors duration-500">
                  <div className="mb-8 w-12 h-12 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
-                    <BlueprintIcon type="network" />
+                    <BlueprintIcon type={logisticsItems[0].icon} />
                  </div>
-                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">Trusted Installer Network</h3>
+                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">{logisticsItems[0].title}</h3>
                  <p className="text-sm text-gray-500 leading-relaxed font-light">
-                    We don&apos;t install, but we know who does it best. Access our curated list of verified professionals.
+                    {logisticsItems[0].text}
                  </p>
               </div>
 
               {/* Card 2 */}
               <div className="group border-b border-gray-200 border-r border-gray-200 p-8 md:p-12 hover:bg-white transition-colors duration-500">
                  <div className="mb-8 w-12 h-12 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
-                    <BlueprintIcon type="logistics" />
+                    <BlueprintIcon type={logisticsItems[1].icon} />
                  </div>
-                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">Flexible Logistics</h3>
+                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">{logisticsItems[1].title}</h3>
                  <p className="text-sm text-gray-500 leading-relaxed font-light">
-                    Tight access? No problem. We coordinate crane trucks to ensure your stone is delivered safely.
+                    {logisticsItems[1].text}
                  </p>
               </div>
 
               {/* Card 3 */}
               <div className="group border-b border-gray-200 border-r border-gray-200 p-8 md:p-12 hover:bg-white transition-colors duration-500">
                  <div className="mb-8 w-12 h-12 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
-                    <BlueprintIcon type="support" />
+                    <BlueprintIcon type={logisticsItems[2].icon} />
                  </div>
-                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">After-Care Support</h3>
+                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">{logisticsItems[2].title}</h3>
                  <p className="text-sm text-gray-500 leading-relaxed font-light">
-                    Detailed advice on sealing, cleaning, and maintaining your stone for decades to come.
+                    {logisticsItems[2].text}
                  </p>
               </div>
 
@@ -289,21 +302,21 @@ export default function ServicesPage() {
       <section className="bg-[#1a1c18] text-[#F8F5F1] py-24 border-t border-white/10">
          <div className="max-w-[1600px] mx-auto page-padding-x flex flex-col md:flex-row items-center justify-between gap-8">
             <div>
-               <h2 className="font-serif text-3xl md:text-5xl mb-2">Ready to begin?</h2>
-               <p className="text-white/40 font-light">Let&apos;s discuss your project over coffee.</p>
+               <h2 className="font-serif text-3xl md:text-5xl mb-2">{cta?.heading || "Ready to begin?"}</h2>
+               <p className="text-white/40 font-light">{cta?.text || "Let's discuss your project over coffee."}</p>
             </div>
             <div className="flex w-full sm:w-auto flex-col sm:flex-row gap-3 sm:gap-4">
                <Link
-                 href="/contact"
+                 href={cta?.primaryHref || "/contact"}
                  className="w-full sm:w-auto border border-white/20 px-6 sm:px-8 py-4 text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] hover:bg-white hover:text-[#1a1c18] transition-colors"
                >
-                  Contact Us
+                  {cta?.primaryLabel || "Contact Us"}
                </Link>
                <Link
-                 href="/contact"
+                 href={cta?.secondaryHref || "/contact"}
                  className="w-full sm:w-auto bg-white text-[#1a1c18] px-6 sm:px-8 py-4 text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] hover:bg-[#F0F2E4] transition-colors"
                >
-                  Visit Showroom
+                  {cta?.secondaryLabel || "Visit Showroom"}
                </Link>
             </div>
          </div>
