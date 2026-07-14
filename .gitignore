@@ -16,6 +16,7 @@
 /playwright-report/
 /blob-report/
 /debug.log
+/supabase/.temp/
 
 # next.js
 /.next/
