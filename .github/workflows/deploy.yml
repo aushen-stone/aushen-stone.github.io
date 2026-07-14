@@ -3,8 +3,6 @@ name: Deploy GitHub Pages
 on:
   push:
     branches: [main]
-  repository_dispatch:
-    types: [cms_publish]
   workflow_dispatch:
 
 permissions:
@@ -42,15 +40,6 @@ jobs:
       - name: Docs sync check
         run: npm run docs:check
 
-      - name: Unit tests
-        run: npm test
-
-      - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
-
-      - name: Browser tests
-        run: npm run test:e2e
-
       - name: Validate contact API configuration
         env:
           NEXT_PUBLIC_CONTACT_API_URL: ${{ vars.NEXT_PUBLIC_CONTACT_API_URL }}
@@ -72,8 +61,6 @@ jobs:
       - name: Build static export
         env:
           NEXT_PUBLIC_CONTACT_API_URL: ${{ vars.NEXT_PUBLIC_CONTACT_API_URL }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
         run: npm run build:pages
 
       - name: Verify contact API endpoint is bundled

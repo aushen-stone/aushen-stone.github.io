@@ -11,24 +11,11 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-## CMS admin
-
-The GitHub Pages-compatible CMS lives at `/admin/` and manages products, blog posts, Home, Projects, Services and Our Story. It uses Supabase Auth, Database, Storage, and an Edge Function-triggered static rebuild. Setup and security instructions are in `docs/CMS_SETUP.md`.
-
-Key commands:
-
-```bash
-npm run cms:seed  # one-time import of existing content
-npm run cms:sync  # build-time download of published CMS content
-```
-
 ## Build and quality commands
 
 ```bash
 npm run build:product-data
 npm run docs:check
-npm test
-npm run test:e2e
 npm run build
 npm run lint
 npm run build:pages
@@ -36,7 +23,6 @@ npm run build:pages
 
 `build:pages` performs a static export and copies `out/` to `dist/` for GitHub Pages publishing.
 `docs:check` validates that active docs stay synchronized with current route, deployment, sitemap, and contact-conversion contracts.
-`test` runs fast unit tests for reusable cart and SEO logic. `test:e2e` runs the core homepage, product search, and mobile navigation flows in desktop and mobile Chromium via Playwright.
 
 ## Product data and photo regeneration
 
@@ -91,7 +77,6 @@ GitHub Pages workflow build:
 ## Google Tag Manager
 
 Google Tag Manager is injected globally from `src/app/layout.tsx`.
-It is enabled for production builds only so production container tags cannot interfere with local development pages.
 
 - Default container ID in code: `GTM-NNH55QC`
 - Optional override env var: `NEXT_PUBLIC_GTM_ID`
@@ -127,8 +112,6 @@ Workflow steps:
 4. `npm run build:pages`
 5. Upload `dist/` as the Pages artifact
 6. Deploy via `actions/deploy-pages`
-
-CMS publishing also triggers this workflow through the `cms_publish` repository dispatch.
 
 ## Required repository settings (manual)
 
