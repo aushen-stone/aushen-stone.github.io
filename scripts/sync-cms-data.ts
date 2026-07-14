@@ -14,19 +14,29 @@ type PageRow = { page_key: ManagedPage["key"]; title: string; hero_image_url: st
 type ProjectRow = { content: ManagedProject };
 
 const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// Static builds only read published rows, so the publishable key plus RLS is
+// sufficient. A service-role key remains supported for trusted local tooling,
+// but never needs to be stored in GitHub Actions.
+const buildKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ??
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-if (!url || !serviceKey) {
-  console.log("cms:sync skipped (Supabase build secrets are not configured)");
+if (!url || !buildKey) {
+  console.log("cms:sync skipped (Supabase build variables are not configured)");
   process.exit(0);
 }
 const buildUrl = url;
-const buildKey = serviceKey;
+const authorizedBuildKey = buildKey;
 
 async function readRows<T>(table: string): Promise<T[]> {
   const response = await fetch(
     `${buildUrl}/rest/v1/${table}?status=eq.published&select=*&order=updated_at.desc`,
-    { headers: { apikey: buildKey, Authorization: `Bearer ${buildKey}` } }
+    {
+      headers: {
+        apikey: authorizedBuildKey,
+        Authorization: `Bearer ${authorizedBuildKey}`,
+      },
+    }
   );
   if (!response.ok) throw new Error(`CMS sync failed for ${table}: ${response.status}`);
   return (await response.json()) as T[];

@@ -92,12 +92,8 @@ NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 ```
 
-Repository secrets:
-
-```text
-SUPABASE_URL
-SUPABASE_SERVICE_ROLE_KEY
-```
+No Supabase service-role secret is required in GitHub. The build reads only
+published rows using the publishable key, and Postgres RLS remains enforced.
 
 When an admin selects **Publish site**, the Edge Function sends a `cms_publish` repository dispatch. The workflow synchronizes published CMS rows into generated TypeScript files, builds all static product/blog routes, and deploys GitHub Pages.
 
