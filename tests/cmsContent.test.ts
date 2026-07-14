@@ -55,7 +55,7 @@ test("buildCmsContent creates project records with gallery fallbacks", () => {
   assert.equal(content.gallery[0]?.src, "https://example.com/project.webp");
 });
 
-test("buildCmsContent preserves managed page blocks", () => {
+test("buildCmsContent preserves legacy page-specific data", () => {
   const content = buildCmsContent("home", {
     title: "Home",
     slug: "home",
@@ -64,8 +64,14 @@ test("buildCmsContent preserves managed page blocks", () => {
     summary: "",
     bodyHtml: "",
     categories: "",
-    advancedJson: JSON.stringify({ blocks: [{ id: "hero", type: "hero", title: "Hello" }] }),
+    advancedJson: JSON.stringify({
+      hero: {
+        titleLines: ["Find your crafted", "architectural surfaces."],
+        text: "Original introduction",
+        image: "/AushenShop.webp",
+      },
+    }),
   });
-  assert.equal(content.blocks.length, 1);
-  assert.equal(content.blocks[0]?.type, "hero");
+  assert.deepEqual(content.hero?.titleLines, ["Find your crafted", "architectural surfaces."]);
+  assert.equal(content.hero?.image, "/AushenShop.webp");
 });

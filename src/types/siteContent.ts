@@ -14,6 +14,35 @@ export type ManagedPage = {
   blocks: PageBlock[];
 };
 
+// Page-specific CMS data intentionally mirrors the existing components. This
+// prevents content editing from replacing the public site with a generic page
+// renderer and keeps every legacy class name and animation in place.
+export type LegacyHomeContent = {
+  hero?: { titleLines: string[]; text: string; image: string; primaryLabel: string; primaryHref: string; secondaryLabel: string; secondaryHref: string };
+  brand?: { text: string; logo: string };
+  projectShowcase?: { titlePrefix: string; titleEmphasis: string; titleSuffix: string; text: string; image: string; linkLabel: string; linkHref: string };
+  services?: { heading: string; introPrefix: string; introEmphasis: string; introSuffix: string; items: Array<{ id: number; title: string; description: string; image: string; icon: "scan" | "layers" | "users" }> };
+  creativeHub?: { marquee: string; images: Array<{ src: string; alt: string }>; audiences: Array<{ title: string; lead: string; text: string; label: string; href: string }> };
+};
+
+export type LegacyServicesContent = {
+  hero?: { eyebrow: string; title: string; emphasis: string; text: string };
+  fabrication?: { eyebrow: string; heading: string; items: Array<{ id: string; title: string; description: string; features: string[]; image: string }> };
+};
+
+export type LegacyAboutContent = {
+  hero?: { eyebrow: string; title: string; emphasis: string; text: string; image: string; scrollLabel: string };
+  timeline?: Array<{ year: string; title: string; desc: string; image: string; align: "left" | "right" }>;
+  manifesto?: { quote: string; label: string };
+  signature?: { quote: string };
+};
+
+export type LegacyPageContentMap = {
+  home?: LegacyHomeContent;
+  services?: LegacyServicesContent;
+  about?: LegacyAboutContent;
+};
+
 export type ProjectGalleryItem = { type: "full" | "half"; src: string; alt: string };
 export type ProjectProduct = { name: string; category: string; image: string; slug: string };
 

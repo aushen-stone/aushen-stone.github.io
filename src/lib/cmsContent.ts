@@ -1,7 +1,7 @@
 import type { CmsEntityType } from "@/types/cms";
 import type { BlogPost } from "@/types/blog";
 import type { Product } from "@/types/product";
-import type { ManagedPage, ManagedProject } from "@/types/siteContent";
+import type { LegacyAboutContent, LegacyHomeContent, LegacyPageContentMap, LegacyServicesContent, ManagedProject } from "@/types/siteContent";
 
 export type CmsContentInput = {
   title: string;
@@ -25,9 +25,11 @@ export const slugifyCmsValue = (value: string) =>
 export function buildCmsContent(entity: "products", input: CmsContentInput): Product & { description: string };
 export function buildCmsContent(entity: "blog", input: CmsContentInput): BlogPost;
 export function buildCmsContent(entity: "projects", input: CmsContentInput): ManagedProject;
-export function buildCmsContent(entity: "home" | "services" | "about", input: CmsContentInput): { blocks: ManagedPage["blocks"] };
-export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string }) | BlogPost | ManagedProject | { blocks: ManagedPage["blocks"] };
-export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string }) | BlogPost | ManagedProject | { blocks: ManagedPage["blocks"] } {
+export function buildCmsContent(entity: "home", input: CmsContentInput): LegacyHomeContent;
+export function buildCmsContent(entity: "services", input: CmsContentInput): LegacyServicesContent;
+export function buildCmsContent(entity: "about", input: CmsContentInput): LegacyAboutContent;
+export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string }) | BlogPost | ManagedProject | NonNullable<LegacyPageContentMap[keyof LegacyPageContentMap]>;
+export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string }) | BlogPost | ManagedProject | NonNullable<LegacyPageContentMap[keyof LegacyPageContentMap]> {
   // Advanced JSON preserves legacy nested fields while common fields stay easy to edit.
   const advanced = JSON.parse(input.advancedJson || "{}") as Record<string, unknown>;
   if (entity === "products") {
@@ -67,7 +69,7 @@ export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): 
   }
 
   if (entity === "home" || entity === "services" || entity === "about") {
-    return { blocks: Array.isArray(advanced.blocks) ? advanced.blocks as ManagedPage["blocks"] : [] };
+    return advanced as NonNullable<LegacyPageContentMap[typeof entity]>;
   }
 
   const categoryRefs = input.categories

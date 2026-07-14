@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Footer } from "@/app/components/Footer";
 import { ArrowUpRight, MoveDown } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { CMS_MANAGED_PROJECTS } from "@/data/cms-site.generated";
 
 type ProjectItem = {
   id: number;
@@ -75,6 +76,21 @@ const PROJECTS: ProjectItem[] = [
     gridArea: "center",
   },
 ];
+
+// CMS changes only the data consumed by the original project template. The
+// hard-coded collection remains the exact fallback for visual parity.
+const VISIBLE_PROJECTS: ProjectItem[] = CMS_MANAGED_PROJECTS.length
+  ? CMS_MANAGED_PROJECTS.map((project, index) => ({
+      id: index + 1,
+      slug: project.slug,
+      title: project.title,
+      category: project.category,
+      location: project.location,
+      image: project.image,
+      aspect: project.aspect,
+      gridArea: project.gridArea,
+    }))
+  : PROJECTS;
 
 const CATEGORIES = ["All", "Residential", "Commercial", "Landscape"];
 
@@ -162,7 +178,9 @@ export default function ProjectsPage() {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const filteredProjects =
-    activeCategory === "All" ? PROJECTS : PROJECTS.filter((p) => p.category === activeCategory);
+    activeCategory === "All"
+      ? VISIBLE_PROJECTS
+      : VISIBLE_PROJECTS.filter((p) => p.category === activeCategory);
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen">

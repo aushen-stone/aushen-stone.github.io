@@ -2,7 +2,7 @@ import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { BlogPost } from "../src/types/blog";
 import type { Product, ProductOverride } from "../src/types/product";
-import type { ManagedPage, ManagedProject } from "../src/types/siteContent";
+import type { LegacyPageContentMap, ManagedPage, ManagedProject } from "../src/types/siteContent";
 
 type ProductRow = {
   slug: string;
@@ -52,6 +52,10 @@ const [productRows, blogRows, pageRows, projectRows] = await Promise.all([
 const products = productRows.map((row) => row.content);
 const posts = blogRows.map((row) => row.content);
 const pages = Object.fromEntries(pageRows.map((row) => [row.page_key, { key: row.page_key, title: row.title, heroImageUrl: row.hero_image_url, blocks: row.content.blocks ?? [] }])) as Partial<Record<ManagedPage["key"], ManagedPage>>;
+// The page payload is also emitted verbatim for the legacy component adapters.
+// Old `{ blocks: [...] }` rows remain harmless because every adapter validates
+// optional fields and falls back to the original hard-coded copy.
+const legacyPages = Object.fromEntries(pageRows.map((row) => [row.page_key, row.content])) as LegacyPageContentMap;
 const projects = projectRows.map((row) => row.content);
 
 // Fail the deployment instead of publishing malformed dynamic routes.
@@ -98,7 +102,7 @@ await Promise.all([
   ),
   writeFile(
     path.join(root, "src/data/cms-site.generated.ts"),
-    `${generatedBanner}import type { ManagedPage, ManagedProject } from "@/types/siteContent";\nexport const CMS_MANAGED_PAGES: Partial<Record<ManagedPage["key"], ManagedPage>> = ${JSON.stringify(pages, null, 2)};\nexport const CMS_MANAGED_PROJECTS: ManagedProject[] = ${JSON.stringify(projects, null, 2)};\nexport const CMS_SITE_CONTENT_SYNCED = true;\n`
+    `${generatedBanner}import type { LegacyPageContentMap, ManagedPage, ManagedProject } from "@/types/siteContent";\nexport const CMS_MANAGED_PAGES: Partial<Record<ManagedPage["key"], ManagedPage>> = ${JSON.stringify(pages, null, 2)};\nexport const CMS_MANAGED_PROJECTS: ManagedProject[] = ${JSON.stringify(projects, null, 2)};\nexport const CMS_LEGACY_PAGES: LegacyPageContentMap = ${JSON.stringify(legacyPages, null, 2)};\nexport const CMS_SITE_CONTENT_SYNCED = true;\n`
   ),
 ]);
 

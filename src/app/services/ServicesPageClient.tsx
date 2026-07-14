@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Footer } from "@/app/components/Footer";
 import { MoveDown, CheckCircle2, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { CMS_LEGACY_PAGES } from "@/data/cms-site.generated";
 
 // --- MOCK DATA ---
 const FABRICATION_SERVICES = [
@@ -63,6 +64,10 @@ function BlueprintIcon({ type }: { type: 'network' | 'logistics' | 'support' }) 
 
 export default function ServicesPage() {
   const [activeService, setActiveService] = useState(0);
+  const content = CMS_LEGACY_PAGES.services;
+  const fabricationServices = content?.fabrication?.items?.length
+    ? content.fabrication.items
+    : FABRICATION_SERVICES;
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen selection:bg-[#1a1c18] selection:text-white">
@@ -76,16 +81,16 @@ export default function ServicesPage() {
         <div className="max-w-[1600px] mx-auto relative z-10 flex flex-col md:flex-row items-end justify-between gap-12">
           <div className="max-w-3xl">
             <span className="block text-white/40 text-[10px] uppercase tracking-[0.3em] mb-6 pl-1 border-l border-white/20">
-              Our Expertise
+              {content?.hero?.eyebrow || "Our Expertise"}
             </span>
             <h1 className="font-serif text-[clamp(2.2rem,8vw,6rem)] text-[#F8F5F1] leading-[0.9] tracking-tight">
-              Beyond <br/> <span className="italic text-white/30 ml-4 md:ml-12">The Stone</span>
+              {content?.hero?.title || "Beyond"} <br/> <span className="italic text-white/30 ml-4 md:ml-12">{content?.hero?.emphasis || "The Stone"}</span>
             </h1>
           </div>
 
           <div className="flex flex-col items-end gap-8">
              <p className="text-white/60 text-sm font-light max-w-sm text-right leading-loose hidden md:block">
-               We don&apos;t just supply natural stone. We craft, customize, and curate it to fit your vision perfectly.
+               {content?.hero?.text || "We don't just supply natural stone. We craft, customize, and curate it to fit your vision perfectly."}
              </p>
              <div className="flex items-center gap-3 text-white/30 text-[10px] uppercase tracking-widest animate-pulse">
                 Process <MoveDown size={14} />
@@ -100,14 +105,14 @@ export default function ServicesPage() {
       <section className="bg-[#1a1c18] text-[#F8F5F1] pt-24 sm:pt-32 pb-32 sm:pb-48 page-padding-x relative border-t border-white/5 z-10">
         <div className="max-w-[1600px] mx-auto">
           <div className="mb-20">
-             <span className="text-[#3B4034] bg-[#F0F2E4] px-2 py-1 text-[10px] uppercase tracking-widest rounded mb-4 inline-block">The Workshop</span>
-             <h2 className="font-serif text-3xl md:text-5xl">Precision Fabrication</h2>
+             <span className="text-[#3B4034] bg-[#F0F2E4] px-2 py-1 text-[10px] uppercase tracking-widest rounded mb-4 inline-block">{content?.fabrication?.eyebrow || "The Workshop"}</span>
+             <h2 className="font-serif text-3xl md:text-5xl">{content?.fabrication?.heading || "Precision Fabrication"}</h2>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
             {/* Service List with Numbers */}
             <div className="lg:col-span-5 flex flex-col gap-0">
-               {FABRICATION_SERVICES.map((service, index) => (
+               {fabricationServices.map((service, index) => (
                  <div
                    key={service.id}
                    className={`group py-10 border-b border-white/10 transition-all duration-500 ${
@@ -174,7 +179,7 @@ export default function ServicesPage() {
                      transition={{ duration: 0.7 }}
                      className="absolute inset-0 w-full h-full"
                    >
-                     <img src={FABRICATION_SERVICES[activeService].image} alt={FABRICATION_SERVICES[activeService].title} className="w-full h-full object-cover opacity-80" />
+                     <img src={fabricationServices[activeService].image} alt={fabricationServices[activeService].title} className="w-full h-full object-cover opacity-80" />
                      <div className="absolute inset-0 bg-[#1a1c18]/20 mix-blend-multiply"></div>
                    </motion.div>
                  </AnimatePresence>

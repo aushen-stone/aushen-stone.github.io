@@ -28,6 +28,7 @@ import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabaseCl
 import { buildCmsContent, slugifyCmsValue } from "@/lib/cmsContent";
 import type { CmsEntityType, CmsRow, CmsStatus } from "@/types/cms";
 import { DEFAULT_MANAGED_PAGES, DEFAULT_MANAGED_PROJECTS } from "@/data/site-content.defaults";
+import { DEFAULT_LEGACY_PAGES } from "@/data/legacy-page.defaults";
 
 type EditorState = {
   id?: string;
@@ -92,9 +93,9 @@ const DEMO_ROWS: Record<CmsEntityType, CmsRow[]> = {
     { id: "demo-blog", slug: "choosing-stone-for-outdoor-spaces", title: "Choosing Stone for Outdoor Spaces", status: "draft", imageUrl: "/AushenShop.webp", secondaryLabel: "Blog post", content: { excerpt: "A practical material guide.", bodyHtml: "<p>A practical material guide.</p>", categories: [{ name: "Stone", slug: "stone" }] }, updatedAt: "2026-07-10T02:00:00Z" },
   ],
   projects: DEFAULT_MANAGED_PROJECTS.slice(0, 3).map((project, index) => ({ id: `demo-project-${index}`, slug: project.slug, title: project.title, status: "published", imageUrl: project.image, secondaryLabel: project.category, content: project, updatedAt: "2026-07-10T02:00:00Z" })),
-  home: [{ id: "home", slug: "home", title: "Home", status: "published", imageUrl: DEFAULT_MANAGED_PAGES.home.heroImageUrl ?? null, secondaryLabel: "Managed page", content: { blocks: DEFAULT_MANAGED_PAGES.home.blocks }, updatedAt: "2026-07-10T02:00:00Z" }],
-  services: [{ id: "services", slug: "services", title: "Services", status: "published", imageUrl: DEFAULT_MANAGED_PAGES.services.heroImageUrl ?? null, secondaryLabel: "Managed page", content: { blocks: DEFAULT_MANAGED_PAGES.services.blocks }, updatedAt: "2026-07-10T02:00:00Z" }],
-  about: [{ id: "about", slug: "about", title: "Our Story", status: "published", imageUrl: DEFAULT_MANAGED_PAGES.about.heroImageUrl ?? null, secondaryLabel: "Managed page", content: { blocks: DEFAULT_MANAGED_PAGES.about.blocks }, updatedAt: "2026-07-10T02:00:00Z" }],
+  home: [{ id: "home", slug: "home", title: "Home", status: "published", imageUrl: DEFAULT_MANAGED_PAGES.home.heroImageUrl ?? null, secondaryLabel: "Managed page", content: DEFAULT_LEGACY_PAGES.home, updatedAt: "2026-07-10T02:00:00Z" }],
+  services: [{ id: "services", slug: "services", title: "Services", status: "published", imageUrl: DEFAULT_MANAGED_PAGES.services.heroImageUrl ?? null, secondaryLabel: "Managed page", content: DEFAULT_LEGACY_PAGES.services, updatedAt: "2026-07-10T02:00:00Z" }],
+  about: [{ id: "about", slug: "about", title: "Our Story", status: "published", imageUrl: DEFAULT_MANAGED_PAGES.about.heroImageUrl ?? null, secondaryLabel: "Managed page", content: DEFAULT_LEGACY_PAGES.about, updatedAt: "2026-07-10T02:00:00Z" }],
 };
 
 function editorFromRow(row: CmsRow): EditorState {
@@ -396,7 +397,7 @@ export default function AdminPageClient() {
           <div className="flex flex-wrap items-center gap-3">
             <label className="relative min-w-64 flex-1"><Search className="absolute left-3 top-3.5 text-gray-400" size={17} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={`Search ${entity}...`} className="h-11 w-full border border-[#D8D2C8] bg-white pl-10 pr-4 text-sm outline-none focus:border-[#3B4034]" /></label>
             <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as typeof statusFilter)} className="h-11 border border-[#D8D2C8] bg-white px-4 text-sm"><option value="all">All status</option><option value="published">Published</option><option value="draft">Draft</option></select>
-            <button onClick={() => { const existing = PAGE_ENTITIES.has(entity) ? rows[0] : null; setEditor(existing ? editorFromRow(existing) : { ...EMPTY_EDITOR, title: PAGE_ENTITIES.has(entity) ? ENTITY_LABELS[entity] : "", slug: PAGE_ENTITIES.has(entity) ? entity : "", advancedJson: PAGE_ENTITIES.has(entity) ? JSON.stringify({ blocks: [] }, null, 2) : "{}" }); }} className="inline-flex h-11 items-center gap-2 bg-[#283020] px-5 text-xs uppercase tracking-[0.12em] text-white"><Plus size={16} /> {PAGE_ENTITIES.has(entity) ? "Edit page" : `Add ${entity === "products" ? "product" : entity === "blog" ? "post" : "project"}`}</button>
+            <button onClick={() => { const existing = PAGE_ENTITIES.has(entity) ? rows[0] : null; setEditor(existing ? editorFromRow(existing) : { ...EMPTY_EDITOR, title: PAGE_ENTITIES.has(entity) ? ENTITY_LABELS[entity] : "", slug: PAGE_ENTITIES.has(entity) ? entity : "", advancedJson: PAGE_ENTITIES.has(entity) ? JSON.stringify(DEFAULT_LEGACY_PAGES[entity as keyof typeof DEFAULT_LEGACY_PAGES], null, 2) : "{}" }); }} className="inline-flex h-11 items-center gap-2 bg-[#283020] px-5 text-xs uppercase tracking-[0.12em] text-white"><Plus size={16} /> {PAGE_ENTITIES.has(entity) ? "Edit page" : `Add ${entity === "products" ? "product" : entity === "blog" ? "post" : "project"}`}</button>
           </div>
 
           <div className="mt-5 overflow-x-auto border border-[#D8D2C8] bg-white">

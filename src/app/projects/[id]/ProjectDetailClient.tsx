@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Footer } from "@/app/components/Footer";
 import { ArrowDownLeft } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { CMS_MANAGED_PROJECTS } from "@/data/cms-site.generated";
 
 type ProjectGalleryItem = {
   type: "full" | "half";
@@ -222,6 +223,22 @@ const PROJECT_DETAILS: ProjectDetailRecord[] = [
   },
 ];
 
+// Published CMS records mirror the exact legacy detail shape. Without a sync,
+// the original records above continue to render unchanged.
+const VISIBLE_PROJECT_DETAILS: ProjectDetailRecord[] = CMS_MANAGED_PROJECTS.length
+  ? CMS_MANAGED_PROJECTS.map((project) => ({
+      slug: project.slug,
+      title: project.title,
+      location: project.location,
+      year: project.year,
+      tags: project.tags,
+      credits: project.credits,
+      description: project.description,
+      gallery: project.gallery,
+      products: project.products,
+    }))
+  : PROJECT_DETAILS;
+
 function ProjectHero({ project }: { project: ProjectDetailRecord }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -330,15 +347,15 @@ export default function ProjectDetailClient({ id }: ProjectDetailClientProps) {
   const slug = id;
 
   const project = useMemo(
-    () => PROJECT_DETAILS.find((item) => item.slug === slug),
+    () => VISIBLE_PROJECT_DETAILS.find((item) => item.slug === slug),
     [slug]
   );
 
   const nextProject = useMemo(() => {
     if (!project) return null;
-    const currentIndex = PROJECT_DETAILS.findIndex((item) => item.slug === project.slug);
+    const currentIndex = VISIBLE_PROJECT_DETAILS.findIndex((item) => item.slug === project.slug);
     if (currentIndex < 0) return null;
-    return PROJECT_DETAILS[(currentIndex + 1) % PROJECT_DETAILS.length];
+    return VISIBLE_PROJECT_DETAILS[(currentIndex + 1) % VISIBLE_PROJECT_DETAILS.length];
   }, [project]);
 
   if (!project) {
