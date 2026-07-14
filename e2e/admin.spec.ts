@@ -10,6 +10,9 @@ test("admin demo renders content management and opens the product editor", async
 
   await page.getByRole("button", { name: "Add product" }).click();
   await expect(page.getByRole("heading", { name: "Add product" })).toBeVisible();
+  await expect(page.getByText("Product photo", { exact: true })).toBeVisible();
+  await expect(page.getByText("Application photos", { exact: true })).toBeVisible();
+  await expect(page.getByText("Upload application photos", { exact: true })).toBeVisible();
   await page.getByLabel("Name / title").fill("New Test Stone");
   await expect(page.getByLabel("Slug")).toHaveValue("new-test-stone");
   await page.getByRole("button", { name: "Close editor" }).click();

@@ -8,6 +8,7 @@ export type CmsContentInput = {
   slug: string;
   secondaryLabel: string;
   imageUrl: string;
+  applicationImageUrls?: string[];
   summary: string;
   bodyHtml: string;
   categories: string;
@@ -48,14 +49,14 @@ export function applyLegacyPageHeroImage(
   return { ...content, hero: { ...hero, image: imageUrl } };
 }
 
-export function buildCmsContent(entity: "products", input: CmsContentInput): Product & { description: string };
+export function buildCmsContent(entity: "products", input: CmsContentInput): Product & { description: string; applicationImageUrls: string[] };
 export function buildCmsContent(entity: "blog", input: CmsContentInput): BlogPost;
 export function buildCmsContent(entity: "projects", input: CmsContentInput): ManagedProject;
 export function buildCmsContent(entity: "home", input: CmsContentInput): LegacyHomeContent;
 export function buildCmsContent(entity: "services", input: CmsContentInput): LegacyServicesContent;
 export function buildCmsContent(entity: "about", input: CmsContentInput): LegacyAboutContent;
-export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string }) | BlogPost | ManagedProject | NonNullable<LegacyPageContentMap[keyof LegacyPageContentMap]>;
-export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string }) | BlogPost | ManagedProject | NonNullable<LegacyPageContentMap[keyof LegacyPageContentMap]> {
+export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string; applicationImageUrls: string[] }) | BlogPost | ManagedProject | NonNullable<LegacyPageContentMap[keyof LegacyPageContentMap]>;
+export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string; applicationImageUrls: string[] }) | BlogPost | ManagedProject | NonNullable<LegacyPageContentMap[keyof LegacyPageContentMap]> {
   // Advanced JSON preserves legacy nested fields while common fields stay easy to edit.
   const advanced = JSON.parse(input.advancedJson || "{}") as Record<string, unknown>;
   if (entity === "products") {
@@ -70,8 +71,12 @@ export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): 
       applicationIndex: Array.isArray(advanced.applicationIndex)
         ? advanced.applicationIndex
         : [],
+      applicationImageUrls: input.applicationImageUrls ??
+        (Array.isArray(advanced.applicationImageUrls)
+          ? advanced.applicationImageUrls.filter((value): value is string => typeof value === "string")
+          : []),
       description: input.summary,
-    } as Product & { description: string };
+    } as Product & { description: string; applicationImageUrls: string[] };
   }
 
   if (entity === "projects") {

@@ -465,7 +465,8 @@ function ProductsPageContent({
               const override = PRODUCT_OVERRIDES[product.slug];
               const displayName = getProductDisplayName(product);
               const imageUrl =
-                override?.imageUrls?.[0] || override?.imageUrl || DEFAULT_PRODUCT_IMAGE;
+                override?.imageUrl || override?.imageUrls?.[0] || DEFAULT_PRODUCT_IMAGE;
+              const applicationHoverUrl = override?.applicationImageUrls?.[0];
               const applicationLabels = collectApplicationLabels(product);
               const visibleLabels = applicationLabels.slice(0, 2);
               const remainingLabelCount = Math.max(applicationLabels.length - visibleLabels.length, 0);
@@ -482,8 +483,15 @@ function ProductsPageContent({
                     <img
                       src={imageUrl}
                       alt={displayName}
-                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+                      className={`absolute inset-0 h-full w-full object-cover transition-all duration-500 ease-out group-hover:scale-[1.04] ${applicationHoverUrl ? "group-hover:opacity-0" : ""}`}
                     />
+                    {applicationHoverUrl ? (
+                      <img
+                        src={applicationHoverUrl}
+                        alt={`${displayName} application`}
+                        className="absolute inset-0 h-full w-full scale-[1.02] object-cover opacity-0 transition-all duration-500 ease-out group-hover:scale-100 group-hover:opacity-100"
+                      />
+                    ) : null}
                   </div>
 
                   <div className="p-4 sm:p-5">
