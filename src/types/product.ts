@@ -86,6 +86,7 @@ export type ProductOverride = {
   description?: string;
   imageUrl?: string;
   imageUrls?: string[];
+  applicationImageUrls?: string[];
   homeownerSummary?: string;
   homeownerUseCases?: string[];
   professionalSummary?: string;

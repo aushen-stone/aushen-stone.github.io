@@ -76,6 +76,27 @@ test("buildCmsContent preserves legacy page-specific data", () => {
   assert.equal(content.hero?.image, "/AushenShop.webp");
 });
 
+test("buildCmsContent stores ordered application photos separately", () => {
+  const content = buildCmsContent("products", {
+    title: "Gallery Stone",
+    slug: "gallery-stone",
+    secondaryLabel: "Granite",
+    imageUrl: "https://example.com/product.webp",
+    applicationImageUrls: [
+      "https://example.com/application-1.webp",
+      "https://example.com/application-2.webp",
+    ],
+    summary: "Summary",
+    bodyHtml: "",
+    categories: "",
+    advancedJson: "{}",
+  });
+  assert.deepEqual(content.applicationImageUrls, [
+    "https://example.com/application-1.webp",
+    "https://example.com/application-2.webp",
+  ]);
+});
+
 test("applyLegacyPageHeroImage updates visible legacy page heroes only", () => {
   const home = applyLegacyPageHeroImage("home", { hero: { title: "Home", image: "/old.jpg" } }, "/new.jpg");
   assert.deepEqual(home, { hero: { title: "Home", image: "/new.jpg" } });

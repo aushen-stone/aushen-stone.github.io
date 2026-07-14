@@ -8,7 +8,7 @@ import { applyLegacyPageHeroImage } from "../src/lib/cmsContent";
 type ProductRow = {
   slug: string;
   image_url: string | null;
-  content: Product & { description?: string };
+  content: Product & { description?: string; applicationImageUrls?: string[] };
 };
 type BlogRow = { hero_image_url: string | null; content: BlogPost };
 type PageRow = {
@@ -98,7 +98,10 @@ const overrides = Object.fromEntries(
     row.slug,
     {
       imageUrl: row.image_url ?? undefined,
-      imageUrls: row.image_url ? [row.image_url] : undefined,
+      imageUrls: [row.image_url, ...(row.content.applicationImageUrls ?? [])].filter(
+        (value): value is string => Boolean(value)
+      ),
+      applicationImageUrls: row.content.applicationImageUrls ?? [],
       description: row.content.description,
     } satisfies ProductOverride,
   ])
