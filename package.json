@@ -12,6 +12,7 @@
     "prepare:product-photos": "python3 scripts/prepare-product-photos.py",
     "cms:sync": "tsx scripts/sync-cms-data.ts",
     "cms:seed": "tsx scripts/seed-cms.ts",
+    "cms:bootstrap-admins": "tsx scripts/bootstrap-admins.ts",
     "start": "next start",
     "lint": "eslint",
     "test": "node --import tsx --test tests/**/*.test.ts",

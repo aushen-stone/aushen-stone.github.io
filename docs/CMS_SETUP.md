@@ -5,9 +5,10 @@ The `/admin/` interface is a static client application. Supabase Auth and Row Le
 ## 1. Create and migrate Supabase
 
 1. Create a Supabase project.
-2. Run both migrations in filename order through the Supabase SQL editor or CLI:
+2. Run all migrations in filename order through the Supabase SQL editor or CLI:
    - `supabase/migrations/202607100001_cms.sql`
    - `supabase/migrations/202607100002_pages_projects.sql`
+   - `supabase/migrations/202607140003_module_permissions.sql`
 3. In Authentication, create the initial email/password user.
 4. Copy that user's UUID and grant admin access:
 
@@ -17,6 +18,22 @@ values ('<auth-user-uuid>');
 ```
 
 Do not add an in-app sign-up path. Admin accounts should be provisioned deliberately through the Supabase dashboard.
+
+### Bootstrap the two super admins
+
+Set the server-only environment variables and run the one-off command:
+
+```bash
+SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
+INITIAL_ADMIN_PASSWORD=<temporary-password>
+npm run cms:bootstrap-admins
+```
+
+This creates (or grants super-admin access to) `dave@aushenstone.com.au` and
+`maggie@aushenstone.com.au`. The temporary password is read from the environment
+and is never committed. Both users should select **Change password** immediately
+after their first sign-in.
 
 ## 2. Local environment
 
@@ -48,7 +65,14 @@ The command upserts products, blog posts, Home, Services, Our Story and Projects
 
 ## 4. Deploy the publish Edge Function
 
-Deploy `supabase/functions/trigger-pages-deploy` and set these function secrets:
+Deploy both Edge Functions:
+
+```bash
+supabase functions deploy trigger-pages-deploy
+supabase functions deploy manage-cms-users
+```
+
+Set these secrets for the publish function:
 
 ```text
 GITHUB_REPOSITORY=aushen-stone/aushen-stone.github.io
@@ -86,6 +110,13 @@ When an admin selects **Publish site**, the Edge Function sends a `cms_publish` 
 - Home, Services and Our Story are block-based singleton pages. Add, remove or reorder their `blocks` in Advanced JSON.
 - Projects are repeatable records with gallery, credits, tags and linked-product fields in Advanced JSON.
 - If Supabase build secrets are absent locally, `cms:sync` skips and the existing generated content remains the fallback.
+
+## Accounts and module permissions
+
+- Super admins are rows in `admin_users`; they can manage all content, publish the site and manage accounts.
+- Editors are created from **Users & permissions** and can be granted Products, Blog, Projects, Home, Services and/or Our Story independently.
+- Postgres RLS enforces every module permission even if someone bypasses the Admin interface.
+- All signed-in users can change their own password. Only super admins can create/delete accounts or change another editor's permissions.
 
 ## Security checklist
 

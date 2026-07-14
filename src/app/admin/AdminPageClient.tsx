@@ -9,6 +9,7 @@ import {
   FileText,
   Image as ImageIcon,
   House,
+  KeyRound,
   Loader2,
   LogOut,
   Pencil,
@@ -17,6 +18,8 @@ import {
   Search,
   Trash2,
   Upload,
+  UserPlus,
+  Users,
   Wrench,
   X,
 } from "lucide-react";
@@ -59,6 +62,15 @@ const ENTITY_LABELS: Record<CmsEntityType, string> = {
   home: "Home",
   services: "Services",
   about: "Our Story",
+};
+const ALL_ENTITIES = Object.keys(ENTITY_LABELS) as CmsEntityType[];
+
+type ManagedUser = {
+  id: string;
+  email: string;
+  superAdmin: boolean;
+  permissions: CmsEntityType[];
+  createdAt: string;
 };
 
 const tableForEntity = (entity: CmsEntityType) =>
@@ -119,6 +131,9 @@ export default function AdminPageClient() {
   const [password, setPassword] = useState("");
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [permissions, setPermissions] = useState<CmsEntityType[]>([]);
+  const [showUsers, setShowUsers] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [entity, setEntity] = useState<CmsEntityType>("products");
   const [rows, setRows] = useState<CmsRow[]>([]);
   const [query, setQuery] = useState("");
@@ -132,7 +147,7 @@ export default function AdminPageClient() {
       setRows(DEMO_ROWS[entity]);
       return;
     }
-    if (!configured || !isAdmin) return;
+    if (!configured || !permissions.includes(entity)) return;
     setBusy(true);
     setMessage("");
     try {
@@ -167,7 +182,7 @@ export default function AdminPageClient() {
     } finally {
       setBusy(false);
     }
-  }, [configured, demoMode, entity, isAdmin]);
+  }, [configured, demoMode, entity, permissions]);
 
   useEffect(() => {
     // Development-only demo makes the complete static Admin UI reviewable without credentials.
@@ -183,14 +198,26 @@ export default function AdminPageClient() {
       const { data } = await supabase.auth.getUser();
       const user = data.user;
       setUserEmail(user?.email ?? null);
-      if (!user) return setIsAdmin(false);
-      const { data: allowed } = await supabase.rpc("is_admin");
+      if (!user) {
+        setIsAdmin(false);
+        setPermissions([]);
+        return;
+      }
+      const [{ data: allowed }, { data: granted }] = await Promise.all([
+        supabase.rpc("is_admin"),
+        supabase.rpc("my_cms_permissions"),
+      ]);
       setIsAdmin(allowed === true);
+      const nextPermissions = (Array.isArray(granted) ? granted : []).filter(
+        (item): item is CmsEntityType => ALL_ENTITIES.includes(item as CmsEntityType)
+      );
+      setPermissions(nextPermissions);
+      if (nextPermissions.length && !nextPermissions.includes(entity)) setEntity(nextPermissions[0]);
     };
     void applySession();
     const { data: listener } = supabase.auth.onAuthStateChange(() => void applySession());
     return () => listener.subscription.unsubscribe();
-  }, [configured, demoMode]);
+  }, [configured, demoMode, entity]);
 
   useEffect(() => {
     void loadRows();
@@ -316,7 +343,7 @@ export default function AdminPageClient() {
     return <AdminNotice title="CMS setup required" message="Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY to .env.local, then restart the development server." />;
   }
 
-  if (!demoMode && (!userEmail || !isAdmin)) {
+  if (!demoMode && (!userEmail || permissions.length === 0)) {
     return (
       <div className="fixed inset-0 z-[1000] grid min-h-screen place-items-center bg-[#F8F5F1] px-5">
         <form onSubmit={signIn} className="w-full max-w-md border border-[#D8D2C8] bg-white p-8 shadow-sm">
@@ -326,7 +353,7 @@ export default function AdminPageClient() {
           <label className="mt-8 block text-xs uppercase tracking-[0.14em] text-gray-500">Email<input className="mt-2 h-12 w-full border border-[#D8D2C8] px-4 text-sm normal-case tracking-normal outline-none focus:border-[#3B4034]" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} /></label>
           <label className="mt-5 block text-xs uppercase tracking-[0.14em] text-gray-500">Password<input className="mt-2 h-12 w-full border border-[#D8D2C8] px-4 text-sm normal-case tracking-normal outline-none focus:border-[#3B4034]" type="password" required value={password} onChange={(event) => setPassword(event.target.value)} /></label>
           {message ? <p role="alert" className="mt-4 text-sm text-red-700">{message}</p> : null}
-          {userEmail && !isAdmin ? <p role="alert" className="mt-4 text-sm text-red-700">This account is signed in but is not listed in admin_users.</p> : null}
+          {userEmail && permissions.length === 0 ? <p role="alert" className="mt-4 text-sm text-red-700">This account has no CMS permissions. Ask a super admin to grant access.</p> : null}
           <button disabled={busy} className="mt-8 flex h-12 w-full items-center justify-center bg-[#283020] text-xs uppercase tracking-[0.14em] text-white disabled:opacity-60">{busy ? <Loader2 className="animate-spin" size={18} /> : "Sign in"}</button>
         </form>
       </div>
@@ -338,19 +365,19 @@ export default function AdminPageClient() {
       <aside className="hidden w-56 shrink-0 flex-col bg-[#171B17] px-5 py-8 text-white md:flex">
         <div className="font-serif text-3xl tracking-[0.08em]">AUSHEN</div>
         <nav className="mt-12 space-y-2">
-          <AdminNav icon={<Box size={18} />} label="Products" active={entity === "products"} onClick={() => { setEntity("products"); setEditor(null); }} />
-          <AdminNav icon={<BookOpen size={18} />} label="Blog" active={entity === "blog"} onClick={() => { setEntity("blog"); setEditor(null); }} />
-          <AdminNav icon={<BriefcaseBusiness size={18} />} label="Projects" active={entity === "projects"} onClick={() => { setEntity("projects"); setEditor(null); }} />
-          <AdminNav icon={<House size={18} />} label="Home" active={entity === "home"} onClick={() => { setEntity("home"); setEditor(null); }} />
-          <AdminNav icon={<Wrench size={18} />} label="Services" active={entity === "services"} onClick={() => { setEntity("services"); setEditor(null); }} />
-          <AdminNav icon={<ImageIcon size={18} />} label="Our Story" active={entity === "about"} onClick={() => { setEntity("about"); setEditor(null); }} />
+          {(demoMode ? ALL_ENTITIES : permissions).map((item) => (
+            <AdminNav key={item} icon={item === "products" ? <Box size={18} /> : item === "blog" ? <BookOpen size={18} /> : item === "projects" ? <BriefcaseBusiness size={18} /> : item === "home" ? <House size={18} /> : item === "services" ? <Wrench size={18} /> : <ImageIcon size={18} />} label={ENTITY_LABELS[item]} active={entity === item} onClick={() => { setEntity(item); setEditor(null); }} />
+          ))}
+          {isAdmin ? <AdminNav icon={<Users size={18} />} label="Users & permissions" onClick={() => setShowUsers(true)} /> : null}
         </nav>
-        <button onClick={() => void getSupabaseBrowserClient().auth.signOut()} className="mt-auto flex items-center gap-3 border-t border-white/15 pt-6 text-sm text-white/80 hover:text-white"><LogOut size={18} />Sign out</button>
+        <div className="mt-auto space-y-4 border-t border-white/15 pt-6"><button onClick={() => setShowPassword(true)} className="flex items-center gap-3 text-sm text-white/80 hover:text-white"><KeyRound size={18} />Change password</button><button onClick={() => void getSupabaseBrowserClient().auth.signOut()} className="flex items-center gap-3 text-sm text-white/80 hover:text-white"><LogOut size={18} />Sign out</button></div>
       </aside>
 
       <main className="min-w-0 flex-1 overflow-y-auto px-5 py-7 sm:px-8 lg:px-10">
         <div className="mb-6 flex items-center gap-2 overflow-x-auto pb-2 md:hidden">
-          {(Object.keys(ENTITY_LABELS) as CmsEntityType[]).map((item) => <button key={item} onClick={() => { setEntity(item); setEditor(null); }} className={`h-10 shrink-0 px-4 text-xs uppercase tracking-[0.1em] ${entity === item ? "bg-[#283020] text-white" : "border border-[#D8D2C8] bg-white"}`}>{ENTITY_LABELS[item]}</button>)}
+          {(demoMode ? ALL_ENTITIES : permissions).map((item) => <button key={item} onClick={() => { setEntity(item); setEditor(null); }} className={`h-10 shrink-0 px-4 text-xs uppercase tracking-[0.1em] ${entity === item ? "bg-[#283020] text-white" : "border border-[#D8D2C8] bg-white"}`}>{ENTITY_LABELS[item]}</button>)}
+          {isAdmin ? <button aria-label="Manage users" onClick={() => setShowUsers(true)} className="grid h-10 w-10 shrink-0 place-items-center border border-[#D8D2C8] bg-white"><Users size={16} /></button> : null}
+          {!demoMode ? <button aria-label="Change password" onClick={() => setShowPassword(true)} className="grid h-10 w-10 shrink-0 place-items-center border border-[#D8D2C8] bg-white"><KeyRound size={16} /></button> : null}
           {!demoMode ? <button aria-label="Sign out" onClick={() => void getSupabaseBrowserClient().auth.signOut()} className="ml-auto grid h-10 w-10 place-items-center border border-[#D8D2C8] bg-white"><LogOut size={16} /></button> : null}
         </div>
         <header className="flex flex-wrap items-center justify-between gap-4">
@@ -360,7 +387,7 @@ export default function AdminPageClient() {
 
         <section className="mt-8 flex flex-wrap items-center justify-between gap-5 border border-[#D8D2C8] bg-white p-5 sm:p-6">
           <div><h2 className="font-serif text-xl">Site deployment</h2><p className="mt-1 text-sm text-gray-600">Changes become public after GitHub Actions finishes rebuilding the static site.</p></div>
-          <button onClick={publishSite} disabled={busy} className="inline-flex min-h-11 items-center gap-2 bg-[#283020] px-5 text-xs uppercase tracking-[0.12em] text-white disabled:opacity-60"><RefreshCw size={15} /> Publish site</button>
+          {demoMode || isAdmin ? <button onClick={publishSite} disabled={busy} className="inline-flex min-h-11 items-center gap-2 bg-[#283020] px-5 text-xs uppercase tracking-[0.12em] text-white disabled:opacity-60"><RefreshCw size={15} /> Publish site</button> : <span className="text-xs uppercase tracking-[0.12em] text-gray-500">A super admin publishes the site</span>}
         </section>
 
         {message ? <p role="status" className="mt-4 border-l-2 border-[#758267] bg-white px-4 py-3 text-sm">{message}</p> : null}
@@ -383,6 +410,8 @@ export default function AdminPageClient() {
       </main>
 
       {editor ? <EditorPanel entity={entity} editor={editor} setEditor={setEditor} busy={busy} onSave={save} onUpload={uploadImage} /> : null}
+      {showPassword ? <PasswordPanel onClose={() => setShowPassword(false)} /> : null}
+      {showUsers && isAdmin ? <UserManagementPanel onClose={() => setShowUsers(false)} /> : null}
     </div>
   );
 }
@@ -402,4 +431,75 @@ function EditorPanel({ entity, editor, setEditor, busy, onSave, onUpload }: { en
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return <label className="block text-xs uppercase tracking-[0.12em] text-gray-500"><span>{label}</span><div className="mt-2 normal-case tracking-normal text-[#1A1C18]">{children}</div></label>;
+}
+
+function PasswordPanel({ onClose }: { onClose: () => void }) {
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (password.length < 8) return setMessage("Use at least 8 characters.");
+    if (password !== confirm) return setMessage("Passwords do not match.");
+    setBusy(true);
+    const { error } = await getSupabaseBrowserClient().auth.updateUser({ password });
+    setBusy(false);
+    if (error) setMessage(error.message);
+    else setMessage("Password updated successfully.");
+  };
+  return <div className="fixed inset-0 z-[1020] grid place-items-center bg-black/30 p-5"><form onSubmit={submit} className="w-full max-w-md bg-white p-7 shadow-2xl"><div className="flex items-center justify-between"><h2 className="font-serif text-3xl">Change password</h2><button type="button" onClick={onClose} aria-label="Close password panel"><X /></button></div><p className="mt-3 text-sm text-gray-600">Choose a unique password with at least 8 characters.</p><div className="mt-7 space-y-5"><Field label="New password"><input type="password" minLength={8} required value={password} onChange={(event) => setPassword(event.target.value)} className="admin-input" /></Field><Field label="Confirm password"><input type="password" minLength={8} required value={confirm} onChange={(event) => setConfirm(event.target.value)} className="admin-input" /></Field></div>{message ? <p role="status" className="mt-4 text-sm text-gray-700">{message}</p> : null}<button disabled={busy} className="mt-7 h-12 w-full bg-[#283020] text-xs uppercase tracking-[0.12em] text-white disabled:opacity-60">{busy ? "Updating..." : "Update password"}</button></form></div>;
+}
+
+function UserManagementPanel({ onClose }: { onClose: () => void }) {
+  const [users, setUsers] = useState<ManagedUser[]>([]);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [selected, setSelected] = useState<CmsEntityType[]>(["blog"]);
+  const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const load = useCallback(async () => {
+    setBusy(true);
+    const { data, error } = await getSupabaseBrowserClient().functions.invoke("manage-cms-users", { method: "GET" });
+    setBusy(false);
+    if (error) setMessage(error.message);
+    else setUsers((data?.users ?? []) as ManagedUser[]);
+  }, []);
+  useEffect(() => {
+    let active = true;
+    void getSupabaseBrowserClient().functions.invoke("manage-cms-users", { method: "GET" }).then(({ data, error }) => {
+      if (!active) return;
+      if (error) setMessage(error.message);
+      else setUsers((data?.users ?? []) as ManagedUser[]);
+    });
+    return () => { active = false; };
+  }, []);
+  const toggle = (module: CmsEntityType) => setSelected((current) => current.includes(module) ? current.filter((item) => item !== module) : [...current, module]);
+  const createUser = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setBusy(true); setMessage("");
+    const { error } = await getSupabaseBrowserClient().functions.invoke("manage-cms-users", { body: { email, password, permissions: selected } });
+    setBusy(false);
+    if (error) setMessage(error.message);
+    else { setEmail(""); setPassword(""); setMessage("User created. Ask them to change the temporary password after signing in."); await load(); }
+  };
+  const updatePermissions = async (user: ManagedUser, next: CmsEntityType[]) => {
+    setBusy(true);
+    const { error } = await getSupabaseBrowserClient().functions.invoke("manage-cms-users", { method: "PUT", body: { userId: user.id, permissions: next } });
+    setBusy(false); setMessage(error ? error.message : "Permissions updated.");
+    if (!error) await load();
+  };
+  const deleteUser = async (user: ManagedUser) => {
+    if (!window.confirm(`Delete account ${user.email}?`)) return;
+    setBusy(true);
+    const { error } = await getSupabaseBrowserClient().functions.invoke("manage-cms-users", { method: "DELETE", body: { userId: user.id } });
+    setBusy(false); setMessage(error ? error.message : "Account deleted.");
+    if (!error) await load();
+  };
+  return <div className="fixed inset-0 z-[1020] flex justify-end bg-black/30"><div className="h-full w-full max-w-3xl overflow-y-auto bg-[#F8F5F1] p-6 shadow-2xl sm:p-8"><div className="flex items-center justify-between"><div><h2 className="font-serif text-4xl">Users & permissions</h2><p className="mt-2 text-sm text-gray-600">Create editor accounts and choose exactly which content they can manage.</p></div><button onClick={onClose} aria-label="Close user management"><X /></button></div><form onSubmit={createUser} className="mt-8 border border-[#D8D2C8] bg-white p-5"><h3 className="flex items-center gap-2 font-serif text-2xl"><UserPlus size={20} /> Add editor</h3><div className="mt-5 grid gap-4 sm:grid-cols-2"><Field label="Email"><input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} className="admin-input" /></Field><Field label="Temporary password"><input type="password" minLength={6} required value={password} onChange={(event) => setPassword(event.target.value)} className="admin-input" /></Field></div><PermissionChecks selected={selected} onToggle={toggle} /><button disabled={busy || selected.length === 0} className="mt-5 h-11 bg-[#283020] px-5 text-xs uppercase tracking-[0.12em] text-white disabled:opacity-50">Create editor</button></form>{message ? <p role="status" className="mt-4 border-l-2 border-[#758267] bg-white px-4 py-3 text-sm">{message}</p> : null}<div className="mt-6 space-y-3">{users.map((user) => <div key={user.id} className="border border-[#D8D2C8] bg-white p-5"><div className="flex flex-wrap items-center justify-between gap-3"><div><div className="font-medium">{user.email}</div><div className="mt-1 text-xs text-gray-500">{user.superAdmin ? "Super admin · all modules" : "Editor"}</div></div>{!user.superAdmin ? <button disabled={busy} onClick={() => void deleteUser(user)} className="inline-flex items-center gap-2 text-sm text-red-700"><Trash2 size={15} /> Delete account</button> : null}</div>{!user.superAdmin ? <PermissionChecks selected={user.permissions} onToggle={(module) => { const next = user.permissions.includes(module) ? user.permissions.filter((item) => item !== module) : [...user.permissions, module]; void updatePermissions(user, next); }} /> : null}</div>)}</div></div></div>;
+}
+
+function PermissionChecks({ selected, onToggle }: { selected: CmsEntityType[]; onToggle: (module: CmsEntityType) => void }) {
+  return <fieldset className="mt-5"><legend className="text-xs uppercase tracking-[0.12em] text-gray-500">Content permissions</legend><div className="mt-3 flex flex-wrap gap-2">{ALL_ENTITIES.map((module) => <label key={module} className={`cursor-pointer border px-3 py-2 text-sm ${selected.includes(module) ? "border-[#283020] bg-[#E8EEE1]" : "border-[#D8D2C8]"}`}><input type="checkbox" checked={selected.includes(module)} onChange={() => onToggle(module)} className="mr-2" />{ENTITY_LABELS[module]}</label>)}</div></fieldset>;
 }
