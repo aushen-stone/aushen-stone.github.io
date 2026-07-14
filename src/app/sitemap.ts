@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { ACCESSORY_BRANDS } from "@/data/accessories";
-import { BLOG_POSTS } from "@/data/blog.generated";
-import { PRODUCTS } from "@/data/products.generated";
+import { BLOG_POSTS } from "@/data/blog";
+import { PRODUCTS } from "@/data/products";
 import { canonicalUrl } from "@/lib/seo";
 
 export const dynamic = "force-static";

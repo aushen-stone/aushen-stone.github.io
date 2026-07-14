@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
-import { PRODUCTS } from "@/data/products.generated";
+import { PRODUCTS } from "@/data/products";
 import { getProductDisplayName } from "@/data/product_display_names";
 import {
   DEFAULT_HOMEOWNER_SUMMARY,

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Footer } from "@/app/components/Footer";
 import { ArrowDownLeft } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { MANAGED_PROJECTS, MANAGED_SITE_SYNCED } from "@/data/siteContent";
 
 type ProjectGalleryItem = {
   type: "full" | "half";
@@ -59,7 +60,7 @@ const SHARED_GALLERY: ProjectGalleryItem[] = [
   },
 ];
 
-const PROJECT_DETAILS: ProjectDetailRecord[] = [
+const LEGACY_PROJECT_DETAILS: ProjectDetailRecord[] = [
   {
     slug: "brighton-residence",
     title: "Brighton Residence",
@@ -221,6 +222,10 @@ const PROJECT_DETAILS: ProjectDetailRecord[] = [
     ],
   },
 ];
+
+const PROJECT_DETAILS: ProjectDetailRecord[] = MANAGED_SITE_SYNCED
+  ? MANAGED_PROJECTS
+  : LEGACY_PROJECT_DETAILS;
 
 function ProjectHero({ project }: { project: ProjectDetailRecord }) {
   const ref = useRef(null);

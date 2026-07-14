@@ -32,6 +32,7 @@ Last updated: 2026-05-07
 - Homepage composition: `src/app/page.tsx`.
 - Server wrapper routes (metadata ownership):
   - `src/app/about/page.tsx`
+  - `src/app/admin/page.tsx`
   - `src/app/accessories/page.tsx`
   - `src/app/accessories/[slug]/page.tsx`
   - `src/app/blog/page.tsx`
@@ -101,6 +102,11 @@ Last updated: 2026-05-07
   - display-only product names can be supplied through `ProductOverride.displayName`
 - Product photo mapping refresh command: `npm run prepare:product-photos`.
 - Generated files are build artifacts and must not be edited manually.
+- Optional CMS source: Supabase `cms_products`, `cms_blog_posts`, `cms_pages` and `cms_projects` tables.
+- Admin route: `/admin/` (static client application protected by Supabase Auth + RLS).
+- Build sync: `scripts/sync-cms-data.ts` writes product, blog and site-content generated files from published rows.
+- Legacy generated data remains the fallback when CMS build secrets are not configured.
+- CMS setup and deployment contract: `docs/CMS_SETUP.md`.
 - Blueocean phase-1 split contract:
   - `Blueocean` in the outer CSV continues to generate the continuity slug `blueocean`.
   - `Blueocean Honed` in the outer CSV generates the dedicated slug `blueocean-honed`.
@@ -192,6 +198,13 @@ Last updated: 2026-05-07
 - Active execution board is `docs/NEXT_STEPS.md`.
 - Historical implementation detail is `docs/WORKLOG.md`.
 - Fact conflicts are resolved by this file and current code.
+
+## Automated Testing Contract
+- Unit command: `npm test`.
+- Browser command: `npm run test:e2e`.
+- Unit coverage focuses on reusable cart persistence, enquiry copy, canonical URL, and structured-data logic.
+- Playwright covers homepage conversion paths and JSON-LD, shareable product search state, and mobile navigation in desktop and mobile Chromium.
+- CI installs Chromium and runs both suites before the production export.
 
 ## Documentation Governance Contract
 - Local command: `npm run docs:check`.
