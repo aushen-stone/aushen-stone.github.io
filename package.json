@@ -15,7 +15,7 @@
     "cms:bootstrap-admins": "tsx scripts/bootstrap-admins.ts",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --import tsx --test tests/**/*.test.ts",
+    "test": "node --import tsx --test tests/*.test.ts",
     "test:e2e": "playwright test",
     "docs:check": "node scripts/check-docs-sync.mjs"
   },
