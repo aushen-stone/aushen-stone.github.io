@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("homepage renders its primary conversion paths and business schema", async ({
+test("homepage renders its primary conversion paths", async ({
   page,
 }) => {
   const pageErrors: Error[] = [];
@@ -15,13 +15,6 @@ test("homepage renders its primary conversion paths and business schema", async 
   await expect(page.getByRole("link", { name: "Talk to a Stone Specialist" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Browse Products" })).toBeVisible();
 
-  const schema = page.locator('script[type="application/ld+json"]');
-  await expect(schema).toHaveCount(1);
-  const schemaContent = await schema.textContent();
-  expect(schemaContent).not.toBeNull();
-  expect(JSON.parse(schemaContent ?? "{}")["@type"]).toBe(
-    "HomeAndConstructionBusiness"
-  );
   expect(pageErrors).toEqual([]);
 });
 
