@@ -5,13 +5,81 @@ import Link from "next/link";
 import { Footer } from "@/app/components/Footer";
 import { ArrowUpRight, MoveDown } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { MANAGED_PROJECTS } from "@/data/siteContent";
-import type { ManagedProject } from "@/types/siteContent";
 
-const CATEGORIES = ["All", ...Array.from(new Set(MANAGED_PROJECTS.map((project) => project.category)))];
+type ProjectItem = {
+  id: number;
+  slug: string;
+  title: string;
+  category: string;
+  location: string;
+  image: string;
+  aspect: string;
+  gridArea: "left" | "right" | "center";
+};
+
+// --- MOCK DATA ---
+const PROJECTS: ProjectItem[] = [
+  {
+    id: 1,
+    slug: "brighton-residence",
+    title: "Brighton Residence",
+    category: "Residential",
+    location: "Melbourne, VIC",
+    image:
+      "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=1600&auto=format&fit=crop",
+    aspect: "aspect-[16/10]",
+    gridArea: "left",
+  },
+  {
+    id: 2,
+    slug: "toorak-pool-house",
+    title: "Toorak Pool House",
+    category: "Landscape",
+    location: "Toorak, VIC",
+    image:
+      "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=1200&auto=format&fit=crop",
+    aspect: "aspect-[3/4]",
+    gridArea: "right",
+  },
+  {
+    id: 3,
+    slug: "mornington-peninsula-winery",
+    title: "Mornington Peninsula Winery",
+    category: "Commercial",
+    location: "Mornington, VIC",
+    image:
+      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1600&auto=format&fit=crop",
+    aspect: "aspect-[16/9]",
+    gridArea: "left",
+  },
+  {
+    id: 4,
+    slug: "hawthorn-courtyard",
+    title: "Hawthorn Courtyard",
+    category: "Residential",
+    location: "Hawthorn, VIC",
+    image:
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop",
+    aspect: "aspect-[4/5]",
+    gridArea: "right",
+  },
+  {
+    id: 5,
+    slug: "sorrento-coastal-home",
+    title: "Sorrento Coastal Home",
+    category: "Residential",
+    location: "Sorrento, VIC",
+    image:
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1600&auto=format&fit=crop",
+    aspect: "aspect-[3/2]",
+    gridArea: "center",
+  },
+];
+
+const CATEGORIES = ["All", "Residential", "Commercial", "Landscape"];
 
 // === ProjectCard ===
-function ProjectCard({ project, index }: { project: ManagedProject; index: number }) {
+function ProjectCard({ project, index }: { project: ProjectItem; index: number }) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   const { scrollYProgress } = useScroll({
@@ -94,7 +162,7 @@ export default function ProjectsPage() {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const filteredProjects =
-    activeCategory === "All" ? MANAGED_PROJECTS : MANAGED_PROJECTS.filter((p) => p.category === activeCategory);
+    activeCategory === "All" ? PROJECTS : PROJECTS.filter((p) => p.category === activeCategory);
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
@@ -172,7 +240,7 @@ export default function ProjectsPage() {
         <div className="flex flex-col gap-14 sm:gap-20 md:gap-32">
           {filteredProjects.map((project, index) => (
             <Link
-              key={project.slug}
+              key={project.id}
               href={`/projects/${project.slug}`}
               className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F8F5F1]"
               aria-label={`View project: ${project.title}`}

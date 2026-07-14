@@ -1,4 +1,4 @@
-import { BLOG_POSTS } from "@/data/blog";
+import { BLOG_POSTS } from "@/data/blog.generated";
 import type { BlogPost, BlogCategoryRef } from "@/types/blog";
 
 export function getBlogPostBySlug(slug: string): BlogPost | undefined {

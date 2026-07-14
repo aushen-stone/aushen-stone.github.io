@@ -11,7 +11,7 @@ import {
 } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Footer } from "@/app/components/Footer";
-import { PRODUCTS } from "@/data/products";
+import { PRODUCTS } from "@/data/products.generated";
 import { PRODUCT_CATEGORIES } from "@/data/categories.generated";
 import { getProductDisplayName } from "@/data/product_display_names";
 import {
