@@ -62,6 +62,8 @@ export type Product = {
   materialId: string;
   materialName: string;
   description?: string;
+  /** Ordered application photos stored by the CMS, after the primary product photo. */
+  applicationImageUrls?: string[];
   finishes: FinishVariant[];
   applicationIndex: ApplicationIndexEntry[];
   media?: MediaStatus;
