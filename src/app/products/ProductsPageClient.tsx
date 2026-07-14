@@ -469,7 +469,6 @@ function ProductsPageContent({
               const applicationHoverUrl = override?.applicationImageUrls?.[0];
               const applicationLabels = collectApplicationLabels(product);
               const visibleLabels = applicationLabels.slice(0, 2);
-              const remainingLabelCount = Math.max(applicationLabels.length - visibleLabels.length, 0);
 
               return (
                 <Link
@@ -512,11 +511,6 @@ function ProductsPageContent({
                           {label}
                         </span>
                       ))}
-                      {remainingLabelCount > 0 && (
-                        <span className="px-2 py-1 text-[10px] uppercase tracking-[0.08em] bg-[#F2EEE8] text-[#4D4A44]">
-                          +{remainingLabelCount}
-                        </span>
-                      )}
                     </div>
                   </div>
                 </Link>
