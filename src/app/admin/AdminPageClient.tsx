@@ -24,6 +24,7 @@ import {
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import {
   getSupabaseBrowserClient,
   isSupabaseConfigured,
@@ -41,6 +42,13 @@ import {
 import { DEFAULT_LEGACY_PAGES } from "@/data/legacy-page.defaults";
 import { StructuredContentEditor } from "./StructuredContentEditor";
 
+// The editor is only needed after an administrator opens a blog form, so keep
+// its ProseMirror runtime out of the public site and the initial admin bundle.
+const BlogRichTextEditor = dynamic(() => import("./BlogRichTextEditor"), {
+  ssr: false,
+  loading: () => <div className="min-h-[22rem] animate-pulse bg-[#F8F5F1]" />,
+});
+
 type EditorState = {
   id?: string;
   title: string;
@@ -51,6 +59,7 @@ type EditorState = {
   applicationImageUrls: string[];
   summary: string;
   bodyHtml: string;
+  bodyJson: string;
   categories: string;
   advancedJson: string;
 };
@@ -64,6 +73,7 @@ const EMPTY_EDITOR: EditorState = {
   applicationImageUrls: [],
   summary: "",
   bodyHtml: "",
+  bodyJson: "",
   categories: "",
   advancedJson: "{}",
 };
@@ -247,6 +257,10 @@ function editorFromRow(row: CmsRow): EditorState {
       : [],
     summary: String(content.description ?? content.excerpt ?? ""),
     bodyHtml: String(content.bodyHtml ?? ""),
+    bodyJson:
+      content.editorJson && typeof content.editorJson === "object"
+        ? JSON.stringify(content.editorJson)
+        : "",
     categories,
     advancedJson: JSON.stringify(editableContent, null, 2),
   };
@@ -390,6 +404,11 @@ export default function AdminPageClient() {
   const save = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!editor) return;
+    const articleText = editor.bodyHtml.replace(/<[^>]*>/g, "").replace(/&nbsp;/gi, " ").trim();
+    if (entity === "blog" && !articleText && !/<img\b/i.test(editor.bodyHtml)) {
+      setMessage("Article content is required.");
+      return;
+    }
     setBusy(true);
     setMessage("");
     try {
@@ -621,6 +640,27 @@ export default function AdminPageClient() {
           ? error.message
           : "Unable to upload application photos",
       );
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const uploadArticleImage = async (file: File): Promise<string> => {
+    if (entity !== "blog") throw new Error("Article images are only available for blog posts.");
+    if (file.size > 5 * 1024 * 1024) throw new Error("Article images must be 5 MB or smaller.");
+    setBusy(true);
+    setMessage("");
+    const safeName = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
+    const objectPath = `blog/article/${crypto.randomUUID()}-${safeName}`;
+    const supabase = getSupabaseBrowserClient();
+    try {
+      const { error } = await supabase.storage.from("cms-media").upload(objectPath, file);
+      if (error) throw error;
+      return supabase.storage.from("cms-media").getPublicUrl(objectPath).data.publicUrl;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to upload article image";
+      setMessage(message);
+      throw error;
     } finally {
       setBusy(false);
     }
@@ -1011,6 +1051,7 @@ export default function AdminPageClient() {
           onSave={save}
           onUpload={uploadImage}
           onUploadApplications={uploadApplicationImages}
+          onUploadArticleImage={uploadArticleImage}
         />
       ) : null}
       {showPassword ? (
@@ -1067,6 +1108,7 @@ function EditorPanel({
   onSave,
   onUpload,
   onUploadApplications,
+  onUploadArticleImage,
 }: {
   entity: CmsEntityType;
   editor: EditorState;
@@ -1075,6 +1117,7 @@ function EditorPanel({
   onSave: (event: React.FormEvent) => Promise<void>;
   onUpload: (file: File) => Promise<void>;
   onUploadApplications: (files: File[]) => Promise<void>;
+  onUploadArticleImage: (file: File) => Promise<string>;
 }) {
   const update = (key: keyof EditorState, value: string) =>
     setEditor((current) => (current ? { ...current, [key]: value } : current));
@@ -1199,15 +1242,25 @@ function EditorPanel({
             </Field>
           ) : null}
           {entity === "blog" ? (
-            <Field label="Article HTML">
-              <textarea
-                rows={12}
-                required
-                value={editor.bodyHtml}
-                onChange={(event) => update("bodyHtml", event.target.value)}
-                className="admin-input py-3 font-mono text-xs"
+            <div>
+              <div className="text-xs uppercase tracking-[0.12em] text-gray-500">
+                Article content
+              </div>
+              <p className="mb-3 mt-2 text-xs leading-5 text-gray-500">
+                Write and format the article visually. Preview uses the same typography as the public blog page.
+              </p>
+              <BlogRichTextEditor
+                key={editor.id ?? editor.slug ?? "new-blog"}
+                html={editor.bodyHtml}
+                json={editor.bodyJson}
+                onUploadImage={onUploadArticleImage}
+                onChange={(bodyHtml, bodyJson) =>
+                  setEditor((current) =>
+                    current ? { ...current, bodyHtml, bodyJson } : current,
+                  )
+                }
               />
-            </Field>
+            </div>
           ) : null}
           <Field label={entity === "products" ? "Product photo" : "Image"}>
             {editor.imageUrl ? (

@@ -30,6 +30,21 @@ test("admin demo keeps product and blog navigation available on mobile", async (
   await expect(page.getByRole("heading", { name: "Products" })).toBeVisible();
 });
 
+test("admin blog editor loads legacy HTML and previews visual edits", async ({ page }) => {
+  await page.goto("/admin/?demo=1");
+  await page.getByRole("button", { name: "Blog", exact: true }).click();
+  await page.getByRole("button", { name: "Edit Choosing Stone for Outdoor Spaces" }).click();
+
+  await expect(page.getByText("Article content", { exact: true })).toBeVisible();
+  const article = page.locator('[contenteditable="true"][aria-label="Article content"]');
+  await expect(article).toContainText("A practical material guide.");
+  await article.fill("A practical material guide. Updated visually.");
+
+  await page.getByRole("button", { name: "Preview", exact: true }).click();
+  await expect(page.getByText("Updated visually.", { exact: false })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Edit", exact: true })).toBeVisible();
+});
+
 test("admin demo exposes projects and managed pages", async ({ page }) => {
   await page.goto("/admin/?demo=1");
   await page.getByRole("button", { name: "Projects", exact: true }).first().click();

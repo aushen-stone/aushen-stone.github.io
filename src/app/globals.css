@@ -150,6 +150,24 @@ body {
   font-size: 0.98rem;
 }
 
+.blog-richtext img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+.blog-richtext figure figcaption {
+  color: #6b7065;
+  font-size: 0.82rem;
+  margin-top: 0.55rem;
+}
+
+.blog-editor-content:empty::before {
+  color: #92978c;
+  content: "Start writing your article…";
+  pointer-events: none;
+}
+
 .blog-richtext ul,
 .blog-richtext ol {
   padding-left: 1.25rem;

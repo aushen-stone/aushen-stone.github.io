@@ -4,6 +4,7 @@ import type { BlogPost } from "../src/types/blog";
 import type { Product, ProductOverride } from "../src/types/product";
 import type { LegacyPageContentMap, ManagedPage, ManagedProject } from "../src/types/siteContent";
 import { applyLegacyPageHeroImage } from "../src/lib/cmsContent";
+import { prepareBlogHtml } from "../src/lib/blogHtml";
 
 type ProductRow = {
   slug: string;
@@ -58,10 +59,15 @@ const [productRows, blogRows, pageRows, projectRows] = await Promise.all([
 const products = productRows.map((row) => row.content);
 // Keep the dedicated image columns authoritative. This also protects content
 // edited directly in Supabase or migrated from an older CMS payload shape.
-const posts = blogRows.map((row) => ({
-  ...row.content,
-  heroImageUrl: row.hero_image_url ?? row.content.heroImageUrl,
-}));
+const posts = blogRows.map((row) => {
+  const article = prepareBlogHtml(row.content.bodyHtml);
+  return {
+    ...row.content,
+    heroImageUrl: row.hero_image_url ?? row.content.heroImageUrl,
+    bodyHtml: article.html,
+    headings: article.headings,
+  };
+});
 const pages = Object.fromEntries(pageRows.map((row) => [row.page_key, { key: row.page_key, title: row.title, heroImageUrl: row.hero_image_url, blocks: row.content.blocks ?? [] }])) as Partial<Record<ManagedPage["key"], ManagedPage>>;
 // The page payload is also emitted verbatim for the legacy component adapters.
 // Old `{ blocks: [...] }` rows remain harmless because every adapter validates
