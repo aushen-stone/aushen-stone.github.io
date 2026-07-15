@@ -2,6 +2,7 @@ import type { CmsEntityType } from "@/types/cms";
 import type { BlogPost } from "@/types/blog";
 import type { Product } from "@/types/product";
 import type { LegacyAboutContent, LegacyHomeContent, LegacyPageContentMap, LegacyServicesContent, ManagedProject } from "@/types/siteContent";
+import { prepareBlogHtml } from "@/lib/blogHtml";
 
 export type CmsContentInput = {
   title: string;
@@ -11,6 +12,7 @@ export type CmsContentInput = {
   applicationImageUrls?: string[];
   summary: string;
   bodyHtml: string;
+  bodyJson?: string;
   categories: string;
   advancedJson: string;
 };
@@ -108,6 +110,16 @@ export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): 
     .map((name) => name.trim())
     .filter(Boolean)
     .map((name) => ({ name, slug: slugifyCmsValue(name) }));
+  const preparedArticle = prepareBlogHtml(input.bodyHtml);
+  let editorJson: Record<string, unknown> | null = null;
+  try {
+    const parsed = JSON.parse(input.bodyJson || "null") as unknown;
+    editorJson = parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? parsed as Record<string, unknown>
+      : null;
+  } catch {
+    editorJson = null;
+  }
   return {
     ...advanced,
     title: input.title,
@@ -118,8 +130,9 @@ export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): 
     primaryCategory: categoryRefs[0] ?? null,
     heroImageUrl: input.imageUrl || null,
     excerpt: input.summary,
-    bodyHtml: input.bodyHtml,
-    headings: Array.isArray(advanced.headings) ? advanced.headings : [],
+    bodyHtml: preparedArticle.html,
+    editorJson,
+    headings: preparedArticle.headings,
     readingTimeMinutes: Number(advanced.readingTimeMinutes ?? 3),
     seoTitle: String(advanced.seoTitle ?? input.title),
     seoDescription: String(advanced.seoDescription ?? input.summary),

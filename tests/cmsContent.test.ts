@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { applyLegacyPageHeroImage, buildCmsContent, slugifyCmsValue } from "../src/lib/cmsContent";
+import { prepareBlogHtml, sanitizeBlogHtml } from "../src/lib/blogHtml";
 
 test("slugifyCmsValue creates route-safe slugs", () => {
   assert.equal(slugifyCmsValue("Grey Apricot & Marble"), "grey-apricot-and-marble");
@@ -74,6 +75,49 @@ test("buildCmsContent preserves legacy page-specific data", () => {
   });
   assert.deepEqual(content.hero?.titleLines, ["Find your crafted", "architectural surfaces."]);
   assert.equal(content.hero?.image, "/AushenShop.webp");
+});
+
+test("buildCmsContent stores editor JSON and sanitizes generated blog HTML", () => {
+  const document = { type: "doc", content: [{ type: "paragraph" }] };
+  const content = buildCmsContent("blog", {
+    title: "Safe guide",
+    slug: "safe-guide",
+    secondaryLabel: "",
+    imageUrl: "",
+    summary: "A safe guide",
+    bodyHtml: '<h2 id="legacy-heading">Heading</h2><script>alert(1)</script><p onclick="bad()">Copy</p>',
+    bodyJson: JSON.stringify(document),
+    categories: "Guides",
+    advancedJson: "{}",
+  });
+  assert.deepEqual(content.editorJson, document);
+  assert.equal(
+    content.bodyHtml,
+    '<h2 id="legacy-heading">Heading</h2><p>Copy</p>',
+  );
+  assert.deepEqual(content.headings, [
+    { id: "legacy-heading", text: "Heading", level: 2 },
+  ]);
+});
+
+test("prepareBlogHtml creates unique anchors without changing heading markup", () => {
+  assert.deepEqual(
+    prepareBlogHtml("<h2>Pool &amp; Pavers</h2><h3>Pool &amp; Pavers</h3>"),
+    {
+      html: '<h2 id="pool-and-pavers">Pool &amp; Pavers</h2><h3 id="pool-and-pavers-2">Pool &amp; Pavers</h3>',
+      headings: [
+        { id: "pool-and-pavers", text: "Pool & Pavers", level: 2 },
+        { id: "pool-and-pavers-2", text: "Pool & Pavers", level: 3 },
+      ],
+    },
+  );
+});
+
+test("sanitizeBlogHtml preserves legacy formatting tags", () => {
+  assert.equal(
+    sanitizeBlogHtml('<h4 id="detail"><b>Bold</b> and <i>italic</i></h4>'),
+    '<h4 id="detail"><b>Bold</b> and <i>italic</i></h4>',
+  );
 });
 
 test("buildCmsContent stores ordered application photos separately", () => {

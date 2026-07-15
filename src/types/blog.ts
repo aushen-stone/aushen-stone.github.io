@@ -23,6 +23,8 @@ export type BlogPost = {
   heroImageUrl?: string | null;
   excerpt: string;
   bodyHtml: string;
+  /** Tiptap document state; legacy posts continue to work from bodyHtml alone. */
+  editorJson?: Record<string, unknown> | null;
   headings: BlogHeading[];
   readingTimeMinutes: number;
   seoTitle?: string | null;
