@@ -12,7 +12,6 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Footer } from "@/app/components/Footer";
 import { PRODUCTS } from "@/data/products";
-import { PRODUCT_CATEGORIES } from "@/data/categories.generated";
 import { getProductDisplayName } from "@/data/product_display_names";
 import {
   DEFAULT_PRODUCT_IMAGE,
@@ -30,6 +29,34 @@ type FilterState = {
   application: string;
   tone: string;
 };
+
+const MATERIAL_FILTER_OPTIONS = [
+  { name: "Bluestone", slug: "bluestone" },
+  { name: "Limestone", slug: "limestone" },
+  { name: "Marble", slug: "marble" },
+  { name: "Travertine", slug: "travertine" },
+  { name: "Granite", slug: "granite" },
+  { name: "Quartz", slug: "quartz" },
+  { name: "Sandstone", slug: "sandstone" },
+  { name: "Porcelain", slug: "porcelain" },
+  { name: "Brick", slug: "reclaimed-brick" },
+  { name: "Permeable Paver", slug: "permeable-paver" },
+];
+
+const APPLICATION_FILTER_OPTIONS = [
+  { name: "Paver", slug: "paver" },
+  { name: "Pool Coping", slug: "pool-coping" },
+  { name: "Cladding", slug: "cladding" },
+  { name: "Crazy Paver", slug: "crazy-paver" },
+  { name: "Cobble Stone", slug: "cobble-stone" },
+  { name: "Organic Stepper", slug: "organic-stepper" },
+  { name: "Giant Stepper", slug: "giant-stepper" },
+  { name: "Patterns", slug: "patterns" },
+  { name: "Kerb", slug: "kerb" },
+  { name: "Pitcher", slug: "pitcher" },
+  { name: "Slab", slug: "slab" },
+  { name: "Organic Table and Seat", slug: "organic-table-and-seat" },
+];
 
 const slugifyTone = (value: string) =>
   value
@@ -233,15 +260,8 @@ function ProductsPageContent({
   onFiltersChange,
   enableReturnRestore = false,
 }: ProductsPageContentProps) {
-  const materials = PRODUCT_CATEGORIES.materials;
-  const applications = useMemo(
-    () =>
-      PRODUCT_CATEGORIES.applications.map((application) => ({
-        name: application.name,
-        slug: application.slug,
-      })),
-    []
-  );
+  const materials = MATERIAL_FILTER_OPTIONS;
+  const applications = APPLICATION_FILTER_OPTIONS;
 
   useEffect(() => {
     if (!enableReturnRestore) return;
@@ -534,15 +554,8 @@ function ProductsPageInner() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const materials = PRODUCT_CATEGORIES.materials;
-  const applications = useMemo(
-    () =>
-      PRODUCT_CATEGORIES.applications.map((application) => ({
-        name: application.name,
-        slug: application.slug,
-      })),
-    []
-  );
+  const materials = MATERIAL_FILTER_OPTIONS;
+  const applications = APPLICATION_FILTER_OPTIONS;
 
   const urlFilters = useMemo(
     () =>
