@@ -23,13 +23,29 @@ test("admin demo renders content management and opens the product editor", async
   await page.getByLabel("Surface finish").fill("Sandblasted");
   await page.getByLabel("Slip rating (optional)").fill("P5");
   await page.getByPlaceholder("e.g. 600x400x20mm").fill("600x400x20/60mm");
+  await page.getByRole("button", { name: "Size", exact: true }).click();
+  await page
+    .getByPlaceholder("e.g. 600x400x20mm")
+    .last()
+    .fill("800x400x20/60mm");
+  await page.getByRole("button", { name: "Surface finish", exact: true }).click();
+  await page.getByLabel("Surface finish").last().fill("Honed (P3)");
+  await page.getByLabel("Surface finish").last().blur();
+  await expect(page.getByLabel("Surface finish").last()).toHaveValue("Honed");
+  await expect(page.getByLabel("Slip rating (optional)").last()).toHaveValue("P3");
+  await page
+    .getByPlaceholder("e.g. 600x400x20mm")
+    .last()
+    .fill("600x400x20mm");
   await page.getByRole("button", { name: "Save changes" }).click();
   await expect(page.getByText("Demo saved locally.", { exact: false })).toBeVisible();
   await expect(page.getByText("New Test Stone")).toBeVisible();
   await page.getByRole("button", { name: "Edit New Test Stone" }).click();
   await expect(page.getByLabel("Application name")).toHaveValue("Pool Coping / Drop Face");
-  await expect(page.getByLabel("Surface finish")).toHaveValue("Sandblasted");
-  await expect(page.getByPlaceholder("e.g. 600x400x20mm")).toHaveValue("600x400x20/60mm");
+  await expect(page.getByLabel("Surface finish")).toHaveCount(2);
+  await expect(page.getByLabel("Surface finish").first()).toHaveValue("Sandblasted");
+  await expect(page.getByLabel("Surface finish").last()).toHaveValue("Honed");
+  await expect(page.getByPlaceholder("e.g. 600x400x20mm")).toHaveCount(3);
   await page.getByRole("button", { name: "Close editor" }).click();
   await expect(page.getByRole("heading", { name: "Add product" })).toHaveCount(0);
 });

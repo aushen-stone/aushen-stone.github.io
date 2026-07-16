@@ -50,9 +50,17 @@ test("product applications drive catalogue filtering and availability selections
 
   await page.goto("/products/antarctica/");
   await page.getByRole("combobox", { name: "Select application" }).selectOption("pool-coping--drop-face");
+  await expect(page.getByRole("combobox", { name: "Select surface finish" })).toHaveValue("sandblasted-p5");
   await expect(page.getByText("Pool Coping / Drop Face", { exact: true }).last()).toBeVisible();
   await expect(page.getByText("600x400x20/60mm", { exact: true }).last()).toBeVisible();
   await expect(page.getByText("P5", { exact: true }).last()).toBeVisible();
+
+  await page.getByRole("button", { name: "Suitability & Application" }).click();
+  await expect(
+    page.getByText("Paver, Pool Coping / Drop Face, Pool Coping / Bull Nose, Slab", {
+      exact: true,
+    }),
+  ).toBeVisible();
 });
 
 test("mobile navigation opens and exposes the primary sections", async ({ page }, testInfo) => {

@@ -4,6 +4,10 @@ import { Plus, Trash2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { PREFERRED_APPLICATION_FILTER_OPTIONS } from "@/data/productFilterOptions";
 import { slugifyCmsValue } from "@/lib/cmsContent";
+import {
+  formatSurfaceFinishLabel,
+  resolveFinishSpecification,
+} from "@/lib/productSpecifications";
 import type {
   ApplicationFinishOffer,
   ApplicationIndexEntry,
@@ -150,7 +154,21 @@ export default function ProductSpecificationsEditor({
                             id: current.id || slugifyCmsValue(event.target.value),
                           }))
                         }
+                        onBlur={() =>
+                          updateFinish(applicationIndex, finishIndex, (current) => {
+                            const resolved = resolveFinishSpecification(current);
+                            return {
+                              ...current,
+                              name: resolved.name === "-" ? "" : resolved.name,
+                              slipRating:
+                                resolved.slipRating === "-"
+                                  ? undefined
+                                  : resolved.slipRating,
+                            };
+                          })
+                        }
                         className="admin-input"
+                        placeholder="e.g. Sandblasted or Sandblasted (P5)"
                       />
                     </Field>
                     <Field label="Slip rating (optional)">
@@ -167,6 +185,12 @@ export default function ProductSpecificationsEditor({
                       />
                     </Field>
                   </div>
+
+                  {finish.name.trim() ? (
+                    <p className="mt-2 text-xs text-gray-500">
+                      Customer-facing value: {formatSurfaceFinishLabel(finish)}
+                    </p>
+                  ) : null}
 
                   <div className="mt-3">
                     <div className="text-xs uppercase tracking-[0.1em] text-gray-500">Sizes</div>
