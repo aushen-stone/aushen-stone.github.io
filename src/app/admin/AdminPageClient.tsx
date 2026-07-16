@@ -40,6 +40,8 @@ import {
   DEFAULT_MANAGED_PROJECTS,
 } from "@/data/site-content.defaults";
 import { DEFAULT_LEGACY_PAGES } from "@/data/legacy-page.defaults";
+import type { ApplicationIndexEntry } from "@/types/product";
+import ProductSpecificationsEditor from "./ProductSpecificationsEditor";
 import { StructuredContentEditor } from "./StructuredContentEditor";
 
 // The editor is only needed after an administrator opens a blog form, so keep
@@ -1133,16 +1135,29 @@ function EditorPanel({
     updateApplicationImages(next);
   };
   let structuredContent: Record<string, unknown> | null = null;
-  if (PAGE_ENTITIES.has(entity)) {
-    try {
-      structuredContent = JSON.parse(editor.advancedJson) as Record<
-        string,
-        unknown
-      >;
-    } catch {
-      structuredContent = null;
-    }
+  let productApplications: ApplicationIndexEntry[] = [];
+  let parsedAdvanced: Record<string, unknown> | null = null;
+  try {
+    parsedAdvanced = JSON.parse(editor.advancedJson || "{}") as Record<
+      string,
+      unknown
+    >;
+  } catch {
+    parsedAdvanced = null;
   }
+  if (PAGE_ENTITIES.has(entity)) {
+    structuredContent = parsedAdvanced;
+  }
+  if (entity === "products" && Array.isArray(parsedAdvanced?.applicationIndex)) {
+    productApplications = parsedAdvanced.applicationIndex as ApplicationIndexEntry[];
+  }
+  const updateProductApplications = (applications: ApplicationIndexEntry[]) => {
+    if (!parsedAdvanced) return;
+    update(
+      "advancedJson",
+      JSON.stringify({ ...parsedAdvanced, applicationIndex: applications }, null, 2),
+    );
+  };
   const entityName =
     entity === "products"
       ? "product"
@@ -1240,6 +1255,12 @@ function EditorPanel({
                 className="admin-input py-3"
               />
             </Field>
+          ) : null}
+          {entity === "products" ? (
+            <ProductSpecificationsEditor
+              value={productApplications}
+              onChange={updateProductApplications}
+            />
           ) : null}
           {entity === "blog" ? (
             <div>
