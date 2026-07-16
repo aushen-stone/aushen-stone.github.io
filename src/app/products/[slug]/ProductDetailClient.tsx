@@ -45,6 +45,12 @@ import {
   submitContactEnquiry,
 } from "@/lib/contactSubmission";
 import type { AudienceMode, Product } from "@/types/product";
+import {
+  buildProductTechnicalSpecifications,
+  formatSurfaceFinishLabel,
+  joinApplicationLabels,
+  resolveFinishSpecification,
+} from "@/lib/productSpecifications";
 
 type SelectOption = {
   label: string;
@@ -431,7 +437,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
   const finishOptions = useMemo(
     () =>
       (selectedApplication?.finishes || []).map((finish) => ({
-        label: finish.slipRating ? `${finish.name} (${finish.slipRating})` : finish.name,
+        label: formatSurfaceFinishLabel(finish),
         value: finish.id,
       })),
     [selectedApplication]
@@ -567,19 +573,17 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     : product.materialName;
 
   const suitability = useMemo(() => {
-    const labels = new Set<string>();
-    product.applicationIndex.forEach((application) => labels.add(application.label));
-    return labels.size > 0 ? Array.from(labels).join(", ") : "Application details coming soon.";
+    return joinApplicationLabels(product.applicationIndex);
   }, [product]);
 
   const techSpecs = useMemo(
-    () => [
-      { label: "Material", value: product.materialName || "-" },
-      { label: "Application", value: selectedApplication?.label || "-" },
-      { label: "Finish", value: selectedFinish?.name || "-" },
-      { label: "Size", value: selectedSizeValue || "-" },
-      { label: "Slip Rating", value: selectedFinish?.slipRating || "-" },
-    ],
+    () =>
+      buildProductTechnicalSpecifications({
+        product,
+        application: selectedApplication,
+        finish: selectedFinish,
+        size: selectedSizeValue,
+      }),
     [product, selectedApplication, selectedFinish, selectedSizeValue]
   );
 
@@ -627,9 +631,9 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     `Product slug: ${product.slug}`,
     `Material: ${product.materialName || "-"}`,
     `Application: ${selectedApplication?.label || "-"}`,
-    `Finish: ${selectedFinish?.name || "-"}`,
+    `Finish: ${resolveFinishSpecification(selectedFinish).name}`,
     `Size: ${selectedSizeValue || "-"}`,
-    `Slip rating: ${selectedFinish?.slipRating || "-"}`,
+    `Slip rating: ${resolveFinishSpecification(selectedFinish).slipRating}`,
     `Page: ${getProductPageUrl()}`,
   ];
 
