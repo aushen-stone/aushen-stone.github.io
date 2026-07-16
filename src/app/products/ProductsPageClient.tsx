@@ -313,7 +313,12 @@ function ProductsPageContent({
         .toLowerCase();
 
       return searchable.includes(normalizedQuery);
-    });
+    }).sort((left, right) =>
+      getProductDisplayName(left).localeCompare(getProductDisplayName(right), "en-AU", {
+        sensitivity: "base",
+        numeric: true,
+      })
+    );
   }, [filters]);
 
   const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
