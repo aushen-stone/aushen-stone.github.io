@@ -12,6 +12,10 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Footer } from "@/app/components/Footer";
 import { PRODUCTS } from "@/data/products";
+import {
+  MATERIAL_FILTER_OPTIONS,
+  buildApplicationFilterOptions,
+} from "@/data/productFilterOptions";
 import { getProductDisplayName } from "@/data/product_display_names";
 import {
   DEFAULT_PRODUCT_IMAGE,
@@ -30,33 +34,7 @@ type FilterState = {
   tone: string;
 };
 
-const MATERIAL_FILTER_OPTIONS = [
-  { name: "Bluestone", slug: "bluestone" },
-  { name: "Limestone", slug: "limestone" },
-  { name: "Marble", slug: "marble" },
-  { name: "Travertine", slug: "travertine" },
-  { name: "Granite", slug: "granite" },
-  { name: "Quartz", slug: "quartz" },
-  { name: "Sandstone", slug: "sandstone" },
-  { name: "Porcelain", slug: "porcelain" },
-  { name: "Brick", slug: "reclaimed-brick" },
-  { name: "Permeable Paver", slug: "permeable-paver" },
-];
-
-const APPLICATION_FILTER_OPTIONS = [
-  { name: "Paver", slug: "paver" },
-  { name: "Pool Coping", slug: "pool-coping" },
-  { name: "Cladding", slug: "cladding" },
-  { name: "Crazy Paver", slug: "crazy-paver" },
-  { name: "Cobble Stone", slug: "cobble-stone" },
-  { name: "Organic Stepper", slug: "organic-stepper" },
-  { name: "Giant Stepper", slug: "giant-stepper" },
-  { name: "Patterns", slug: "patterns" },
-  { name: "Kerb", slug: "kerb" },
-  { name: "Pitcher", slug: "pitcher" },
-  { name: "Slab", slug: "slab" },
-  { name: "Organic Table and Seat", slug: "organic-table-and-seat" },
-];
+const APPLICATION_FILTER_OPTIONS = buildApplicationFilterOptions(PRODUCTS);
 
 const slugifyTone = (value: string) =>
   value
@@ -81,8 +59,8 @@ const TONE_OPTIONS = (() => {
 
 const buildInitialFilters = (
   category: string | null,
-  materials: { name: string; slug: string }[],
-  applications: { name: string; slug: string }[]
+  materials: ReadonlyArray<{ name: string; slug: string }>,
+  applications: ReadonlyArray<{ name: string; slug: string }>
 ): FilterState => {
   const selected: FilterState = {
     query: "",
@@ -133,8 +111,8 @@ const emptyFilters = (): FilterState => ({
 
 const parseFiltersFromParams = (
   params: URLSearchParams,
-  materials: { name: string; slug: string }[],
-  applications: { name: string; slug: string }[]
+  materials: ReadonlyArray<{ name: string; slug: string }>,
+  applications: ReadonlyArray<{ name: string; slug: string }>
 ): FilterState => {
   const selected = buildInitialFilters(
     params.get("category"),

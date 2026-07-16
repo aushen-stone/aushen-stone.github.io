@@ -41,6 +41,20 @@ test("product search updates the shareable URL and rendered results", async ({ p
   await expect(page.getByText("No filters applied")).toBeVisible();
 });
 
+test("product applications drive catalogue filtering and availability selections", async ({ page }) => {
+  await page.goto("/products/");
+  await page.getByRole("combobox", { name: "Filter by application" }).selectOption("pool-coping");
+  await expect(page).toHaveURL(/application=pool-coping/);
+  await expect(page.getByText("Filters applied")).toBeVisible();
+  expect(await page.locator('a[id^="product-"]').count()).toBeGreaterThan(0);
+
+  await page.goto("/products/antarctica/");
+  await page.getByRole("combobox", { name: "Select application" }).selectOption("pool-coping--drop-face");
+  await expect(page.getByText("Pool Coping / Drop Face", { exact: true }).last()).toBeVisible();
+  await expect(page.getByText("600x400x20/60mm", { exact: true }).last()).toBeVisible();
+  await expect(page.getByText("P5", { exact: true }).last()).toBeVisible();
+});
+
 test("mobile navigation opens and exposes the primary sections", async ({ page }, testInfo) => {
   test.skip(!testInfo.project.name.startsWith("mobile"), "Mobile-only interaction");
   await page.goto("/");

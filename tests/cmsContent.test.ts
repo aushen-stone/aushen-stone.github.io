@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { applyLegacyPageHeroImage, buildCmsContent, slugifyCmsValue } from "../src/lib/cmsContent";
 import { prepareBlogHtml, sanitizeBlogHtml } from "../src/lib/blogHtml";
+import { buildApplicationFilterOptions } from "../src/data/productFilterOptions";
 
 test("slugifyCmsValue creates route-safe slugs", () => {
   assert.equal(slugifyCmsValue("Grey Apricot & Marble"), "grey-apricot-and-marble");
@@ -75,6 +76,31 @@ test("buildCmsContent preserves legacy page-specific data", () => {
   });
   assert.deepEqual(content.hero?.titleLines, ["Find your crafted", "architectural surfaces."]);
   assert.equal(content.hero?.image, "/AushenShop.webp");
+});
+
+test("product application filters keep preferred order and include CMS categories", () => {
+  const options = buildApplicationFilterOptions([
+    {
+      id: "custom-stone",
+      name: "Custom Stone",
+      slug: "custom-stone",
+      materialId: "granite",
+      materialName: "Granite",
+      finishes: [],
+      applicationIndex: [
+        {
+          id: "fireplace",
+          label: "Fireplace Hearth",
+          category: "Fireplace",
+          categorySlug: "fireplace",
+          finishes: [],
+        },
+      ],
+    },
+  ]);
+
+  assert.equal(options[0].slug, "paver");
+  assert.deepEqual(options.at(-1), { name: "Fireplace", slug: "fireplace" });
 });
 
 test("buildCmsContent stores editor JSON and sanitizes generated blog HTML", () => {
