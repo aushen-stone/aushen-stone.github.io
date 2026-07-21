@@ -77,6 +77,21 @@ test("admin blog editor loads legacy HTML and previews visual edits", async ({ p
 });
 
 test("product and blog uploads reject unsupported images and restore controls", async ({ page }) => {
+  const chooseUnsupportedImage = async (
+    input: ReturnType<typeof page.locator>,
+    name: string,
+  ) => {
+    await input.evaluate((element, fileName) => {
+      const transfer = new DataTransfer();
+      transfer.items.add(new File([new Uint8Array([1, 2, 3])], fileName, { type: "image/heic" }));
+      Object.defineProperty(element, "files", {
+        configurable: true,
+        value: transfer.files,
+      });
+      element.dispatchEvent(new Event("change", { bubbles: true }));
+    }, name);
+  };
+
   await page.goto("/admin/?demo=1");
   await page.getByRole("button", { name: "Add product" }).click();
 
@@ -84,11 +99,9 @@ test("product and blog uploads reject unsupported images and restore controls", 
     .locator("label")
     .filter({ hasText: "Upload product photo" })
     .locator('input[type="file"]');
-  await productPhotoInput.setInputFiles({
-    name: "lime-greige.heic",
-    mimeType: "image/heic",
-    buffer: Buffer.from([1, 2, 3]),
-  });
+  // Dispatch directly so the test can exercise the validation path even though
+  // Chromium correctly filters HEIC out of the native file chooser via `accept`.
+  await chooseUnsupportedImage(productPhotoInput, "lime-greige.heic");
   await expect(
     page.getByText(
       "lime-greige.heic is not supported. Use JPEG, PNG, WebP or AVIF.",
@@ -104,11 +117,7 @@ test("product and blog uploads reject unsupported images and restore controls", 
     .locator("label")
     .filter({ hasText: "Upload image" })
     .locator('input[type="file"]');
-  await blogHeroInput.setInputFiles({
-    name: "blog-hero.heic",
-    mimeType: "image/heic",
-    buffer: Buffer.from([1, 2, 3]),
-  });
+  await chooseUnsupportedImage(blogHeroInput, "blog-hero.heic");
   await expect(
     page.getByText("blog-hero.heic is not supported. Use JPEG, PNG, WebP or AVIF.", {
       exact: true,
@@ -118,11 +127,7 @@ test("product and blog uploads reject unsupported images and restore controls", 
     .locator("label")
     .filter({ hasText: /^Image$/ })
     .locator('input[type="file"]');
-  await articleImageInput.setInputFiles({
-    name: "article-image.heic",
-    mimeType: "image/heic",
-    buffer: Buffer.from([1, 2, 3]),
-  });
+  await chooseUnsupportedImage(articleImageInput, "article-image.heic");
   await expect(
     page.getByRole("alert").filter({ hasText: "article-image.heic is not supported" }),
   ).toBeVisible();
