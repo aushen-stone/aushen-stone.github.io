@@ -7,7 +7,10 @@ import { usePathname } from "next/navigation";
 import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ACCESSORY_BRANDS } from "@/data/accessories";
-import { PRODUCT_CATEGORIES } from "@/data/categories.generated";
+import {
+  MATERIAL_FILTER_OPTIONS,
+  PREFERRED_APPLICATION_FILTER_OPTIONS,
+} from "@/data/productFilterOptions";
 import { SampleCartDrawer } from "@/app/components/cart/SampleCartDrawer";
 import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
 
@@ -422,7 +425,7 @@ export function Navbar() {
                     By Material
                   </h4>
                   <ul className="space-y-3">
-                    {PRODUCT_CATEGORIES.materials.map((cat) => (
+                    {MATERIAL_FILTER_OPTIONS.map((cat) => (
                       <li key={cat.slug}>
                         <Link
                           href={`/products?category=${cat.slug}`}
@@ -442,7 +445,7 @@ export function Navbar() {
                     By Application
                   </h4>
                   <ul className="space-y-3">
-                    {PRODUCT_CATEGORIES.applications.map((cat) => (
+                    {PREFERRED_APPLICATION_FILTER_OPTIONS.map((cat) => (
                       <li key={cat.slug}>
                         <Link
                           href={`/products?category=${cat.slug}`}
@@ -624,7 +627,7 @@ export function Navbar() {
                     By Material
                   </h4>
                   <ul className="space-y-2">
-                    {PRODUCT_CATEGORIES.materials.slice(0, 6).map((cat) => (
+                    {MATERIAL_FILTER_OPTIONS.slice(0, 6).map((cat) => (
                       <li key={cat.slug}>
                         <Link
                           href={`/products?category=${cat.slug}`}
@@ -643,7 +646,7 @@ export function Navbar() {
                     By Application
                   </h4>
                   <ul className="space-y-2">
-                    {PRODUCT_CATEGORIES.applications.slice(0, 6).map((cat) => (
+                    {PREFERRED_APPLICATION_FILTER_OPTIONS.slice(0, 6).map((cat) => (
                       <li key={cat.slug}>
                         <Link
                           href={`/products?category=${cat.slug}`}
