@@ -35,6 +35,7 @@ export default function BlogRichTextEditor({
 }: BlogRichTextEditorProps) {
   const [mode, setMode] = useState<"edit" | "preview">("edit");
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
   let initialContent: string | Record<string, unknown> = html || "<p></p>";
   try {
     const parsed = JSON.parse(json || "null") as unknown;
@@ -81,10 +82,13 @@ export default function BlogRichTextEditor({
   const uploadInlineImage = async (file: File) => {
     if (!editor) return;
     setUploading(true);
+    setUploadError("");
     try {
       const url = await onUploadImage(file);
       const alt = window.prompt("Describe this image for accessibility", file.name) ?? file.name;
       editor.chain().focus().setImage({ src: url, alt }).run();
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : "Unable to upload image.");
     } finally {
       setUploading(false);
     }
@@ -135,6 +139,14 @@ export default function BlogRichTextEditor({
             <button type="button" className={toolbarButton} disabled={!editor?.can().undo()} onClick={() => editor?.chain().focus().undo().run()}>Undo</button>
             <button type="button" className={toolbarButton} disabled={!editor?.can().redo()} onClick={() => editor?.chain().focus().redo().run()}>Redo</button>
           </div>
+          {uploadError ? (
+            <p
+              role="alert"
+              className="border-b border-[#D8D2C8] bg-red-50 px-4 py-2 text-sm text-red-700"
+            >
+              {uploadError}
+            </p>
+          ) : null}
           <EditorContent editor={editor} />
         </>
       ) : (

@@ -76,6 +76,61 @@ test("admin blog editor loads legacy HTML and previews visual edits", async ({ p
   await expect(page.getByRole("button", { name: "Edit", exact: true })).toBeVisible();
 });
 
+test("product and blog uploads reject unsupported images and restore controls", async ({ page }) => {
+  await page.goto("/admin/?demo=1");
+  await page.getByRole("button", { name: "Add product" }).click();
+
+  const productPhotoInput = page
+    .locator("label")
+    .filter({ hasText: "Upload product photo" })
+    .locator('input[type="file"]');
+  await productPhotoInput.setInputFiles({
+    name: "lime-greige.heic",
+    mimeType: "image/heic",
+    buffer: Buffer.from([1, 2, 3]),
+  });
+  await expect(
+    page.getByText(
+      "lime-greige.heic is not supported. Use JPEG, PNG, WebP or AVIF.",
+      { exact: true },
+    ),
+  ).toBeVisible();
+  await expect(page.getByText("Upload product photo", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "Close editor" }).click();
+  await page.getByRole("button", { name: "Blog", exact: true }).click();
+  await page.getByRole("button", { name: "Edit Choosing Stone for Outdoor Spaces" }).click();
+  const blogHeroInput = page
+    .locator("label")
+    .filter({ hasText: "Upload image" })
+    .locator('input[type="file"]');
+  await blogHeroInput.setInputFiles({
+    name: "blog-hero.heic",
+    mimeType: "image/heic",
+    buffer: Buffer.from([1, 2, 3]),
+  });
+  await expect(
+    page.getByText("blog-hero.heic is not supported. Use JPEG, PNG, WebP or AVIF.", {
+      exact: true,
+    }),
+  ).toBeVisible();
+  const articleImageInput = page
+    .locator("label")
+    .filter({ hasText: /^Image$/ })
+    .locator('input[type="file"]');
+  await articleImageInput.setInputFiles({
+    name: "article-image.heic",
+    mimeType: "image/heic",
+    buffer: Buffer.from([1, 2, 3]),
+  });
+  await expect(
+    page.getByRole("alert").filter({ hasText: "article-image.heic is not supported" }),
+  ).toBeVisible();
+  await expect(
+    page.locator("label").filter({ hasText: /^Image$/ }),
+  ).toBeVisible();
+});
+
 test("admin demo exposes projects and managed pages", async ({ page }) => {
   await page.goto("/admin/?demo=1");
   await page.getByRole("button", { name: "Projects", exact: true }).first().click();

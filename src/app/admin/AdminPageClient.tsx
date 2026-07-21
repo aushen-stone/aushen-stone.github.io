@@ -34,6 +34,12 @@ import {
   buildCmsContent,
   slugifyCmsValue,
 } from "@/lib/cmsContent";
+import {
+  CMS_MEDIA_MAX_BYTES,
+  formatCmsUploadError,
+  uploadCmsMediaBatch,
+  uploadCmsMediaFile,
+} from "@/lib/cmsMediaUpload";
 import type { CmsEntityType, CmsRow, CmsStatus } from "@/types/cms";
 import {
   DEFAULT_MANAGED_PAGES,
@@ -285,6 +291,7 @@ export default function AdminPageClient() {
   const [editor, setEditor] = useState<EditorState | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [mediaMessage, setMediaMessage] = useState("");
 
   const loadRows = useCallback(async () => {
     if (demoMode) {
@@ -565,17 +572,23 @@ export default function AdminPageClient() {
   const uploadImage = async (file: File) => {
     if (!editor) return;
     setBusy(true);
-    const safeName = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
-    const objectPath = `${entity}/${crypto.randomUUID()}-${safeName}`;
-    const supabase = getSupabaseBrowserClient();
-    const { error } = await supabase.storage
-      .from("cms-media")
-      .upload(objectPath, file);
-    if (error) setMessage(error.message);
-    else {
-      const { data } = supabase.storage
-        .from("cms-media")
-        .getPublicUrl(objectPath);
+    setMessage("");
+    setMediaMessage(
+      file.size > CMS_MEDIA_MAX_BYTES
+        ? `Compressing ${file.name} before upload…`
+        : `Uploading ${file.name}…`,
+    );
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const result = await uploadCmsMediaFile(file, async (preparedFile) => {
+        const safeName = preparedFile.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
+        const objectPath = `${entity}/${crypto.randomUUID()}-${safeName}`;
+        const { error } = await supabase.storage
+          .from("cms-media")
+          .upload(objectPath, preparedFile);
+        if (error) throw error;
+        return supabase.storage.from("cms-media").getPublicUrl(objectPath).data.publicUrl;
+      });
       setEditor((current) => {
         if (!current) return current;
         if (
@@ -583,7 +596,7 @@ export default function AdminPageClient() {
           entity === "blog" ||
           entity === "projects"
         ) {
-          return { ...current, imageUrl: data.publicUrl };
+          return { ...current, imageUrl: result.url };
         }
         let advanced: Record<string, unknown> = {};
         try {
@@ -596,52 +609,74 @@ export default function AdminPageClient() {
         }
         return {
           ...current,
-          imageUrl: data.publicUrl,
+          imageUrl: result.url,
           advancedJson: JSON.stringify(
-            applyLegacyPageHeroImage(entity, advanced, data.publicUrl),
+            applyLegacyPageHeroImage(entity, advanced, result.url),
             null,
             2,
           ),
         };
       });
+      setMediaMessage(
+        result.compressed
+          ? `${file.name} was compressed and uploaded successfully.`
+          : `${file.name} uploaded successfully.`,
+      );
+    } catch (error) {
+      setMediaMessage(formatCmsUploadError(error, file.name));
+    } finally {
+      setBusy(false);
     }
-    setBusy(false);
   };
 
   const uploadApplicationImages = async (files: File[]) => {
     if (!editor || entity !== "products" || files.length === 0) return;
     setBusy(true);
     setMessage("");
-    const supabase = getSupabaseBrowserClient();
+    setMediaMessage(`Preparing ${files.length} application photo${files.length === 1 ? "" : "s"}…`);
     try {
-      // Upload independently so selecting several application photos does not
-      // create a slow sequential network waterfall.
-      const urls = await Promise.all(
-        files.map(async (file) => {
-          const safeName = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
+      const supabase = getSupabaseBrowserClient();
+      const results = await uploadCmsMediaBatch(files, async (preparedFile) => {
+          const safeName = preparedFile.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
           const objectPath = `products/application/${crypto.randomUUID()}-${safeName}`;
           const { error } = await supabase.storage
             .from("cms-media")
-            .upload(objectPath, file);
+            .upload(objectPath, preparedFile);
           if (error) throw error;
           return supabase.storage.from("cms-media").getPublicUrl(objectPath)
             .data.publicUrl;
-        }),
+        });
+      const successful = results.filter(
+        (result): result is Extract<typeof result, { status: "fulfilled" }> =>
+          result.status === "fulfilled",
+      );
+      const failed = results.filter(
+        (result): result is Extract<typeof result, { status: "rejected" }> =>
+          result.status === "rejected",
       );
       setEditor((current) =>
         current
           ? {
               ...current,
-              applicationImageUrls: [...current.applicationImageUrls, ...urls],
+              applicationImageUrls: [
+                ...current.applicationImageUrls,
+                ...successful.map(({ url }) => url),
+              ],
             }
           : current,
       );
-    } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to upload application photos",
+      const compressedCount = successful.filter(({ compressed }) => compressed).length;
+      const summary = `${successful.length} of ${files.length} application photos uploaded${compressedCount ? ` (${compressedCount} compressed)` : ""}.`;
+      const uploadedFiles = successful.length
+        ? ` Uploaded: ${successful.map(({ fileName }) => fileName).join(", ")}.`
+        : "";
+      setMediaMessage(
+        failed.length
+          ? `${summary}${uploadedFiles} Failed: ${failed.map(({ fileName, error }) => `${fileName}: ${error}`).join("; ")}`
+          : `${summary}${uploadedFiles}`,
       );
+    } catch (error) {
+      setMediaMessage(formatCmsUploadError(error));
     } finally {
       setBusy(false);
     }
@@ -649,19 +684,31 @@ export default function AdminPageClient() {
 
   const uploadArticleImage = async (file: File): Promise<string> => {
     if (entity !== "blog") throw new Error("Article images are only available for blog posts.");
-    if (file.size > 5 * 1024 * 1024) throw new Error("Article images must be 5 MB or smaller.");
     setBusy(true);
     setMessage("");
-    const safeName = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
-    const objectPath = `blog/article/${crypto.randomUUID()}-${safeName}`;
-    const supabase = getSupabaseBrowserClient();
+    setMediaMessage(
+      file.size > CMS_MEDIA_MAX_BYTES
+        ? `Compressing ${file.name} before upload…`
+        : `Uploading ${file.name}…`,
+    );
     try {
-      const { error } = await supabase.storage.from("cms-media").upload(objectPath, file);
-      if (error) throw error;
-      return supabase.storage.from("cms-media").getPublicUrl(objectPath).data.publicUrl;
+      const supabase = getSupabaseBrowserClient();
+      const result = await uploadCmsMediaFile(file, async (preparedFile) => {
+        const safeName = preparedFile.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
+        const objectPath = `blog/article/${crypto.randomUUID()}-${safeName}`;
+        const { error } = await supabase.storage.from("cms-media").upload(objectPath, preparedFile);
+        if (error) throw error;
+        return supabase.storage.from("cms-media").getPublicUrl(objectPath).data.publicUrl;
+      });
+      setMediaMessage(
+        result.compressed
+          ? `${file.name} was compressed and added to the article.`
+          : `${file.name} added to the article.`,
+      );
+      return result.url;
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to upload article image";
-      setMessage(message);
+      const message = formatCmsUploadError(error, file.name);
+      setMediaMessage(message);
       throw error;
     } finally {
       setBusy(false);
@@ -1050,6 +1097,7 @@ export default function AdminPageClient() {
           editor={editor}
           setEditor={setEditor}
           busy={busy}
+          mediaMessage={mediaMessage}
           onSave={save}
           onUpload={uploadImage}
           onUploadApplications={uploadApplicationImages}
@@ -1107,6 +1155,7 @@ function EditorPanel({
   editor,
   setEditor,
   busy,
+  mediaMessage,
   onSave,
   onUpload,
   onUploadApplications,
@@ -1116,6 +1165,7 @@ function EditorPanel({
   editor: EditorState;
   setEditor: React.Dispatch<React.SetStateAction<EditorState | null>>;
   busy: boolean;
+  mediaMessage: string;
   onSave: (event: React.FormEvent) => Promise<void>;
   onUpload: (file: File) => Promise<void>;
   onUploadApplications: (files: File[]) => Promise<void>;
@@ -1184,6 +1234,14 @@ function EditorPanel({
             <X size={22} />
           </button>
         </div>
+        {mediaMessage ? (
+          <p
+            role="status"
+            className="mt-5 border-l-2 border-[#758267] bg-[#F8F5F1] px-4 py-3 text-sm normal-case tracking-normal"
+          >
+            {mediaMessage}
+          </p>
+        ) : null}
         <div className="mt-8 space-y-5">
           <Field label="Name / title">
             <input
@@ -1291,15 +1349,18 @@ function EditorPanel({
                 className="mb-3 aspect-[16/9] w-full object-cover"
               />
             ) : null}
-            <label className="inline-flex cursor-pointer items-center gap-2 border border-[#D8D2C8] px-4 py-3 text-sm">
-              <Upload size={16} /> Upload {entity === "products" ? "product photo" : "image"}
+            <label className={`inline-flex items-center gap-2 border border-[#D8D2C8] px-4 py-3 text-sm ${busy ? "cursor-wait opacity-60" : "cursor-pointer"}`}>
+              {busy ? <Loader2 className="animate-spin" size={16} /> : <Upload size={16} />}
+              {busy ? "Uploading…" : `Upload ${entity === "products" ? "product photo" : "image"}`}
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/webp,image/avif"
                 className="sr-only"
+                disabled={busy}
                 onChange={(event) => {
                   const file = event.target.files?.[0];
                   if (file) void onUpload(file);
+                  event.target.value = "";
                 }}
               />
             </label>
@@ -1323,13 +1384,15 @@ function EditorPanel({
                   ))}
                 </div>
               ) : null}
-              <label className="inline-flex cursor-pointer items-center gap-2 border border-[#D8D2C8] px-4 py-3 text-sm">
-                <Upload size={16} /> Upload application photos
+              <label className={`inline-flex items-center gap-2 border border-[#D8D2C8] px-4 py-3 text-sm ${busy ? "cursor-wait opacity-60" : "cursor-pointer"}`}>
+                {busy ? <Loader2 className="animate-spin" size={16} /> : <Upload size={16} />}
+                {busy ? "Uploading…" : "Upload application photos"}
                 <input
                   type="file"
                   multiple
                   accept="image/jpeg,image/png,image/webp,image/avif"
                   className="sr-only"
+                  disabled={busy}
                   onChange={(event) => {
                     const files = Array.from(event.target.files ?? []);
                     if (files.length) void onUploadApplications(files);
