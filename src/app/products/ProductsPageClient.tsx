@@ -348,6 +348,9 @@ function ProductsPageContent({
   };
 
   const productHref = (slug: string) => `/products/${slug}`;
+  const selectedMaterialName =
+    materials.find((material) => material.slug === filters.material)?.name ||
+    "Stone Products";
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
@@ -355,7 +358,7 @@ function ProductsPageContent({
         <div className="max-w-[1600px] mx-auto">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <h1 className="font-serif text-[clamp(1.7rem,4vw,2.75rem)] leading-[0.95] text-[#1D1D1B]">
-              Stone Products
+              {selectedMaterialName}
             </h1>
             <p className="text-[11px] sm:text-xs uppercase tracking-[0.16em] text-gray-500">
               {filteredProducts.length} Results
