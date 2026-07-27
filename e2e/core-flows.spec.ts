@@ -41,6 +41,18 @@ test("product search updates the shareable URL and rendered results", async ({ p
   await expect(page.getByText("No filters applied")).toBeVisible();
 });
 
+test("product material filters update the catalogue heading", async ({ page }) => {
+  await page.goto("/products/?category=bluestone");
+  await expect(page.getByRole("heading", { level: 1, name: "Bluestone" })).toBeVisible();
+
+  await page.getByRole("combobox", { name: "Filter by material" }).selectOption("limestone");
+  await expect(page).toHaveURL(/material=limestone/);
+  await expect(page.getByRole("heading", { level: 1, name: "Limestone" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Clear Filters" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Stone Products" })).toBeVisible();
+});
+
 test("product applications drive catalogue filtering and availability selections", async ({ page }) => {
   await page.goto("/products/");
   await page.getByRole("combobox", { name: "Filter by application" }).selectOption("pool-coping");
