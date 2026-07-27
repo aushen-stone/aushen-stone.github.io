@@ -21,6 +21,7 @@ export const PREFERRED_APPLICATION_FILTER_OPTIONS = [
   { name: "Cobble Stone", slug: "cobble-stone" },
   { name: "Organic Stepper", slug: "organic-stepper" },
   { name: "Giant Stepper", slug: "giant-stepper" },
+  { name: "Baton", slug: "baton" },
   { name: "Patterns", slug: "patterns" },
   { name: "Kerb", slug: "kerb" },
   { name: "Pitcher", slug: "pitcher" },
