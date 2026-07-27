@@ -100,6 +100,10 @@ test("product application filters keep preferred order and include CMS categorie
   ]);
 
   assert.equal(options[0].slug, "paver");
+  assert.deepEqual(
+    options.slice(6, 9).map(({ slug }) => slug),
+    ["giant-stepper", "baton", "patterns"],
+  );
   assert.deepEqual(options.at(-1), { name: "Fireplace", slug: "fireplace" });
 });
 
