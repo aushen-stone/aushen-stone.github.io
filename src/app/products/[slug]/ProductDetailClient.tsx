@@ -378,7 +378,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
 
   const sampleLabel = override?.ctaOverride?.sample || "Request Sample";
   const enquireLabel = override?.ctaOverride?.enquire || "Check Availability";
-  const consultLabel = override?.ctaOverride?.consult || "Book Showroom Visit";
+  const consultLabel = override?.ctaOverride?.consult || "Enquiry";
   const returnContextHref = useSyncExternalStore(
     subscribeNoop,
     () => getProductsReturnHrefSnapshot(product.slug),
