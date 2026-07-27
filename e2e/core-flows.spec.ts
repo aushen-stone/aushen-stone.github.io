@@ -61,6 +61,7 @@ test("product applications drive catalogue filtering and availability selections
   expect(await page.locator('a[id^="product-"]').count()).toBeGreaterThan(0);
 
   await page.goto("/products/antarctica/");
+  await expect(page.getByRole("link", { name: "Enquiry" })).toBeVisible();
   await page.getByRole("combobox", { name: "Select application" }).selectOption("pool-coping--drop-face");
   await expect(page.getByRole("combobox", { name: "Select surface finish" })).toHaveValue("sandblasted-p5");
   await expect(page.getByText("Pool Coping / Drop Face", { exact: true }).last()).toBeVisible();
