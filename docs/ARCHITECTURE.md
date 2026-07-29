@@ -1,6 +1,6 @@
 # Aushen Web - Architecture Overview
 
-Last updated: 2026-05-07
+Last updated: 2026-07-29
 
 ## Project Type
 - Next.js App Router frontend.
@@ -107,6 +107,21 @@ Last updated: 2026-05-07
 - Build sync: `scripts/sync-cms-data.ts` writes product, blog and site-content generated files from published rows.
 - Legacy generated data remains the fallback when CMS build secrets are not configured.
 - CMS setup and deployment contract: `docs/CMS_SETUP.md`.
+- CMS media contract:
+  - product uploads are limited to supported image formats and 10 MB originals.
+  - `src/lib/cmsMediaUpload.ts` creates content-hashed WebP thumbnail
+    (maximum 800 px / target 180 KB) and detail (maximum 2000 px / target
+    600 KB) variants before upload.
+  - `content.mediaAssets` stores both variant URLs plus width, height, byte
+    size, MIME type, and content hash; legacy URL fields continue to point to
+    detail variants for backward compatibility.
+  - product listing cards read thumbnail URLs and detail galleries read large
+    URLs. Static legacy product photos use matching files under
+    `public/product-thumbnails-v2` and `public/product-large-v2`.
+  - versioned Supabase objects use one-year caching and are never overwritten.
+  - `scripts/migrate-product-media.py` performs backup-first, per-product
+    migration without deleting legacy objects; `scripts/restore-product-media.py`
+    restores the backed-up database references.
 - Blueocean phase-1 split contract:
   - `Blueocean` in the outer CSV continues to generate the continuity slug `blueocean`.
   - `Blueocean Honed` in the outer CSV generates the dedicated slug `blueocean-honed`.

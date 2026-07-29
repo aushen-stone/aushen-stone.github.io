@@ -1,6 +1,6 @@
 # Worklog - Aushen Web
 
-Last updated: 2026-05-07
+Last updated: 2026-07-29
 
 ## Completed and Landed
 
@@ -1404,3 +1404,19 @@ Last updated: 2026-05-07
 - Closed: dead `/login` link and `href="#"` placeholders in active navigation.
 - Closed: date-suffixed `NEXT_STEPS` and `WORKLOG` as active documents.
 - Closed: standalone `HANDOVER` as an active required document.
+## Media bandwidth optimization (2026-07-29)
+
+- Added responsive homepage WebP assets and mapped legacy CMS image paths to
+  the optimized desktop/mobile files without changing page layout.
+- Added separate product thumbnail and detail variants for the existing static
+  catalogue; product list cards no longer request full-size product images.
+- Fixed the missing local `noise.svg` asset.
+- Updated CMS product/application uploads to generate content-hashed WebP
+  thumbnail and detail variants, record media metadata, reuse duplicate content
+  paths, enforce supported formats / 10 MB source limits, and use one-year
+  caching.
+- Added read-only media auditing plus backup-first migration and database
+  restore tools. Legacy Storage objects are deliberately retained.
+- Validation baseline: unit tests, TypeScript and ESLint pass (existing
+  `<img>` advisory warnings remain); production export and browser QA are
+  required before deployment.

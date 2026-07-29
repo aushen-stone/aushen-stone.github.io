@@ -37,8 +37,8 @@ import {
 import {
   CMS_MEDIA_MAX_BYTES,
   formatCmsUploadError,
-  uploadCmsMediaBatch,
   uploadCmsMediaFile,
+  uploadCmsMediaVariants,
 } from "@/lib/cmsMediaUpload";
 import type { CmsEntityType, CmsRow, CmsStatus } from "@/types/cms";
 import {
@@ -46,7 +46,11 @@ import {
   DEFAULT_MANAGED_PROJECTS,
 } from "@/data/site-content.defaults";
 import { DEFAULT_LEGACY_PAGES } from "@/data/legacy-page.defaults";
-import type { ApplicationIndexEntry } from "@/types/product";
+import type {
+  ApplicationIndexEntry,
+  ProductMediaAssets,
+  ProductMediaVariantSet,
+} from "@/types/product";
 import ProductSpecificationsEditor from "./ProductSpecificationsEditor";
 import { StructuredContentEditor } from "./StructuredContentEditor";
 
@@ -96,6 +100,7 @@ const ENTITY_LABELS: Record<CmsEntityType, string> = {
   about: "Our Story",
 };
 const ALL_ENTITIES = Object.keys(ENTITY_LABELS) as CmsEntityType[];
+const CMS_MEDIA_CACHE_SECONDS = "31536000";
 
 type ManagedUser = {
   id: string;
@@ -113,6 +118,27 @@ const tableForEntity = (entity: CmsEntityType) =>
       : entity === "projects"
         ? "cms_projects"
         : "cms_pages";
+
+const readProductMediaAssets = (advancedJson: string): ProductMediaAssets => {
+  try {
+    const advanced = JSON.parse(advancedJson) as {
+      mediaAssets?: ProductMediaAssets;
+    };
+    return advanced.mediaAssets && typeof advanced.mediaAssets === "object"
+      ? advanced.mediaAssets
+      : {};
+  } catch {
+    return {};
+  }
+};
+
+const writeProductMediaAssets = (
+  advancedJson: string,
+  mediaAssets: ProductMediaAssets,
+): string => {
+  const advanced = JSON.parse(advancedJson || "{}") as Record<string, unknown>;
+  return JSON.stringify({ ...advanced, mediaAssets }, null, 2);
+};
 
 const DEMO_ROWS: Record<CmsEntityType, CmsRow[]> = {
   products: [
@@ -580,15 +606,49 @@ export default function AdminPageClient() {
     );
     try {
       const supabase = getSupabaseBrowserClient();
-      const result = await uploadCmsMediaFile(file, async (preparedFile) => {
-        const safeName = preparedFile.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
-        const objectPath = `${entity}/${crypto.randomUUID()}-${safeName}`;
+      const uploadPreparedFile = async (
+        preparedFile: File,
+        prefix: string = entity,
+      ) => {
+        const safeName = preparedFile.name
+          .toLowerCase()
+          .replace(/[^a-z0-9.-]+/g, "-");
+        const objectPath = `${prefix}/${safeName}`;
         const { error } = await supabase.storage
           .from("cms-media")
-          .upload(objectPath, preparedFile);
-        if (error) throw error;
+          .upload(objectPath, preparedFile, {
+            cacheControl: CMS_MEDIA_CACHE_SECONDS,
+            contentType: preparedFile.type,
+            upsert: false,
+          });
+        // Content-hashed names make an existing object a safe deduplication hit.
+        if (
+          error &&
+          !/already exists|duplicate|resource already exists/i.test(error.message)
+        ) {
+          throw error;
+        }
         return supabase.storage.from("cms-media").getPublicUrl(objectPath).data.publicUrl;
-      });
+      };
+      const productVariants =
+        entity === "products"
+          ? await uploadCmsMediaVariants(file, (preparedFile) =>
+              uploadPreparedFile(preparedFile, "products/product"),
+            )
+          : null;
+      const result = productVariants
+        ? { url: productVariants.large.url, compressed: true }
+        : await uploadCmsMediaFile(file, async (preparedFile) => {
+            const versionedFile = new File(
+              [preparedFile],
+              `${crypto.randomUUID()}-${preparedFile.name}`,
+              {
+                type: preparedFile.type,
+                lastModified: preparedFile.lastModified,
+              },
+            );
+            return uploadPreparedFile(versionedFile);
+          });
       setEditor((current) => {
         if (!current) return current;
         if (
@@ -596,6 +656,17 @@ export default function AdminPageClient() {
           entity === "blog" ||
           entity === "projects"
         ) {
+          if (entity === "products" && productVariants) {
+            const mediaAssets = readProductMediaAssets(current.advancedJson);
+            return {
+              ...current,
+              imageUrl: result.url,
+              advancedJson: writeProductMediaAssets(current.advancedJson, {
+                ...mediaAssets,
+                product: productVariants,
+              }),
+            };
+          }
           return { ...current, imageUrl: result.url };
         }
         let advanced: Record<string, unknown> = {};
@@ -618,9 +689,11 @@ export default function AdminPageClient() {
         };
       });
       setMediaMessage(
-        result.compressed
-          ? `${file.name} was compressed and uploaded successfully.`
-          : `${file.name} uploaded successfully.`,
+        productVariants
+          ? `${file.name} uploaded as an optimized thumbnail and detail image.`
+          : result.compressed
+            ? `${file.name} was optimized and uploaded successfully.`
+            : `${file.name} uploaded successfully.`,
       );
     } catch (error) {
       setMediaMessage(formatCmsUploadError(error, file.name));
@@ -636,37 +709,73 @@ export default function AdminPageClient() {
     setMediaMessage(`Preparing ${files.length} application photo${files.length === 1 ? "" : "s"}…`);
     try {
       const supabase = getSupabaseBrowserClient();
-      const results = await uploadCmsMediaBatch(files, async (preparedFile) => {
-          const safeName = preparedFile.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
-          const objectPath = `products/application/${crypto.randomUUID()}-${safeName}`;
-          const { error } = await supabase.storage
-            .from("cms-media")
-            .upload(objectPath, preparedFile);
-          if (error) throw error;
-          return supabase.storage.from("cms-media").getPublicUrl(objectPath)
-            .data.publicUrl;
-        });
-      const successful = results.filter(
-        (result): result is Extract<typeof result, { status: "fulfilled" }> =>
-          result.status === "fulfilled",
-      );
-      const failed = results.filter(
-        (result): result is Extract<typeof result, { status: "rejected" }> =>
-          result.status === "rejected",
-      );
+      const successful: Array<{
+        fileName: string;
+        variants: ProductMediaVariantSet;
+      }> = [];
+      const failed: Array<{ fileName: string; error: string }> = [];
+
+      // Keep browser memory bounded: each original is decoded, optimized and
+      // released before the next high-resolution application photo begins.
+      for (const file of files) {
+        try {
+          const variants = await uploadCmsMediaVariants(
+            file,
+            async (preparedFile) => {
+              const safeName = preparedFile.name
+                .toLowerCase()
+                .replace(/[^a-z0-9.-]+/g, "-");
+              const objectPath = `products/application/${safeName}`;
+              const { error } = await supabase.storage
+                .from("cms-media")
+                .upload(objectPath, preparedFile, {
+                  cacheControl: CMS_MEDIA_CACHE_SECONDS,
+                  contentType: preparedFile.type,
+                  upsert: false,
+                });
+              if (
+                error &&
+                !/already exists|duplicate|resource already exists/i.test(
+                  error.message,
+                )
+              ) {
+                throw error;
+              }
+              return supabase.storage.from("cms-media").getPublicUrl(objectPath)
+                .data.publicUrl;
+            },
+          );
+          successful.push({ fileName: file.name, variants });
+        } catch (error) {
+          failed.push({
+            fileName: file.name,
+            error: formatCmsUploadError(error, file.name),
+          });
+        }
+      }
       setEditor((current) =>
         current
-          ? {
-              ...current,
-              applicationImageUrls: [
-                ...current.applicationImageUrls,
-                ...successful.map(({ url }) => url),
-              ],
-            }
+          ? (() => {
+              const mediaAssets = readProductMediaAssets(current.advancedJson);
+              const nextApplications = [
+                ...(mediaAssets.applications ?? []),
+                ...successful.map(({ variants }) => variants),
+              ];
+              return {
+                ...current,
+                applicationImageUrls: [
+                  ...current.applicationImageUrls,
+                  ...successful.map(({ variants }) => variants.large.url),
+                ],
+                advancedJson: writeProductMediaAssets(current.advancedJson, {
+                  ...mediaAssets,
+                  applications: nextApplications,
+                }),
+              };
+            })()
           : current,
       );
-      const compressedCount = successful.filter(({ compressed }) => compressed).length;
-      const summary = `${successful.length} of ${files.length} application photos uploaded${compressedCount ? ` (${compressedCount} compressed)` : ""}.`;
+      const summary = `${successful.length} of ${files.length} application photos uploaded as thumbnail and detail variants.`;
       const uploadedFiles = successful.length
         ? ` Uploaded: ${successful.map(({ fileName }) => fileName).join(", ")}.`
         : "";
@@ -696,7 +805,13 @@ export default function AdminPageClient() {
       const result = await uploadCmsMediaFile(file, async (preparedFile) => {
         const safeName = preparedFile.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
         const objectPath = `blog/article/${crypto.randomUUID()}-${safeName}`;
-        const { error } = await supabase.storage.from("cms-media").upload(objectPath, preparedFile);
+        const { error } = await supabase.storage
+          .from("cms-media")
+          .upload(objectPath, preparedFile, {
+            cacheControl: CMS_MEDIA_CACHE_SECONDS,
+            contentType: preparedFile.type,
+            upsert: false,
+          });
         if (error) throw error;
         return supabase.storage.from("cms-media").getPublicUrl(objectPath).data.publicUrl;
       });
@@ -1173,17 +1288,48 @@ function EditorPanel({
 }) {
   const update = (key: keyof EditorState, value: string) =>
     setEditor((current) => (current ? { ...current, [key]: value } : current));
-  const updateApplicationImages = (next: string[]) =>
-    setEditor((current) =>
-      current ? { ...current, applicationImageUrls: next } : current,
-    );
   const moveApplicationImage = (index: number, direction: -1 | 1) => {
     const target = index + direction;
     if (target < 0 || target >= editor.applicationImageUrls.length) return;
-    const next = [...editor.applicationImageUrls];
-    [next[index], next[target]] = [next[target], next[index]];
-    updateApplicationImages(next);
+    setEditor((current) => {
+      if (!current) return current;
+      const nextUrls = [...current.applicationImageUrls];
+      [nextUrls[index], nextUrls[target]] = [nextUrls[target], nextUrls[index]];
+      const mediaAssets = readProductMediaAssets(current.advancedJson);
+      const nextAssets = [...(mediaAssets.applications ?? [])];
+      if (nextAssets[index] && nextAssets[target]) {
+        [nextAssets[index], nextAssets[target]] = [
+          nextAssets[target],
+          nextAssets[index],
+        ];
+      }
+      return {
+        ...current,
+        applicationImageUrls: nextUrls,
+        advancedJson: writeProductMediaAssets(current.advancedJson, {
+          ...mediaAssets,
+          applications: nextAssets,
+        }),
+      };
+    });
   };
+  const removeApplicationImage = (index: number) =>
+    setEditor((current) => {
+      if (!current) return current;
+      const mediaAssets = readProductMediaAssets(current.advancedJson);
+      return {
+        ...current,
+        applicationImageUrls: current.applicationImageUrls.filter(
+          (_, itemIndex) => itemIndex !== index,
+        ),
+        advancedJson: writeProductMediaAssets(current.advancedJson, {
+          ...mediaAssets,
+          applications: (mediaAssets.applications ?? []).filter(
+            (_, itemIndex) => itemIndex !== index,
+          ),
+        }),
+      };
+    });
   let structuredContent: Record<string, unknown> | null = null;
   let productApplications: ApplicationIndexEntry[] = [];
   let parsedAdvanced: Record<string, unknown> | null = null;
@@ -1378,7 +1524,7 @@ function EditorPanel({
                       <div className="mt-2 flex flex-wrap gap-1 text-[10px] uppercase tracking-[0.08em]">
                         <button type="button" disabled={index === 0} onClick={() => moveApplicationImage(index, -1)} className="border px-2 py-1 disabled:opacity-30" aria-label={`Move application photo ${index + 1} earlier`}>Earlier</button>
                         <button type="button" disabled={index === editor.applicationImageUrls.length - 1} onClick={() => moveApplicationImage(index, 1)} className="border px-2 py-1 disabled:opacity-30" aria-label={`Move application photo ${index + 1} later`}>Later</button>
-                        <button type="button" onClick={() => updateApplicationImages(editor.applicationImageUrls.filter((_, itemIndex) => itemIndex !== index))} className="border border-red-200 px-2 py-1 text-red-700" aria-label={`Remove application photo ${index + 1}`}>Remove</button>
+                        <button type="button" onClick={() => removeApplicationImage(index)} className="border border-red-200 px-2 py-1 text-red-700" aria-label={`Remove application photo ${index + 1}`}>Remove</button>
                       </div>
                     </div>
                   ))}

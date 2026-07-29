@@ -761,7 +761,14 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
           <div className="lg:col-span-5">
             <div className="lg:sticky top-[var(--content-sticky-top)]">
               <div className="relative w-full overflow-hidden border border-[#E6E0D8] bg-[#E5E5E5] aspect-[5/4] max-h-[430px]">
-                <img src={currentImageUrl} alt={currentImageAlt} className="w-full h-full object-cover" />
+                <img
+                  src={currentImageUrl}
+                  alt={currentImageAlt}
+                  width={1600}
+                  height={1280}
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                />
                 {hasMultipleImages && (
                   <>
                     <button

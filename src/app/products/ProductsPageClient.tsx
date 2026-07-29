@@ -18,7 +18,7 @@ import {
 } from "@/data/productFilterOptions";
 import { getProductDisplayName } from "@/data/product_display_names";
 import {
-  DEFAULT_PRODUCT_IMAGE,
+  DEFAULT_PRODUCT_THUMBNAIL,
   PRODUCT_OVERRIDES,
 } from "@/data/product_overrides";
 import {
@@ -471,8 +471,13 @@ function ProductsPageContent({
               const override = PRODUCT_OVERRIDES[product.slug];
               const displayName = getProductDisplayName(product);
               const imageUrl =
-                override?.imageUrl || override?.imageUrls?.[0] || DEFAULT_PRODUCT_IMAGE;
-              const applicationHoverUrl = override?.applicationImageUrls?.[0];
+                override?.imageThumbnailUrl ||
+                override?.imageUrl ||
+                override?.imageUrls?.[0] ||
+                DEFAULT_PRODUCT_THUMBNAIL;
+              const applicationHoverUrl =
+                override?.applicationThumbnailUrls?.[0] ||
+                override?.applicationImageUrls?.[0];
               const applicationLabels = collectApplicationLabels(product);
               const visibleLabels = applicationLabels.slice(0, 2);
 
@@ -488,12 +493,20 @@ function ProductsPageContent({
                     <img
                       src={imageUrl}
                       alt={displayName}
+                      width={800}
+                      height={640}
+                      loading="lazy"
+                      decoding="async"
                       className={`absolute inset-0 h-full w-full object-cover transition-all duration-500 ease-out group-hover:scale-[1.04] ${applicationHoverUrl ? "group-hover:opacity-0" : ""}`}
                     />
                     {applicationHoverUrl ? (
                       <img
                         src={applicationHoverUrl}
                         alt={`${displayName} application`}
+                        width={800}
+                        height={640}
+                        loading="lazy"
+                        decoding="async"
                         className="absolute inset-0 h-full w-full scale-[1.02] object-cover opacity-0 transition-all duration-500 ease-out group-hover:scale-100 group-hover:opacity-100"
                       />
                     ) : null}
