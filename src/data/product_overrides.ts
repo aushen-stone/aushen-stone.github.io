@@ -6,7 +6,8 @@ import { CMS_PRODUCT_OVERRIDES } from "@/data/cms-product-overrides.generated";
 import { PRODUCT_DISPLAY_NAMES } from "@/data/product_display_names";
 import type { ProductOverride } from "@/types/product";
 
-export const DEFAULT_PRODUCT_IMAGE = "/Application001.webp";
+export const DEFAULT_PRODUCT_IMAGE = "/application001-desktop-v2.webp";
+export const DEFAULT_PRODUCT_THUMBNAIL = "/application001-mobile-v2.webp";
 
 export const DEFAULT_PRODUCT_DESCRIPTION =
   "A curated natural stone selection valued for consistency, durability, and architectural character.";
@@ -33,11 +34,28 @@ const GENERATED_IMAGE_OVERRIDES: Record<string, ProductOverride> = Object.fromEn
   Object.entries(PRODUCT_IMAGE_GALLERIES).map(([slug, imageUrls]) => [
     slug,
     {
-      imageUrl: PRODUCT_COVER_IMAGES[slug] || imageUrls[0],
-      imageUrls,
+      imageUrl: toLocalProductVariant(
+        PRODUCT_COVER_IMAGES[slug] || imageUrls[0],
+        "large",
+      ),
+      imageThumbnailUrl: toLocalProductVariant(
+        PRODUCT_COVER_IMAGES[slug] || imageUrls[0],
+        "thumbnail",
+      ),
+      imageUrls: imageUrls.map((url) => toLocalProductVariant(url, "large")),
     },
   ])
 );
+
+function toLocalProductVariant(
+  url: string,
+  variant: "thumbnail" | "large",
+): string {
+  if (!url.startsWith("/product-photos/")) return url;
+  const folder =
+    variant === "thumbnail" ? "product-thumbnails-v2" : "product-large-v2";
+  return url.replace("/product-photos/", `/${folder}/`);
+}
 
 const MANUAL_PRODUCT_OVERRIDES: Record<string, ProductOverride> = {
   "beige-travertine-sai": {

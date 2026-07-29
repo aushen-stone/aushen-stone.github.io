@@ -8,6 +8,10 @@ import { CMS_LEGACY_PAGES } from "@/data/cms-site.generated";
 
 export function ProjectShowcase() {
   const content = CMS_LEGACY_PAGES.home?.projectShowcase;
+  const usesLegacyShowcaseImage =
+    !content?.image ||
+    content.image === "/Application001.webp" ||
+    content.image === "/application001.webp";
   return (
     <section className="bg-[#F0F2E4] w-full">
       <div className="grid grid-cols-1 md:grid-cols-2">
@@ -22,11 +26,33 @@ export function ProjectShowcase() {
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }} //这种缓动曲线非常有质感
             className="h-full w-full"
           >
-            <img
-              src={content?.image || "/Application001.webp"}
-              alt="Aerial view of pool project"
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
-            />
+            {!usesLegacyShowcaseImage ? (
+              <img
+                src={content!.image}
+                alt="Aerial view of pool project"
+                width={1800}
+                height={1350}
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+              />
+            ) : (
+              <picture>
+                <source
+                  media="(max-width: 767px)"
+                  srcSet="/application001-mobile-v2.webp"
+                />
+                <img
+                  src="/application001-desktop-v2.webp"
+                  alt="Aerial view of pool project"
+                  width={1800}
+                  height={1350}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+                />
+              </picture>
+            )}
             {/* 暖色遮罩 */}
             <div className="absolute inset-0 bg-[#F0F2E4]/10 mix-blend-multiply"></div>
           </motion.div>

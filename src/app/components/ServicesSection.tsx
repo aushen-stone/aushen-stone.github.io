@@ -25,7 +25,8 @@ const SERVICES = [
     id: 3,
     title: "Design Consultation",
     description: "Collaborative sessions to bring vision to life.",
-    image: "/design_consulation.png", 
+    image: "/design-consultation-desktop-v2.webp",
+    mobileImage: "/design-consultation-mobile-v2.webp",
     icon: Users, 
   },
 ];
@@ -55,7 +56,21 @@ const itemVariants: Variants = {
 export function ServicesSection() {
   const content = CMS_LEGACY_PAGES.home?.services;
   const services = content?.items?.length
-    ? content.items.map((item) => ({ ...item, icon: SERVICE_ICONS[item.icon] }))
+    ? content.items.map((item) => {
+        const usesLegacyDesignImage =
+          item.image === "/design_consulation.png" ||
+          item.image === "/design-consultation.png";
+        return {
+          ...item,
+          image: usesLegacyDesignImage
+            ? "/design-consultation-desktop-v2.webp"
+            : item.image,
+          mobileImage: usesLegacyDesignImage
+            ? "/design-consultation-mobile-v2.webp"
+            : undefined,
+          icon: SERVICE_ICONS[item.icon],
+        };
+      })
     : SERVICES;
   return (
     <section className="py-16 sm:py-24 md:py-32 page-padding-x bg-white">
@@ -85,11 +100,21 @@ export function ServicesSection() {
               
               {/* 1. 图片容器 */}
               <div className="relative w-full aspect-square overflow-hidden mb-6 sm:mb-8 bg-gray-100">
-                <img 
-                  src={service.image} 
-                  alt={service.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 group-hover:brightness-[1.05]"
-                />
+                <picture>
+                  {"mobileImage" in service &&
+                  typeof service.mobileImage === "string" ? (
+                    <source media="(max-width: 767px)" srcSet={service.mobileImage} />
+                  ) : null}
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    width={1000}
+                    height={1000}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 group-hover:brightness-[1.05]"
+                  />
+                </picture>
                 <div className="absolute inset-0 border border-transparent group-hover:border-[#4A3B32]/20 transition-colors duration-300 pointer-events-none"></div>
               </div>
 

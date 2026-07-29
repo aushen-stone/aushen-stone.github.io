@@ -55,6 +55,25 @@ export type MediaStatus = {
   };
 };
 
+export type ProductMediaVariant = {
+  url: string;
+  width: number;
+  height: number;
+  sizeBytes: number;
+  mimeType: string;
+  contentHash: string;
+};
+
+export type ProductMediaVariantSet = {
+  thumbnail: ProductMediaVariant;
+  large: ProductMediaVariant;
+};
+
+export type ProductMediaAssets = {
+  product?: ProductMediaVariantSet | null;
+  applications?: ProductMediaVariantSet[];
+};
+
 export type Product = {
   id: string;
   name: string;
@@ -64,6 +83,8 @@ export type Product = {
   description?: string;
   /** Ordered application photos stored by the CMS, after the primary product photo. */
   applicationImageUrls?: string[];
+  /** Responsive CMS variants; legacy URL fields remain as rollback-compatible fallbacks. */
+  mediaAssets?: ProductMediaAssets;
   finishes: FinishVariant[];
   applicationIndex: ApplicationIndexEntry[];
   media?: MediaStatus;
@@ -87,8 +108,10 @@ export type ProductOverride = {
   toneTags?: string[];
   description?: string;
   imageUrl?: string;
+  imageThumbnailUrl?: string;
   imageUrls?: string[];
   applicationImageUrls?: string[];
+  applicationThumbnailUrls?: string[];
   homeownerSummary?: string;
   homeownerUseCases?: string[];
   professionalSummary?: string;

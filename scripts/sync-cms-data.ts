@@ -83,6 +83,18 @@ const projects = projectRows.map((row) => ({
   image: row.hero_image_url ?? row.content.image,
 }));
 
+// Legacy catalogue rows reference full-size files in /product-photos. Static
+// responsive variants use the same filename, so builds can switch them without
+// changing the CMS record or deleting the rollback-safe original.
+const localProductVariant = (
+  value: string | null | undefined,
+  variant: "thumbnail" | "large",
+) => {
+  if (!value?.startsWith("/product-photos/")) return value ?? undefined;
+  const fileName = value.slice("/product-photos/".length);
+  return `/${variant === "thumbnail" ? "product-thumbnails-v2" : "product-large-v2"}/${fileName}`;
+};
+
 // Fail the deployment instead of publishing malformed dynamic routes.
 for (const product of products) {
   if (!product.slug || !product.name || !Array.isArray(product.finishes) || !Array.isArray(product.applicationIndex)) {
@@ -103,11 +115,40 @@ const overrides = Object.fromEntries(
   productRows.map((row) => [
     row.slug,
     {
-      imageUrl: row.image_url ?? undefined,
-      imageUrls: [row.image_url, ...(row.content.applicationImageUrls ?? [])].filter(
-        (value): value is string => Boolean(value)
+      imageUrl:
+        localProductVariant(
+          row.content.mediaAssets?.product?.large.url,
+          "large",
+        ) ??
+        localProductVariant(row.image_url, "large"),
+      imageThumbnailUrl:
+        localProductVariant(
+          row.content.mediaAssets?.product?.thumbnail.url,
+          "thumbnail",
+        ) ??
+        localProductVariant(row.image_url, "thumbnail"),
+      imageUrls: [
+        localProductVariant(
+          row.content.mediaAssets?.product?.large.url,
+          "large",
+        ) ??
+          localProductVariant(row.image_url, "large"),
+        ...(row.content.applicationImageUrls ?? []).map((value) =>
+          localProductVariant(value, "large"),
+        ),
+      ].filter((value): value is string => Boolean(value)),
+      applicationImageUrls: (row.content.applicationImageUrls ?? []).map(
+        (value) => localProductVariant(value, "large") ?? value,
       ),
-      applicationImageUrls: row.content.applicationImageUrls ?? [],
+      applicationThumbnailUrls:
+        row.content.mediaAssets?.applications?.map(
+          (asset) =>
+            localProductVariant(asset.thumbnail.url, "thumbnail") ??
+            asset.thumbnail.url,
+        ) ??
+        (row.content.applicationImageUrls ?? []).map(
+          (value) => localProductVariant(value, "thumbnail") ?? value,
+        ),
       description: row.content.description,
     } satisfies ProductOverride,
   ])

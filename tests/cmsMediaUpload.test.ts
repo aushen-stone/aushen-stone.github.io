@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   CMS_MEDIA_MAX_BYTES,
+  CMS_MEDIA_OPTIMIZE_THRESHOLD_BYTES,
   formatCmsUploadError,
   prepareCmsImageFile,
   uploadCmsMediaBatch,
@@ -31,9 +32,9 @@ test("CMS upload errors explain network and permission failures", () => {
   );
 });
 
-test("oversized CMS images are compressed before storage upload", async () => {
+test("large supported CMS images are compressed before storage upload", async () => {
   const original = new File(
-    [new Uint8Array(CMS_MEDIA_MAX_BYTES + 1)],
+    [new Uint8Array(CMS_MEDIA_MAX_BYTES - 1)],
     "lime-greige.png",
     { type: "image/png" },
   );
@@ -50,6 +51,39 @@ test("oversized CMS images are compressed before storage upload", async () => {
   assert.equal(prepared.compressed, true);
   assert.equal(prepared.file.name, "lime-greige.webp");
   assert.ok(prepared.file.size < CMS_MEDIA_MAX_BYTES);
+});
+
+test("CMS images above the original upload limit are rejected", async () => {
+  const original = new File(
+    [new Uint8Array(CMS_MEDIA_MAX_BYTES + 1)],
+    "too-large.png",
+    { type: "image/png" },
+  );
+
+  await assert.rejects(
+    prepareCmsImageFile(original),
+    /maximum original upload size is 10 MB/,
+  );
+});
+
+test("web-sized CMS images are optimized before storage upload", async () => {
+  const original = new File(
+    [new Uint8Array(CMS_MEDIA_OPTIMIZE_THRESHOLD_BYTES + 1)],
+    "application-photo.jpg",
+    { type: "image/jpeg" },
+  );
+  let compressorCalls = 0;
+
+  const prepared = await prepareCmsImageFile(original, async () => {
+    compressorCalls += 1;
+    return new File([new Uint8Array([1, 2, 3])], "application-photo.webp", {
+      type: "image/webp",
+    });
+  });
+
+  assert.equal(compressorCalls, 1);
+  assert.equal(prepared.compressed, true);
+  assert.equal(prepared.file.type, "image/webp");
 });
 
 test("a stalled CMS storage request times out with the filename", async () => {
