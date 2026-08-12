@@ -2,7 +2,9 @@ import type { MetadataRoute } from "next";
 import { ACCESSORY_BRANDS } from "@/data/accessories";
 import { BLOG_POSTS } from "@/data/blog";
 import { PRODUCTS } from "@/data/products";
+import { SEO_LANDING_PAGES } from "@/data/seoLandingPages";
 import { canonicalUrl } from "@/lib/seo";
+import { seoLandingPagePath } from "@/lib/seoLandingPages";
 
 export const dynamic = "force-static";
 
@@ -55,5 +57,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.72,
   }));
 
-  return [...staticEntries, ...productEntries, ...accessoryEntries, ...blogEntries];
+  const seoEntries: MetadataRoute.Sitemap = SEO_LANDING_PAGES.map((page) => ({
+    url: canonicalUrl(seoLandingPagePath(page)),
+    lastModified,
+    changeFrequency: "weekly",
+    priority: 0.75,
+  }));
+
+  return [...staticEntries, ...productEntries, ...accessoryEntries, ...blogEntries, ...seoEntries];
 }

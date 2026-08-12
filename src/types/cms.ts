@@ -5,7 +5,8 @@ export type CmsEntityType =
   | "projects"
   | "home"
   | "services"
-  | "about";
+  | "about"
+  | "seo_pages";
 
 export type CmsRow = {
   id: string;

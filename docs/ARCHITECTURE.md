@@ -37,6 +37,8 @@ Last updated: 2026-05-07
   - `src/app/accessories/[slug]/page.tsx`
   - `src/app/blog/page.tsx`
   - `src/app/blog/[slug]/page.tsx`
+  - `src/app/products/material/[slug]/page.tsx`
+  - `src/app/products/application/[slug]/page.tsx`
   - `src/app/contact/page.tsx`
   - `src/app/products/page.tsx`
   - `src/app/projects/page.tsx`
@@ -57,6 +59,11 @@ Last updated: 2026-05-07
   - `src/app/products/[slug]/page.tsx`
   - uses `generateStaticParams()` from `PRODUCTS`
   - sets `dynamicParams = false`
+- SEO landing-page routes:
+  - `src/app/products/material/[slug]/page.tsx`
+  - `src/app/products/application/[slug]/page.tsx`
+  - use `generateStaticParams()` from published `SEO_LANDING_PAGES`
+  - set `dynamicParams = false` and emit Breadcrumb, FAQ and ItemList structured data
 - Project detail route:
   - `src/app/projects/[id]/page.tsx`
   - uses fixed static id list in file
@@ -85,7 +92,7 @@ Last updated: 2026-05-07
   - `/thank-you`: `noindex,nofollow`
   - `/terms-condition`: indexable
 - Sitemap content:
-  - core static routes, legal static routes, accessories routes, generated product detail routes, and generated blog detail routes.
+  - core static routes, legal static routes, accessories routes, generated product detail routes, SEO landing-page routes, and generated blog detail routes.
   - Excluded from sitemap: `/cart`, `/projects/[id]`, `/thank-you`.
 - `robots.txt` allows crawling and points to the production sitemap; noindex pages are controlled by page metadata rather than robots blocking so crawlers can observe the noindex directive.
 
@@ -102,7 +109,7 @@ Last updated: 2026-05-07
   - display-only product names can be supplied through `ProductOverride.displayName`
 - Product photo mapping refresh command: `npm run prepare:product-photos`.
 - Generated files are build artifacts and must not be edited manually.
-- Optional CMS source: Supabase `cms_products`, `cms_blog_posts`, `cms_pages` and `cms_projects` tables.
+- Optional CMS source: Supabase `cms_products`, `cms_blog_posts`, `cms_pages`, `cms_projects` and `cms_seo_pages` tables.
 - Admin route: `/admin/` (static client application protected by Supabase Auth + RLS).
 - Build sync: `scripts/sync-cms-data.ts` writes product, blog and site-content generated files from published rows.
 - Legacy generated data remains the fallback when CMS build secrets are not configured.
