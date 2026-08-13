@@ -120,6 +120,7 @@ const syncedSeoPages: SeoLandingPage[] = seoPageRows.map((row) => ({
   slug: row.slug,
   kind: row.page_type,
   h1: row.content.h1 || row.title,
+  catalogueDescription: typeof row.content.catalogueDescription === "string" ? row.content.catalogueDescription : undefined,
   productSlugs: Array.isArray(row.content.productSlugs) ? row.content.productSlugs : [],
   sections: Array.isArray(row.content.sections) ? row.content.sections : [],
   faqs: Array.isArray(row.content.faqs) ? row.content.faqs : [],
@@ -128,7 +129,15 @@ const syncedSeoPages: SeoLandingPage[] = seoPageRows.map((row) => ({
 // The reviewed consultant pages are the launch baseline. CMS rows override
 // matching pages and may add new material/application pages later.
 const seoPagesByKey = new Map(DEFAULT_SEO_LANDING_PAGES.map((page) => [`${page.kind}:${page.slug}`, page]));
-syncedSeoPages.forEach((page) => seoPagesByKey.set(`${page.kind}:${page.slug}`, page));
+syncedSeoPages.forEach((page) => {
+  const key = `${page.kind}:${page.slug}`;
+  const fallback = seoPagesByKey.get(key);
+  seoPagesByKey.set(key, {
+    ...fallback,
+    ...page,
+    catalogueDescription: page.catalogueDescription || fallback?.catalogueDescription || page.intro,
+  });
+});
 const seoPages = [...seoPagesByKey.values()];
 
 // Fail the deployment instead of publishing malformed dynamic routes.

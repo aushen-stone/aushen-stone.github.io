@@ -44,10 +44,12 @@ test("product search updates the shareable URL and rendered results", async ({ p
 test("product material filters update the catalogue heading", async ({ page }) => {
   await page.goto("/products/?category=bluestone");
   await expect(page.getByRole("heading", { level: 1, name: "Bluestone" })).toBeVisible();
+  await expect(page.getByText("When it comes to elevating the aesthetics of your home", { exact: false })).toBeVisible();
 
   await page.getByRole("combobox", { name: "Filter by material" }).selectOption("limestone");
   await expect(page).toHaveURL(/material=limestone/);
   await expect(page.getByRole("heading", { level: 1, name: "Limestone" })).toBeVisible();
+  await expect(page.getByText("Enhance your home or commercial project with premium limestone", { exact: false })).toBeVisible();
 
   await page.getByRole("button", { name: "Clear Filters" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "Stone Products" })).toBeVisible();

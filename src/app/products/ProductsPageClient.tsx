@@ -16,6 +16,7 @@ import {
   MATERIAL_FILTER_OPTIONS,
   buildApplicationFilterOptions,
 } from "@/data/productFilterOptions";
+import { SEO_LANDING_PAGES } from "@/data/seoLandingPages";
 import { getProductDisplayName } from "@/data/product_display_names";
 import {
   DEFAULT_PRODUCT_IMAGE,
@@ -351,6 +352,19 @@ function ProductsPageContent({
   const selectedMaterialName =
     materials.find((material) => material.slug === filters.material)?.name ||
     "Stone Products";
+  const selectedSeoPage = filters.material
+    ? SEO_LANDING_PAGES.find((page) => page.kind === "material" && page.slug === filters.material)
+    : filters.application
+      ? SEO_LANDING_PAGES.find((page) => page.kind === "application" && (
+          page.slug === filters.application ||
+          (page.slug === "cobblestone" && filters.application === "cobble-stone") ||
+          (page.slug === "crazy-paving" && filters.application === "crazy-paver") ||
+          (page.slug === "pavers" && filters.application === "paver")
+        ))
+      : undefined;
+  const catalogueDescription = selectedSeoPage?.catalogueDescription?.trim() ||
+    selectedSeoPage?.intro?.trim() ||
+    "Quickly narrow by keyword, material, and application to find the right stone.";
 
   return (
     <main className="bg-[#F8F5F1] min-h-screen">
@@ -364,8 +378,8 @@ function ProductsPageContent({
               {filteredProducts.length} Results
             </p>
           </div>
-          <p className="mt-2 text-sm text-gray-600 max-w-2xl">
-            Quickly narrow by keyword, material, and application to find the right stone.
+          <p className="mt-3 max-w-4xl whitespace-pre-line text-sm leading-6 text-gray-600">
+            {catalogueDescription}
           </p>
         </div>
       </section>

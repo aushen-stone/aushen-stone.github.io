@@ -25,6 +25,8 @@ export type SeoLandingPage = {
   metaTitle: string;
   metaDescription: string;
   intro: string;
+  /** Short copy shown under the heading on the filterable product catalogue. */
+  catalogueDescription?: string;
   serviceArea: string;
   productSlugs: string[];
   sections: SeoLandingPageSection[];

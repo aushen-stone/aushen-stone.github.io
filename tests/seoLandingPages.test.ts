@@ -24,3 +24,9 @@ test("SEO landing page product lists resolve and remain alphabetic", () => {
     assert.equal(new Set(slugs).size, slugs.length);
   }
 });
+
+test("Bluestone catalogue description preserves the reviewed legacy copy", () => {
+  const bluestone = SEO_LANDING_PAGES.find((page) => page.kind === "material" && page.slug === "bluestone");
+  assert.ok(bluestone?.catalogueDescription?.startsWith("When it comes to elevating the aesthetics of your home"));
+  assert.match(bluestone.catalogueDescription, /visit our showroom today\.$/);
+});

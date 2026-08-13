@@ -8,6 +8,7 @@ export const DEFAULT_SEO_LANDING_PAGES: SeoLandingPage[] = [
     "metaTitle": "Bluestone Paving & Tiles Suppliers Melbourne | Aushen Stone",
     "metaDescription": "Enhance your outdoor space with premium bluestone paving and tiles, valued for their strength, timeless appeal and versatility. Shop Aushen Stone today.",
     "intro": "Looking for premium bluestone paving for your next project? Aushen Stone is a trusted supplier offering an extensive range of bluestone tiles and pavers Melbourne for residential and commercial spaces. Whether you're creating a pool surround, driveway, patio or garden pathway, our quality bluestone combines timeless style with exceptional durability.",
+    "catalogueDescription": "When it comes to elevating the aesthetics of your home, few natural stones can rival the timeless beauty and durability of bluestone. Derived from volcanic origins dating back millions of years, bluestone has emerged as a popular choice for landscape and architectural designs in Melbourne. From elegant pavers to exquisite pool coping and versatile tiles, bluestone offers a plethora of options to transform your space. If you are looking for bluestone tiles, steppers, or pool coping, visit our showroom today.",
     "serviceArea": "Melbourne and Victoria",
     "productSlugs": [],
     "sections": [

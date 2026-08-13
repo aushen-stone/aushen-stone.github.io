@@ -14,6 +14,10 @@ export default function SeoLandingPageEditor({ value, onChange }: { value: SeoLa
       <div><h3 className="font-serif text-2xl">SEO and page content</h3><p className="mt-1 text-xs text-gray-500">Products appear before the long-form content. Leave product selection empty to link automatically by material or application.</p></div>
       <Field label="Meta title"><input value={value.metaTitle} onChange={(e) => update("metaTitle", e.target.value)} className="admin-input" required maxLength={70} /><Count value={value.metaTitle} recommended="50–60" /></Field>
       <Field label="Meta description"><textarea rows={3} value={value.metaDescription} onChange={(e) => update("metaDescription", e.target.value)} className="admin-input py-3" required maxLength={170} /><Count value={value.metaDescription} recommended="140–160" /></Field>
+      <Field label="Catalogue introduction">
+        <textarea rows={5} value={value.catalogueDescription ?? value.intro} onChange={(e) => update("catalogueDescription", e.target.value)} className="admin-input py-3" />
+        <p className="mt-2 text-xs leading-5 text-gray-500">Shown beneath the selected material or application heading on the filterable Products page.</p>
+      </Field>
       <Field label="Melbourne / Victoria service area"><input value={value.serviceArea} onChange={(e) => update("serviceArea", e.target.value)} className="admin-input" /></Field>
       <Field label="Products shown on this page">
         <select multiple value={value.productSlugs} onChange={(e) => update("productSlugs", Array.from(e.currentTarget.selectedOptions, (option) => option.value))} className="admin-input min-h-48 py-2">
