@@ -53,6 +53,9 @@ import type {
 } from "@/types/product";
 import ProductSpecificationsEditor from "./ProductSpecificationsEditor";
 import { StructuredContentEditor } from "./StructuredContentEditor";
+import SeoLandingPageEditor from "./SeoLandingPageEditor";
+import type { SeoLandingPage } from "@/types/seoLandingPage";
+import { DEFAULT_SEO_LANDING_PAGES } from "@/data/seo-landing-page.defaults";
 
 // The editor is only needed after an administrator opens a blog form, so keep
 // its ProseMirror runtime out of the public site and the initial admin bundle.
@@ -98,6 +101,7 @@ const ENTITY_LABELS: Record<CmsEntityType, string> = {
   home: "Home",
   services: "Services",
   about: "Our Story",
+  seo_pages: "SEO Landing Pages",
 };
 const ALL_ENTITIES = Object.keys(ENTITY_LABELS) as CmsEntityType[];
 const CMS_MEDIA_CACHE_SECONDS = "31536000";
@@ -117,6 +121,8 @@ const tableForEntity = (entity: CmsEntityType) =>
       ? "cms_blog_posts"
       : entity === "projects"
         ? "cms_projects"
+        : entity === "seo_pages"
+          ? "cms_seo_pages"
         : "cms_pages";
 
 const readProductMediaAssets = (advancedJson: string): ProductMediaAssets => {
@@ -253,6 +259,7 @@ const DEMO_ROWS: Record<CmsEntityType, CmsRow[]> = {
       updatedAt: "2026-07-10T02:00:00Z",
     },
   ],
+  seo_pages: DEFAULT_SEO_LANDING_PAGES.map((page, index) => ({ id: `demo-seo-${index}`, slug: page.slug, title: page.h1, status: "published", imageUrl: null, secondaryLabel: page.kind, content: page, updatedAt: "2026-08-13T00:00:00Z" })),
 };
 
 function editorFromRow(row: CmsRow): EditorState {
@@ -289,7 +296,7 @@ function editorFromRow(row: CmsRow): EditorState {
           (value): value is string => typeof value === "string",
         )
       : [],
-    summary: String(content.description ?? content.excerpt ?? ""),
+    summary: String(content.description ?? content.excerpt ?? content.intro ?? ""),
     bodyHtml: String(content.bodyHtml ?? ""),
     bodyJson:
       content.editorJson && typeof content.editorJson === "object"
@@ -350,6 +357,8 @@ export default function AdminPageClient() {
               ? row.material
               : entity === "projects"
                 ? row.category
+                : entity === "seo_pages"
+                  ? row.page_type
                 : PAGE_ENTITIES.has(entity)
                   ? "Managed page"
                   : "Blog post",
@@ -456,7 +465,7 @@ export default function AdminPageClient() {
           status: editor.status,
           imageUrl: editor.imageUrl || null,
           secondaryLabel:
-            entity === "products" || entity === "projects"
+            entity === "products" || entity === "projects" || entity === "seo_pages"
               ? editor.secondaryLabel
               : PAGE_ENTITIES.has(entity)
                 ? "Managed page"
@@ -548,6 +557,21 @@ export default function AdminPageClient() {
                   "Residential",
                 hero_image_url: editor.imageUrl || null,
               }));
+      } else if (entity === "seo_pages") {
+        ({ error } = editor.id
+          ? await supabase
+              .from("cms_seo_pages")
+              .update({
+                ...base,
+                slug: editor.slug,
+                page_type: editor.secondaryLabel === "application" ? "application" : "material",
+              })
+              .eq("id", editor.id)
+          : await supabase.from("cms_seo_pages").insert({
+              ...base,
+              slug: editor.slug,
+              page_type: editor.secondaryLabel === "application" ? "application" : "material",
+            }));
       } else {
         ({ error } = await supabase
           .from("cms_pages")
@@ -654,7 +678,7 @@ export default function AdminPageClient() {
         if (
           entity === "products" ||
           entity === "blog" ||
-          entity === "projects"
+          entity === "projects" || entity === "seo_pages"
         ) {
           if (entity === "products" && productVariants) {
             const mediaAssets = readProductMediaAssets(current.advancedJson);
@@ -1121,7 +1145,7 @@ export default function AdminPageClient() {
               <Plus size={16} />{" "}
               {PAGE_ENTITIES.has(entity)
                 ? "Edit page"
-                : `Add ${entity === "products" ? "product" : entity === "blog" ? "post" : "project"}`}
+                : `Add ${entity === "products" ? "product" : entity === "blog" ? "post" : entity === "seo_pages" ? "SEO page" : "project"}`}
             </button>
           </div>
 
@@ -1347,6 +1371,20 @@ function EditorPanel({
   if (entity === "products" && Array.isArray(parsedAdvanced?.applicationIndex)) {
     productApplications = parsedAdvanced.applicationIndex as ApplicationIndexEntry[];
   }
+  const seoContent = entity === "seo_pages" && parsedAdvanced ? {
+    ...parsedAdvanced,
+    slug: editor.slug,
+    kind: editor.secondaryLabel === "application" ? "application" : "material",
+    h1: editor.title,
+    intro: editor.summary,
+    metaTitle: String(parsedAdvanced.metaTitle ?? ""),
+    metaDescription: String(parsedAdvanced.metaDescription ?? ""),
+    serviceArea: String(parsedAdvanced.serviceArea ?? "Melbourne and Victoria"),
+    productSlugs: Array.isArray(parsedAdvanced.productSlugs) ? parsedAdvanced.productSlugs : [],
+    sections: Array.isArray(parsedAdvanced.sections) ? parsedAdvanced.sections : [],
+    faqs: Array.isArray(parsedAdvanced.faqs) ? parsedAdvanced.faqs : [],
+    exploreLinks: Array.isArray(parsedAdvanced.exploreLinks) ? parsedAdvanced.exploreLinks : [],
+  } as SeoLandingPage : null;
   const updateProductApplications = (applications: ApplicationIndexEntry[]) => {
     if (!parsedAdvanced) return;
     update(
@@ -1412,8 +1450,19 @@ function EditorPanel({
               className="admin-input"
             />
           </Field>
-          {entity === "products" || entity === "projects" ? (
-            <Field label={entity === "products" ? "Material" : "Category"}>
+          {entity === "products" || entity === "projects" || entity === "seo_pages" ? (
+            <Field label={entity === "products" ? "Material" : entity === "projects" ? "Category" : "Page type"}>
+              {entity === "seo_pages" ? (
+                <select
+                  required
+                  value={editor.secondaryLabel || "material"}
+                  onChange={(event) => update("secondaryLabel", event.target.value)}
+                  className="admin-input"
+                >
+                  <option value="material">Material</option>
+                  <option value="application">Application</option>
+                </select>
+              ) : (
               <input
                 required
                 value={editor.secondaryLabel}
@@ -1422,6 +1471,7 @@ function EditorPanel({
                 }
                 className="admin-input"
               />
+              )}
             </Field>
           ) : !PAGE_ENTITIES.has(entity) ? (
             <Field label="Categories (comma separated)">
@@ -1449,7 +1499,9 @@ function EditorPanel({
                   ? "Summary"
                   : entity === "projects"
                     ? "Description"
-                    : "Excerpt"
+                    : entity === "seo_pages"
+                      ? "Introduction"
+                      : "Excerpt"
               }
             >
               <textarea
@@ -1486,6 +1538,20 @@ function EditorPanel({
                 }
               />
             </div>
+          ) : null}
+          {seoContent ? <SeoLandingPageEditor value={seoContent} onChange={(value) => update("advancedJson", JSON.stringify(value, null, 2))} /> : null}
+          {seoContent ? (
+            <details className="border border-[#283020] bg-[#F8F5F1] p-5">
+              <summary className="cursor-pointer font-medium">Preview page content</summary>
+              <div className="mt-6 border bg-white p-6">
+                <p className="text-xs uppercase tracking-[0.16em] text-gray-500">{seoContent.kind}</p>
+                <h1 className="mt-3 font-serif text-4xl">{seoContent.h1}</h1>
+                <p className="mt-4 leading-7 text-gray-600">{seoContent.intro}</p>
+                <p className="mt-6 text-xs text-gray-500">Products will appear here before the long-form sections.</p>
+                {seoContent.sections.map((section) => <section key={section.id} className="mt-8 border-t pt-5"><h2 className="font-serif text-2xl">{section.heading}</h2><p className="mt-3 whitespace-pre-line leading-7 text-gray-600">{section.body}</p></section>)}
+                {seoContent.faqs.length ? <section className="mt-8 border-t pt-5"><h2 className="font-serif text-2xl">Frequently asked questions</h2>{seoContent.faqs.map((faq) => <div key={faq.id} className="mt-4"><h3 className="font-medium">{faq.question}</h3><p className="mt-2 text-sm leading-6 text-gray-600">{faq.answer}</p></div>)}</section> : null}
+              </div>
+            </details>
           ) : null}
           <Field label={entity === "products" ? "Product photo" : "Image"}>
             {editor.imageUrl ? (

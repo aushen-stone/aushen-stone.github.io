@@ -3,6 +3,7 @@ import type { BlogPost } from "@/types/blog";
 import type { Product } from "@/types/product";
 import type { LegacyAboutContent, LegacyHomeContent, LegacyPageContentMap, LegacyServicesContent, ManagedProject } from "@/types/siteContent";
 import { prepareBlogHtml } from "@/lib/blogHtml";
+import type { SeoLandingPage } from "@/types/seoLandingPage";
 
 export type CmsContentInput = {
   title: string;
@@ -57,10 +58,20 @@ export function buildCmsContent(entity: "projects", input: CmsContentInput): Man
 export function buildCmsContent(entity: "home", input: CmsContentInput): LegacyHomeContent;
 export function buildCmsContent(entity: "services", input: CmsContentInput): LegacyServicesContent;
 export function buildCmsContent(entity: "about", input: CmsContentInput): LegacyAboutContent;
-export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string; applicationImageUrls: string[] }) | BlogPost | ManagedProject | NonNullable<LegacyPageContentMap[keyof LegacyPageContentMap]>;
-export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string; applicationImageUrls: string[] }) | BlogPost | ManagedProject | NonNullable<LegacyPageContentMap[keyof LegacyPageContentMap]> {
+export function buildCmsContent(entity: "seo_pages", input: CmsContentInput): SeoLandingPage;
+export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string; applicationImageUrls: string[] }) | BlogPost | ManagedProject | SeoLandingPage | NonNullable<LegacyPageContentMap[keyof LegacyPageContentMap]>;
+export function buildCmsContent(entity: CmsEntityType, input: CmsContentInput): (Product & { description: string; applicationImageUrls: string[] }) | BlogPost | ManagedProject | SeoLandingPage | NonNullable<LegacyPageContentMap[keyof LegacyPageContentMap]> {
   // Advanced JSON preserves legacy nested fields while common fields stay easy to edit.
   const advanced = JSON.parse(input.advancedJson || "{}") as Record<string, unknown>;
+  if (entity === "seo_pages") {
+    return {
+      ...advanced,
+      slug: input.slug,
+      kind: input.secondaryLabel === "application" ? "application" : "material",
+      h1: input.title,
+      intro: input.summary,
+    } as SeoLandingPage;
+  }
   if (entity === "products") {
     return {
       ...advanced,

@@ -13,6 +13,13 @@ import {
 } from "@/data/productFilterOptions";
 import { SampleCartDrawer } from "@/app/components/cart/SampleCartDrawer";
 import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
+import { SEO_LANDING_PAGES } from "@/data/seoLandingPages";
+
+const seoPageKeys = new Set(SEO_LANDING_PAGES.map((page) => `${page.kind}:${page.slug}`));
+const categoryHref = (kind: "material" | "application", slug: string) =>
+  seoPageKeys.has(`${kind}:${slug}`)
+    ? `/products/${kind}/${slug}/`
+    : `/products/?${kind === "material" ? "category" : "application"}=${slug}`;
 
 export function Navbar() {
   const accessoriesIndexPath = "/accessories/";
@@ -428,7 +435,7 @@ export function Navbar() {
                     {MATERIAL_FILTER_OPTIONS.map((cat) => (
                       <li key={cat.slug}>
                         <Link
-                          href={`/products?category=${cat.slug}`}
+                            href={categoryHref("material", cat.slug)}
                           onClick={() => setActiveMenu(null)}
                           className="block text-sm text-gray-600 hover:text-gray-900 hover:pl-2 transition-all"
                         >
@@ -448,7 +455,7 @@ export function Navbar() {
                     {PREFERRED_APPLICATION_FILTER_OPTIONS.map((cat) => (
                       <li key={cat.slug}>
                         <Link
-                          href={`/products?category=${cat.slug}`}
+                            href={categoryHref("application", cat.slug)}
                           onClick={() => setActiveMenu(null)}
                           className="block text-sm text-gray-600 hover:text-gray-900 hover:pl-2 transition-all"
                         >
@@ -630,7 +637,7 @@ export function Navbar() {
                     {MATERIAL_FILTER_OPTIONS.slice(0, 6).map((cat) => (
                       <li key={cat.slug}>
                         <Link
-                          href={`/products?category=${cat.slug}`}
+                            href={categoryHref("material", cat.slug)}
                           onClick={() => setIsMobileMenuOpen(false)}
                           className="text-sm text-gray-700"
                         >
@@ -649,7 +656,7 @@ export function Navbar() {
                     {PREFERRED_APPLICATION_FILTER_OPTIONS.slice(0, 6).map((cat) => (
                       <li key={cat.slug}>
                         <Link
-                          href={`/products?category=${cat.slug}`}
+                            href={categoryHref("application", cat.slug)}
                           onClick={() => setIsMobileMenuOpen(false)}
                           className="text-sm text-gray-700"
                         >

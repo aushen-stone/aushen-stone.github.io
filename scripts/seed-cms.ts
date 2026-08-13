@@ -6,6 +6,7 @@ import { DEFAULT_MANAGED_PAGES } from "../src/data/site-content.defaults";
 import { DEFAULT_LEGACY_PAGES } from "../src/data/legacy-page.defaults";
 import { LEGACY_PROJECTS } from "../src/app/projects/ProjectsPageClient";
 import { LEGACY_PROJECT_DETAILS } from "../src/app/projects/[id]/ProjectDetailClient";
+import { DEFAULT_SEO_LANDING_PAGES } from "../src/data/seo-landing-page.defaults";
 
 const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -73,4 +74,16 @@ const { error: projectError } = await supabase.from("cms_projects").upsert(
 );
 if (projectError) throw projectError;
 
-console.log(`Seeded ${PRODUCTS.length} products, ${BLOG_POSTS.length} blog posts, ${Object.keys(DEFAULT_MANAGED_PAGES).length} pages and ${legacyProjects.length} projects`);
+const { error: seoPageError } = await supabase.from("cms_seo_pages").upsert(
+  DEFAULT_SEO_LANDING_PAGES.map((page) => ({
+    slug: page.slug,
+    page_type: page.kind,
+    title: page.h1,
+    status: "published",
+    content: page,
+  })),
+  { onConflict: "page_type,slug" }
+);
+if (seoPageError) throw seoPageError;
+
+console.log(`Seeded ${PRODUCTS.length} products, ${BLOG_POSTS.length} blog posts, ${Object.keys(DEFAULT_MANAGED_PAGES).length} pages, ${legacyProjects.length} projects and ${DEFAULT_SEO_LANDING_PAGES.length} SEO pages`);

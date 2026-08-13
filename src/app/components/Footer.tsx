@@ -196,7 +196,7 @@ export function Footer() {
         </div>
 
         <div className="text-white/30 text-xs uppercase tracking-widest flex gap-8">
-          <span>© 2024 Aushen Stone</span>
+          <span>© 2026 Aushen Stone</span>
         </div>
       </motion.div>
 
