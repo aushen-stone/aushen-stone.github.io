@@ -178,16 +178,17 @@ export function Footer() {
       >
         <div className="flex gap-6 mb-8 md:mb-0">
           {[
-            { Icon: Instagram, href: "https://www.instagram.com" },
-            { Icon: Facebook, href: "https://www.facebook.com" },
-            { Icon: Linkedin, href: "https://www.linkedin.com" },
-            { Icon: Twitter, href: "https://x.com" },
-          ].map(({ Icon, href }) => (
+            { Icon: Instagram, href: "https://www.instagram.com/aushenstone/", label: "Aushen Stone on Instagram" },
+            { Icon: Facebook, href: "https://www.facebook.com/aushenstone3192/", label: "Aushen Stone on Facebook" },
+            { Icon: Linkedin, href: "https://www.linkedin.com", label: "LinkedIn" },
+            { Icon: Twitter, href: "https://x.com", label: "X" },
+          ].map(({ Icon, href, label }) => (
             <a
               key={href}
               href={href}
               target="_blank"
               rel="noreferrer"
+              aria-label={label}
               className="w-10 h-10 border border-white/10 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:border-white transition-all duration-300"
             >
               <Icon size={16} />
