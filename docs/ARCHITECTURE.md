@@ -126,6 +126,12 @@ Last updated: 2026-07-29
     URLs. Static legacy product photos use matching files under
     `public/product-thumbnails-v2` and `public/product-large-v2`.
   - versioned Supabase objects use one-year caching and are never overwritten.
+  - published Supabase Storage media is localized into `public/cms-media/` during
+    `cms:sync`; generated public content uses `/cms-media/...` paths so visitor
+    traffic is served by the GitHub Pages artifact instead of Supabase egress.
+  - GitHub Actions restores a rolling CMS media cache, downloads only new
+    published objects, removes stale cached objects, and rejects a deployment
+    if the final artifact contains a public `cms-media` Supabase Storage URL.
   - `scripts/migrate-product-media.py` performs backup-first, per-product
     migration without deleting legacy objects; `scripts/restore-product-media.py`
     restores the backed-up database references.

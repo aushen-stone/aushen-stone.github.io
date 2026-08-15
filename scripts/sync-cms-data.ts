@@ -1,4 +1,4 @@
-import { writeFile } from "node:fs/promises";
+import { mkdir, readdir, stat, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { BlogPost } from "../src/types/blog";
 import type { Product, ProductOverride } from "../src/types/product";
@@ -7,6 +7,7 @@ import type { SeoLandingPage } from "../src/types/seoLandingPage";
 import { applyLegacyPageHeroImage } from "../src/lib/cmsContent";
 import { prepareBlogHtml } from "../src/lib/blogHtml";
 import { DEFAULT_SEO_LANDING_PAGES } from "../src/data/seo-landing-page.defaults";
+import { cmsMediaStaticPath } from "../src/lib/cmsMediaPaths";
 
 type ProductRow = {
   slug: string;
@@ -42,6 +43,108 @@ if (!url || !buildKey) {
 }
 const buildUrl = url;
 const authorizedBuildKey = buildKey;
+
+const publicCmsMediaRoot = path.join(process.cwd(), "public", "cms-media");
+
+const collectCmsMediaUrls = (value: unknown, result: Set<string>): void => {
+  if (typeof value === "string") {
+    if (cmsMediaStaticPath(value, buildUrl)) result.add(value);
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach((item) => collectCmsMediaUrls(item, result));
+    return;
+  }
+  if (value && typeof value === "object") {
+    Object.values(value).forEach((item) => collectCmsMediaUrls(item, result));
+  }
+};
+
+const replaceCmsMediaUrls = (value: unknown, replacements: Map<string, string>): unknown => {
+  if (typeof value === "string") return replacements.get(value) ?? value;
+  if (Array.isArray(value)) {
+    return value.map((item) => replaceCmsMediaUrls(item, replacements));
+  }
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [
+        key,
+        replaceCmsMediaUrls(item, replacements),
+      ]),
+    );
+  }
+  return value;
+};
+
+const listFiles = async (directory: string): Promise<string[]> => {
+  const entries = await readdir(directory, { withFileTypes: true }).catch(() => []);
+  const files = await Promise.all(
+    entries.map((entry) => {
+      const entryPath = path.join(directory, entry.name);
+      return entry.isDirectory() ? listFiles(entryPath) : [entryPath];
+    }),
+  );
+  return files.flat();
+};
+
+async function localizeCmsMedia<T>(
+  value: T,
+): Promise<{ value: T; downloaded: number; removed: number }> {
+  const urls = new Set<string>();
+  collectCmsMediaUrls(value, urls);
+  const entries = [...urls].map((sourceUrl) => ({
+    sourceUrl,
+    staticPath: cmsMediaStaticPath(sourceUrl, buildUrl),
+  })).filter((entry): entry is { sourceUrl: string; staticPath: string } => Boolean(entry.staticPath));
+  const replacements = new Map(entries.map((entry) => [entry.sourceUrl, entry.staticPath]));
+  const referencedFiles = new Set(
+    entries.map((entry) =>
+      path.normalize(
+        path.join(
+          publicCmsMediaRoot,
+          ...entry.staticPath
+            .slice("/cms-media/".length)
+            .split("/")
+            .map((segment) => decodeURIComponent(segment)),
+        ),
+      ),
+    ),
+  );
+  let downloaded = 0;
+  let cursor = 0;
+
+  await mkdir(publicCmsMediaRoot, { recursive: true });
+  const downloadNext = async () => {
+    while (cursor < entries.length) {
+      const entry = entries[cursor++];
+      const relativePath = entry.staticPath.slice("/cms-media/".length)
+        .split("/")
+        .map((segment) => decodeURIComponent(segment));
+      const destination = path.join(publicCmsMediaRoot, ...relativePath);
+      const existing = await stat(destination).catch(() => null);
+      if (existing?.isFile() && existing.size > 0) continue;
+
+      const response = await fetch(entry.sourceUrl);
+      if (!response.ok) {
+        throw new Error(`Unable to localize CMS media: ${response.status} ${entry.staticPath}`);
+      }
+      await mkdir(path.dirname(destination), { recursive: true });
+      await writeFile(destination, Buffer.from(await response.arrayBuffer()));
+      downloaded += 1;
+    }
+  };
+
+  await Promise.all(Array.from({ length: 12 }, () => downloadNext()));
+  const staleFiles = (await listFiles(publicCmsMediaRoot)).filter(
+    (file) => !referencedFiles.has(path.normalize(file)),
+  );
+  await Promise.all(staleFiles.map((file) => unlink(file)));
+  return {
+    value: replaceCmsMediaUrls(value, replacements) as T,
+    downloaded,
+    removed: staleFiles.length,
+  };
+}
 
 async function readRows<T>(table: string): Promise<T[]> {
   const response = await fetch(
@@ -88,6 +191,18 @@ try {
   }
   throw error;
 }
+
+const localizedCms = await localizeCmsMedia({
+  productRows,
+  blogRows,
+  pageRows,
+  projectRows,
+  seoPageRows,
+});
+({ productRows, blogRows, pageRows, projectRows, seoPageRows } = localizedCms.value);
+console.log(
+  `cms:sync localized ${localizedCms.downloaded} new files and removed ${localizedCms.removed} stale files across published CMS media`,
+);
 
 const products = productRows.map((row) => row.content);
 // Keep the dedicated image columns authoritative. This also protects content
