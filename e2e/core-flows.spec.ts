@@ -55,6 +55,18 @@ test("product material filters update the catalogue heading", async ({ page }) =
   await expect(page.getByRole("heading", { level: 1, name: "Stone Products" })).toBeVisible();
 });
 
+test("product application hover photos load only after desktop interaction", async ({ page }, testInfo) => {
+  await page.goto("/products/?q=Antarctica");
+  const card = page.locator("#product-antarctica");
+  await expect(card).toBeVisible();
+  await expect(card.getByAltText("Antarctica White application")).toHaveCount(0);
+
+  if (testInfo.project.name.startsWith("desktop")) {
+    await card.hover();
+    await expect(card.getByAltText("Antarctica White application")).toBeVisible();
+  }
+});
+
 test("product applications drive catalogue filtering and availability selections", async ({ page }) => {
   await page.goto("/products/");
   await page.getByRole("combobox", { name: "Filter by application" }).selectOption("pool-coping");

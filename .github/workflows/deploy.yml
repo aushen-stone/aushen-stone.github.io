@@ -69,12 +69,28 @@ jobs:
               ;;
           esac
 
+      - name: Restore localized CMS media cache
+        uses: actions/cache@v4
+        with:
+          path: public/cms-media
+          key: cms-media-v1-${{ github.run_id }}
+          restore-keys: |
+            cms-media-v1-
+
       - name: Build static export
         env:
           NEXT_PUBLIC_CONTACT_API_URL: ${{ vars.NEXT_PUBLIC_CONTACT_API_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
         run: npm run build:pages
+
+      - name: Verify public pages do not use Supabase Storage URLs
+        run: |
+          if grep -R --fixed-strings --quiet -- "/storage/v1/object/public/cms-media/" dist; then
+            echo "Built pages still contain public Supabase Storage URLs. Aborting deploy."
+            exit 1
+          fi
+          echo "All published CMS media uses the static Pages artifact."
 
       - name: Verify contact API endpoint is bundled
         env:

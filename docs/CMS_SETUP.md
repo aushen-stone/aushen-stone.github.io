@@ -97,6 +97,11 @@ published rows using the publishable key, and Postgres RLS remains enforced.
 
 When an admin selects **Publish site**, the Edge Function sends a `cms_publish` repository dispatch. The workflow synchronizes published CMS rows into generated TypeScript files, builds all static product/blog routes, and deploys GitHub Pages.
 
+Published CMS images are copied from Supabase Storage into the GitHub Pages
+artifact during this build. A rolling Actions cache means later publishes only
+download new media, while website visitors receive `/cms-media/...` files from
+GitHub Pages rather than consuming Supabase Storage egress.
+
 ## Publishing behavior
 
 - Saving a draft changes only Supabase.

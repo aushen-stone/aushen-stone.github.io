@@ -25,6 +25,7 @@
 # production
 /build
 /dist
+/public/cms-media/
 
 # misc
 .DS_Store
