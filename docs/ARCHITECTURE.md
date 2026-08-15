@@ -19,7 +19,7 @@ Last updated: 2026-07-29
   - `images.unoptimized: true`
 - Build command:
   - `npm run build` -> `next build --webpack`
-  - `npm run build:pages` -> `next build --webpack && rm -rf dist && cp -R out dist`
+  - `npm run build:pages` -> `next build --webpack`, then cross-platform Node filesystem APIs replace `dist/` with a copy of `out/`
 - Publish workflow:
   - `.github/workflows/deploy.yml`
   - trigger: `push main` + `workflow_dispatch`

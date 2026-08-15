@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "npm run cms:sync && next build --webpack",
-    "build:pages": "npm run cms:sync && next build --webpack && rm -rf dist && cp -R out dist",
+    "build:pages": "npm run cms:sync && next build --webpack && node -e \"const fs=require('node:fs');fs.rmSync('dist',{recursive:true,force:true});fs.cpSync('out','dist',{recursive:true})\"",
     "build:blog-data": "python3 scripts/build-blog-data.py",
     "build:product-data": "tsx scripts/build-product-data.ts",
     "prepare:product-photos": "python3 scripts/prepare-product-photos.py",
