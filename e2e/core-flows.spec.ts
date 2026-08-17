@@ -63,8 +63,49 @@ test("product application hover photos load only after desktop interaction", asy
 
   if (testInfo.project.name.startsWith("desktop")) {
     await card.hover();
-    await expect(card.getByAltText("Antarctica White application")).toBeVisible();
+    const applicationImage = card.getByAltText("Antarctica White application");
+    await expect(applicationImage).toBeVisible();
+    await expect.poll(() =>
+      applicationImage.evaluate((element: HTMLImageElement) => element.naturalWidth),
+    ).toBeGreaterThan(0);
   }
+});
+
+test("SEO landing product cards match the catalogue and support application hover", async ({ page }, testInfo) => {
+  await page.goto("/products/material/marble/");
+  const card = page.locator("#product-antarctica");
+  await expect(card).toBeVisible();
+
+  const productImage = card.getByAltText("Antarctica White", { exact: true });
+  await expect(productImage).toBeVisible();
+  const box = await productImage.boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.width / box!.height).toBeCloseTo(1.25, 1);
+  await expect(card.getByAltText("Antarctica White application")).toHaveCount(0);
+
+  if (testInfo.project.name.startsWith("desktop")) {
+    await card.hover();
+    const applicationImage = card.getByAltText("Antarctica White application");
+    await expect(applicationImage).toBeVisible();
+    await expect.poll(() =>
+      applicationImage.evaluate((element: HTMLImageElement) => element.naturalWidth),
+    ).toBeGreaterThan(0);
+  }
+});
+
+test("Siena Earth large product image is non-empty", async ({ page }) => {
+  await page.goto("/products/siena-earth/");
+  const image = page.locator('main img[alt^="Siena Earth"]').first();
+  await expect(image).toBeVisible();
+  await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.naturalWidth)).toBeGreaterThan(0);
+});
+
+test("product heading names material and application filter results", async ({ page }) => {
+  await page.goto("/products/");
+  await page.getByRole("combobox", { name: "Filter by material" }).selectOption("bluestone");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Bluestone");
+  await page.getByRole("combobox", { name: "Filter by application" }).selectOption("paver");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Bluestone & Paver");
 });
 
 test("product applications drive catalogue filtering and availability selections", async ({ page }) => {

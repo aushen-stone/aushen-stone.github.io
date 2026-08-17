@@ -1,13 +1,10 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import Link from "next/link";
 import {
   Suspense,
   useEffect,
   useMemo,
   useRef,
-  useState,
   type ReactNode,
 } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -19,15 +16,13 @@ import {
 } from "@/data/productFilterOptions";
 import { SEO_LANDING_PAGES } from "@/data/seoLandingPages";
 import { getProductDisplayName } from "@/data/product_display_names";
-import {
-  DEFAULT_PRODUCT_THUMBNAIL,
-  PRODUCT_OVERRIDES,
-} from "@/data/product_overrides";
+import { PRODUCT_OVERRIDES } from "@/data/product_overrides";
+import { buildProductFilterHeading } from "@/lib/productFilterHeading";
+import { ProductCard, collectApplicationLabels } from "@/app/products/ProductCard";
 import {
   PRODUCTS_RETURN_CONTEXT_STORAGE_KEY,
   type ProductsReturnContext,
 } from "@/types/productNavigation";
-import type { Product } from "@/types/product";
 
 type FilterState = {
   query: string;
@@ -87,91 +82,6 @@ const buildInitialFilters = (
 
   return selected;
 };
-
-const collectApplicationLabels = (product: Product): string[] => {
-  const seen = new Set<string>();
-  const labels: string[] = [];
-
-  product.applicationIndex.forEach((application) => {
-    if (seen.has(application.label)) return;
-    seen.add(application.label);
-    labels.push(application.label);
-  });
-
-  return labels;
-};
-
-function ProductCard({
-  product,
-  onSelect,
-}: {
-  product: Product;
-  onSelect: (slug: string) => void;
-}) {
-  const [hoverImageRequested, setHoverImageRequested] = useState(false);
-  const override = PRODUCT_OVERRIDES[product.slug];
-  const displayName = getProductDisplayName(product);
-  const imageUrl =
-    override?.imageThumbnailUrl ||
-    override?.imageUrl ||
-    override?.imageUrls?.[0] ||
-    DEFAULT_PRODUCT_THUMBNAIL;
-  const applicationHoverUrl =
-    override?.applicationThumbnailUrls?.[0] ||
-    override?.applicationImageUrls?.[0];
-  const visibleLabels = collectApplicationLabels(product).slice(0, 2);
-
-  return (
-    <Link
-      id={`product-${product.slug}`}
-      href={`/products/${product.slug}`}
-      onClick={() => onSelect(product.slug)}
-      onMouseEnter={() => setHoverImageRequested(true)}
-      className="group block overflow-hidden border border-[#E6E0D8] bg-white hover:border-[#CDC5BA] hover:shadow-[0_10px_30px_-20px_rgba(0,0,0,0.45)] transition-all"
-    >
-      <div className="relative aspect-[5/4] bg-[#E5E5E5] overflow-hidden">
-        <img
-          src={imageUrl}
-          alt={displayName}
-          width={800}
-          height={640}
-          loading="lazy"
-          decoding="async"
-          className={`absolute inset-0 h-full w-full object-cover transition-all duration-500 ease-out group-hover:scale-[1.04] ${applicationHoverUrl ? "group-hover:opacity-0" : ""}`}
-        />
-        {applicationHoverUrl && hoverImageRequested ? (
-          <img
-            src={applicationHoverUrl}
-            alt={`${displayName} application`}
-            width={800}
-            height={640}
-            decoding="async"
-            className="absolute inset-0 h-full w-full scale-[1.02] object-cover opacity-0 transition-all duration-500 ease-out group-hover:scale-100 group-hover:opacity-100"
-          />
-        ) : null}
-      </div>
-
-      <div className="p-4 sm:p-5">
-        <h2 className="font-serif text-[1.1rem] leading-tight text-[#1D1D1B] min-h-[2.35rem]">
-          {displayName}
-        </h2>
-        <p className="mt-1.5 text-[11px] uppercase tracking-[0.14em] text-gray-500">
-          {product.materialName}
-        </p>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {visibleLabels.map((label) => (
-            <span
-              key={label}
-              className="px-2 py-1 text-[10px] uppercase tracking-[0.08em] bg-[#F2EEE8] text-[#4D4A44]"
-            >
-              {label}
-            </span>
-          ))}
-        </div>
-      </div>
-    </Link>
-  );
-}
 
 const hasActiveFilters = (filters: FilterState) =>
   Boolean(filters.query || filters.material || filters.application || filters.tone);
@@ -422,8 +332,15 @@ function ProductsPageContent({
   };
 
   const selectedMaterialName =
-    materials.find((material) => material.slug === filters.material)?.name ||
-    "Stone Products";
+    materials.find((material) => material.slug === filters.material)?.name;
+  const selectedApplicationName =
+    applications.find((application) => application.slug === filters.application)?.name;
+  const selectedToneName = TONE_OPTIONS.find((tone) => tone.slug === filters.tone)?.name;
+  const filterHeading = buildProductFilterHeading({
+    material: selectedMaterialName,
+    application: selectedApplicationName,
+    tone: selectedToneName,
+  });
   const selectedSeoPage = filters.material
     ? SEO_LANDING_PAGES.find((page) => page.kind === "material" && page.slug === filters.material)
     : filters.application
@@ -444,7 +361,7 @@ function ProductsPageContent({
         <div className="max-w-[1600px] mx-auto">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <h1 className="font-serif text-[clamp(1.7rem,4vw,2.75rem)] leading-[0.95] text-[#1D1D1B]">
-              {selectedMaterialName}
+              {filterHeading}
             </h1>
             <p className="text-[11px] sm:text-xs uppercase tracking-[0.16em] text-gray-500">
               {filteredProducts.length} Results

@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { Footer } from "@/app/components/Footer";
-import { getProductDisplayName } from "@/data/product_display_names";
+import { ProductCard } from "@/app/products/ProductCard";
 import type { SeoLandingPage } from "@/types/seoLandingPage";
-import { PRODUCT_OVERRIDES, DEFAULT_PRODUCT_IMAGE } from "@/data/product_overrides";
 import { getSeoLandingPageProducts } from "@/lib/seoLandingPages";
 
 export function SeoLandingPageRenderer({ page }: { page: SeoLandingPage }) {
@@ -11,29 +10,25 @@ export function SeoLandingPageRenderer({ page }: { page: SeoLandingPage }) {
   return (
     <>
       <main className="bg-[#F8F5F1] text-[#252820]">
-        <header className="page-padding-x border-b border-[#D8D2C8] py-20 sm:py-28">
-          <p className="mb-5 text-xs uppercase tracking-[0.2em] text-[#68705c]">
-            {page.kind === "material" ? "Stone material" : "Stone application"}
-          </p>
-          <h1 className="max-w-5xl font-serif text-5xl leading-[1.02] sm:text-7xl">{page.h1}</h1>
-          <p className="mt-8 max-w-3xl text-lg leading-8 text-[#555a4d]">{page.intro}</p>
-          {page.serviceArea ? <p className="mt-5 text-sm text-[#68705c]">Serving {page.serviceArea}</p> : null}
+        <header className="page-padding-x border-b border-[#D8D2C8] pb-6 pt-28 sm:pb-8 sm:pt-32 lg:pt-36">
+          <div className="mx-auto max-w-[1600px]">
+            <p className="mb-3 text-[11px] uppercase tracking-[0.18em] text-[#68705c]">
+              {page.kind === "material" ? "Stone material" : "Stone application"}
+            </p>
+            <h1 className="max-w-5xl font-serif text-[clamp(1.7rem,4vw,2.75rem)] leading-[0.95]">{page.h1}</h1>
+            <p className="mt-3 max-w-4xl text-sm leading-6 text-[#555a4d]">{page.intro}</p>
+            {page.serviceArea ? <p className="mt-3 text-xs text-[#68705c]">Serving {page.serviceArea}</p> : null}
+          </div>
         </header>
 
-        <div className="page-padding-x py-16 sm:py-24">
+        <div className="page-padding-x mx-auto max-w-[1600px] py-5 sm:py-6">
           {products.length ? (
-            <section className="pb-16 sm:pb-24">
-              <h2 className="mb-8 font-serif text-3xl">Explore the range</h2>
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {products.map((product) => {
-                  const image = PRODUCT_OVERRIDES[product.slug]?.imageUrl ?? DEFAULT_PRODUCT_IMAGE;
-                  return (
-                    <Link key={product.slug} href={`/products/${product.slug}/`} className="group overflow-hidden border border-[#D8D2C8] bg-white">
-                      <img src={image} alt={getProductDisplayName(product)} className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
-                      <span className="block p-5 font-serif text-2xl">{getProductDisplayName(product)}</span>
-                    </Link>
-                  );
-                })}
+            <section className="pb-12 sm:pb-16">
+              <h2 className="mb-5 font-serif text-[1.7rem] leading-tight">Explore the range</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+                {products.map((product) => (
+                  <ProductCard key={product.slug} product={product} />
+                ))}
               </div>
             </section>
           ) : null}
