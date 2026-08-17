@@ -5,6 +5,8 @@ import {
   BookOpen,
   BriefcaseBusiness,
   Box,
+  Eye,
+  EyeOff,
   ExternalLink,
   FileText,
   Image as ImageIcon,
@@ -1247,7 +1249,14 @@ export default function AdminPageClient() {
         <PasswordPanel onClose={() => setShowPassword(false)} />
       ) : null}
       {showUsers && isAdmin ? (
-        <UserManagementPanel onClose={() => setShowUsers(false)} />
+        <UserManagementPanel
+          currentUserEmail={userEmail ?? ""}
+          onChangeOwnPassword={() => {
+            setShowUsers(false);
+            setShowPassword(true);
+          }}
+          onClose={() => setShowUsers(false)}
+        />
       ) : null}
     </div>
   );
@@ -1685,6 +1694,8 @@ function Field({
 function PasswordPanel({ onClose }: { onClose: () => void }) {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const submit = async (event: React.FormEvent) => {
@@ -1720,24 +1731,10 @@ function PasswordPanel({ onClose }: { onClose: () => void }) {
         </p>
         <div className="mt-7 space-y-5">
           <Field label="New password">
-            <input
-              type="password"
-              minLength={8}
-              required
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className="admin-input"
-            />
+            <PasswordInput value={password} onChange={setPassword} visible={showNewPassword} onToggleVisibility={() => setShowNewPassword((current) => !current)} autoComplete="new-password" label="New password" />
           </Field>
           <Field label="Confirm password">
-            <input
-              type="password"
-              minLength={8}
-              required
-              value={confirm}
-              onChange={(event) => setConfirm(event.target.value)}
-              className="admin-input"
-            />
+            <PasswordInput value={confirm} onChange={setConfirm} visible={showConfirmation} onToggleVisibility={() => setShowConfirmation((current) => !current)} autoComplete="new-password" label="Confirm password" />
           </Field>
         </div>
         {message ? (
@@ -1756,10 +1753,11 @@ function PasswordPanel({ onClose }: { onClose: () => void }) {
   );
 }
 
-function UserManagementPanel({ onClose }: { onClose: () => void }) {
+function UserManagementPanel({ currentUserEmail, onChangeOwnPassword, onClose }: { currentUserEmail: string; onChangeOwnPassword: () => void; onClose: () => void }) {
   const [users, setUsers] = useState<ManagedUser[]>([]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showTemporaryPassword, setShowTemporaryPassword] = useState(false);
   const [selected, setSelected] = useState<CmsEntityType[]>(["blog"]);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
@@ -1851,6 +1849,16 @@ function UserManagementPanel({ onClose }: { onClose: () => void }) {
             <X />
           </button>
         </div>
+        <section className="mt-8 border border-[#D8D2C8] bg-white p-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h3 className="flex items-center gap-2 font-serif text-2xl"><KeyRound size={20} /> My account security</h3>
+              <p className="mt-2 text-sm text-gray-600">{currentUserEmail}</p>
+              <p className="mt-2 max-w-xl text-xs leading-5 text-gray-500">For security, the current password cannot be viewed or recovered. You can replace it with a new password.</p>
+            </div>
+            <button type="button" onClick={onChangeOwnPassword} className="h-11 border border-[#283020] px-5 text-xs uppercase tracking-[0.12em] text-[#283020]">Change my password</button>
+          </div>
+        </section>
         <form
           onSubmit={createUser}
           className="mt-8 border border-[#D8D2C8] bg-white p-5"
@@ -1869,14 +1877,7 @@ function UserManagementPanel({ onClose }: { onClose: () => void }) {
               />
             </Field>
             <Field label="Temporary password">
-              <input
-                type="password"
-                minLength={6}
-                required
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                className="admin-input"
-              />
+              <PasswordInput value={password} onChange={setPassword} visible={showTemporaryPassword} onToggleVisibility={() => setShowTemporaryPassword((current) => !current)} minLength={6} autoComplete="new-password" label="Temporary password" />
             </Field>
           </div>
           <PermissionChecks selected={selected} onToggle={toggle} />
@@ -1930,6 +1931,32 @@ function UserManagementPanel({ onClose }: { onClose: () => void }) {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+function PasswordInput({ value, onChange, visible, onToggleVisibility, label, minLength = 8, autoComplete }: { value: string; onChange: (value: string) => void; visible: boolean; onToggleVisibility: () => void; label: string; minLength?: number; autoComplete: string }) {
+  return (
+    <div className="relative">
+      <input
+        type={visible ? "text" : "password"}
+        minLength={minLength}
+        required
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="admin-input pr-12"
+        autoComplete={autoComplete}
+        aria-label={label}
+      />
+      <button
+        type="button"
+        onClick={onToggleVisibility}
+        className="absolute inset-y-0 right-0 grid w-12 place-items-center text-gray-500 hover:text-[#283020]"
+        aria-label={`${visible ? "Hide" : "Show"} ${label.toLowerCase()}`}
+        aria-pressed={visible}
+      >
+        {visible ? <EyeOff size={18} /> : <Eye size={18} />}
+      </button>
     </div>
   );
 }

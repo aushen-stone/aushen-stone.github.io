@@ -61,6 +61,25 @@ test("admin demo keeps product and blog navigation available on mobile", async (
   await expect(page.getByRole("heading", { name: "Products" })).toBeVisible();
 });
 
+test("admin password fields can be revealed and hidden", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name.startsWith("mobile"), "Desktop sidebar entry is covered here; mobile uses the same panel.");
+  await page.goto("/admin/?demo=1");
+  await page.getByRole("button", { name: "Change password", exact: true }).click();
+
+  const newPassword = page.getByLabel("New password", { exact: true });
+  await expect(newPassword).toHaveAttribute("type", "password");
+  await newPassword.fill("Example-password-123");
+  await page.getByRole("button", { name: "Show new password" }).click();
+  await expect(newPassword).toHaveAttribute("type", "text");
+  await expect(newPassword).toHaveValue("Example-password-123");
+  await page.getByRole("button", { name: "Hide new password" }).click();
+  await expect(newPassword).toHaveAttribute("type", "password");
+
+  const confirmation = page.getByLabel("Confirm password", { exact: true });
+  await page.getByRole("button", { name: "Show confirm password" }).click();
+  await expect(confirmation).toHaveAttribute("type", "text");
+});
+
 test("admin blog editor loads legacy HTML and previews visual edits", async ({ page }) => {
   await page.goto("/admin/?demo=1");
   await page.getByRole("button", { name: "Blog", exact: true }).click();
