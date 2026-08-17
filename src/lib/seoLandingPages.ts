@@ -9,10 +9,8 @@ const APPLICATION_ALIASES: Record<string, string[]> = {
   pavers: ["pavers", "paver"],
 };
 
-export function getSeoLandingPageProducts(page: SeoLandingPage) {
-  const selected = new Set(page.productSlugs);
+export function getSeoLandingPageMatchingProducts(page: Pick<SeoLandingPage, "kind" | "slug">) {
   return PRODUCTS.filter((product) => {
-    if (selected.size) return selected.has(product.slug);
     if (page.kind === "material") return product.materialId === page.slug;
     const accepted = new Set(APPLICATION_ALIASES[page.slug] ?? [page.slug]);
     return product.applicationIndex.some((application) =>
@@ -21,6 +19,13 @@ export function getSeoLandingPageProducts(page: SeoLandingPage) {
       accepted.has(slugify(application.label)),
     );
   }).toSorted((a, b) => getProductDisplayName(a).localeCompare(getProductDisplayName(b)));
+}
+
+export function getSeoLandingPageProducts(page: SeoLandingPage) {
+  const selected = new Set(page.productSlugs);
+  return getSeoLandingPageMatchingProducts(page).filter((product) =>
+    selected.size ? selected.has(product.slug) : true,
+  );
 }
 
 export function seoLandingPagePath(page: Pick<SeoLandingPage, "kind" | "slug">) {

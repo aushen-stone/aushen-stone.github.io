@@ -85,3 +85,22 @@ test("admin demo exposes projects and managed pages", async ({ page }) => {
   await page.getByRole("button", { name: "Edit page" }).click();
   await expect(page.getByText("Advanced JSON")).toBeVisible();
 });
+
+test("SEO page editor offers direct selection of slug-matched products", async ({ page }) => {
+  await page.goto("/admin/?demo=1");
+  await page.getByRole("button", { name: "SEO Landing Pages", exact: true }).first().click();
+  await page.getByRole("button", { name: "Edit Limestone Paving Suppliers" }).click();
+
+  const matchingProducts = page.getByRole("group", { name: "Products matching limestone" });
+  await expect(matchingProducts).toBeVisible();
+  await expect(matchingProducts.getByRole("checkbox")).not.toHaveCount(77);
+  await expect(matchingProducts.getByText("Antline", { exact: false })).toHaveCount(0);
+  await expect(page.getByText(/Automatic · all \d+ matching products/)).toBeVisible();
+
+  const firstProduct = matchingProducts.getByRole("checkbox").first();
+  await firstProduct.check();
+  await expect(firstProduct).toBeChecked();
+  await expect(page.getByText(/1 of \d+ matching products selected/)).toBeVisible();
+  await page.getByRole("button", { name: "Use automatic matching", exact: true }).click();
+  await expect(firstProduct).not.toBeChecked();
+});
