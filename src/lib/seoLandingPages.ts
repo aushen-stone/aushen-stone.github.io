@@ -9,6 +9,16 @@ const APPLICATION_ALIASES: Record<string, string[]> = {
   pavers: ["pavers", "paver"],
 };
 
+export function seoLandingPageMatchesFilter(
+  page: Pick<SeoLandingPage, "kind" | "slug">,
+  kind: "material" | "application",
+  filterSlug: string,
+) {
+  if (page.kind !== kind) return false;
+  if (kind === "material") return page.slug === filterSlug;
+  return (APPLICATION_ALIASES[page.slug] ?? [page.slug]).includes(filterSlug);
+}
+
 export function getSeoLandingPageMatchingProducts(page: Pick<SeoLandingPage, "kind" | "slug">) {
   return PRODUCTS.filter((product) => {
     if (page.kind === "material") return product.materialId === page.slug;
