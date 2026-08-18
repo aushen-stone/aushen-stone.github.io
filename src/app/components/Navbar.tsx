@@ -14,12 +14,16 @@ import {
 import { SampleCartDrawer } from "@/app/components/cart/SampleCartDrawer";
 import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
 import { SEO_LANDING_PAGES } from "@/data/seoLandingPages";
+import { seoLandingPageMatchesFilter, seoLandingPagePath } from "@/lib/seoLandingPages";
 
-const seoPageKeys = new Set(SEO_LANDING_PAGES.map((page) => `${page.kind}:${page.slug}`));
-const categoryHref = (kind: "material" | "application", slug: string) =>
-  seoPageKeys.has(`${kind}:${slug}`)
-    ? `/products/${kind}/${slug}/`
+const categoryHref = (kind: "material" | "application", slug: string) => {
+  const seoPage = SEO_LANDING_PAGES.find((page) =>
+    seoLandingPageMatchesFilter(page, kind, slug),
+  );
+  return seoPage
+    ? seoLandingPagePath(seoPage)
     : `/products/?${kind === "material" ? "category" : "application"}=${slug}`;
+};
 
 export function Navbar() {
   const accessoriesIndexPath = "/accessories/";

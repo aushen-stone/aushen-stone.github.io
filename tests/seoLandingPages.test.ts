@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { SEO_LANDING_PAGES } from "../src/data/seoLandingPages";
-import { getSeoLandingPageMatchingProducts, getSeoLandingPageProducts, seoLandingPagePath } from "../src/lib/seoLandingPages";
+import { getSeoLandingPageMatchingProducts, getSeoLandingPageProducts, seoLandingPageMatchesFilter, seoLandingPagePath } from "../src/lib/seoLandingPages";
 
 test("consultant SEO landing pages have complete unique metadata", () => {
   assert.equal(SEO_LANDING_PAGES.length, 11);
@@ -40,6 +40,21 @@ test("admin product candidates only include products matching the page slug", ()
     application.label.toLowerCase() === "paver" ||
     application.label.toLowerCase() === "pavers",
   )));
+});
+
+test("navigation filter slugs resolve to the matching SEO landing pages", () => {
+  const cases = [
+    ["paver", "pavers"],
+    ["cobble-stone", "cobblestone"],
+    ["crazy-paver", "crazy-paving"],
+  ] as const;
+
+  for (const [filterSlug, pageSlug] of cases) {
+    const page = SEO_LANDING_PAGES.find((entry) => entry.slug === pageSlug);
+    assert.ok(page);
+    assert.equal(seoLandingPageMatchesFilter(page, "application", filterSlug), true);
+    assert.equal(seoLandingPagePath(page), `/products/application/${pageSlug}/`);
+  }
 });
 
 test("manual SEO product selections remain restricted to matching candidates", () => {
