@@ -10,8 +10,9 @@ test("homepage renders its primary conversion paths", async ({
 
   await expect(page).toHaveTitle(/Aushen Stone/);
   await expect(
-    page.getByRole("heading", { name: /Find your crafted architectural surfaces/i })
+    page.getByRole("heading", { name: "Natural Stone Suppliers", exact: true })
   ).toBeVisible();
+  await expect(page.getByText("Where natural stone meets architecture.", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Talk to a Stone Specialist" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Browse Products" })).toBeVisible();
 
