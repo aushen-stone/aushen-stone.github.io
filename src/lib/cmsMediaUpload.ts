@@ -33,6 +33,18 @@ type PreparedCmsImageVariant = Omit<CmsMediaVariant, "url"> & {
   file: File;
 };
 
+const persistentCmsMediaVariant = (
+  variant: PreparedCmsImageVariant,
+  url: string,
+): CmsMediaVariant => ({
+  url,
+  width: variant.width,
+  height: variant.height,
+  sizeBytes: variant.sizeBytes,
+  mimeType: variant.mimeType,
+  contentHash: variant.contentHash,
+});
+
 export type CmsMediaUploadResult =
   | {
       fileName: string;
@@ -160,9 +172,12 @@ export async function uploadCmsMediaVariants(
     ),
   ]);
 
+  // The prepared variants contain browser File objects used only during the
+  // upload. Persisting those objects serializes them as `{}` and makes the
+  // generated Product payload fail its strict TypeScript contract.
   return {
-    thumbnail: { ...prepared.thumbnail, url: thumbnailUrl },
-    large: { ...prepared.large, url: largeUrl },
+    thumbnail: persistentCmsMediaVariant(prepared.thumbnail, thumbnailUrl),
+    large: persistentCmsMediaVariant(prepared.large, largeUrl),
   };
 }
 

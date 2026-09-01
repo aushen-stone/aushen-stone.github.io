@@ -204,7 +204,17 @@ console.log(
   `cms:sync localized ${localizedCms.downloaded} new files and removed ${localizedCms.removed} stale files across published CMS media`,
 );
 
-const products = productRows.map((row) => row.content);
+// Older CMS uploads accidentally persisted transient browser `File` objects
+// inside media variant metadata. They arrive through PostgREST as `{}` and are
+// not part of the public Product contract, so remove them while generating the
+// static snapshot. New uploads are also sanitized at the upload boundary.
+const products = productRows.map((row) =>
+  JSON.parse(
+    JSON.stringify(row.content, (key, value) =>
+      key === "file" ? undefined : value,
+    ),
+  ) as Product,
+);
 // Keep the dedicated image columns authoritative. This also protects content
 // edited directly in Supabase or migrated from an older CMS payload shape.
 const posts = blogRows.map((row) => {
