@@ -170,7 +170,7 @@ export default function ServicesPage() {
         <div className="max-w-[1600px] mx-auto">
           <div className="mb-20">
              <span className="text-[#3B4034] bg-[#F0F2E4] px-2 py-1 text-[10px] uppercase tracking-widest rounded mb-4 inline-block">{content?.fabrication?.eyebrow || "The Workshop"}</span>
-             <h2 className="font-serif text-3xl md:text-5xl">How does our stone fabrication process work?</h2>
+             <h2 className="font-serif text-3xl md:text-5xl">How Does Our Stone Fabrication Process Work?</h2>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
