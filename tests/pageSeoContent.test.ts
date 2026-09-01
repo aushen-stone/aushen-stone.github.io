@@ -15,6 +15,41 @@ test("homepage brand banner introduction retains both approved paragraphs", () =
   assert.match(HOME_SEO_CONTENT.introduction[1], /^With more than 20 years of industry experience/);
 });
 
+test("homepage natural stone supplier section retains the approved copy", () => {
+  assert.equal(
+    HOME_SEO_CONTENT.naturalStoneSuppliers.title,
+    "Natural Stone Suppliers for Every Project",
+  );
+  assert.equal(HOME_SEO_CONTENT.naturalStoneSuppliers.paragraphs.length, 4);
+  assert.match(
+    HOME_SEO_CONTENT.naturalStoneSuppliers.paragraphs[0],
+    /^As experienced natural stone suppliers/,
+  );
+  assert.match(
+    HOME_SEO_CONTENT.naturalStoneSuppliers.paragraphs[3],
+    /looks exceptional for years to come\.$/,
+  );
+});
+
+test("homepage natural stone range section retains the approved links", () => {
+  const section = HOME_SEO_CONTENT.exploreNaturalStoneRange;
+  assert.equal(section.title, "Explore Our Natural Stone Range");
+  assert.equal(
+    section.introduction,
+    "We offer premium natural stone products for every application.",
+  );
+  assert.deepEqual(
+    section.items.map((item) => item.href),
+    [
+      "https://aushenstone.com.au/products/?category=permeable-paver",
+      "https://aushenstone.com.au/products/?category=pool-coping",
+      "https://aushenstone.com.au/products/?category=cladding",
+      "https://aushenstone.com.au/products/?category=cobble-stone",
+    ],
+  );
+  assert.ok(section.items.every((item) => item.description.length > 100));
+});
+
 test("homepage range cards link to dedicated SEO landing pages", () => {
   for (const item of HOME_SEO_CONTENT.range) {
     assert.match(item.href, /^\/products\/application\/[a-z0-9-]+\/$/);

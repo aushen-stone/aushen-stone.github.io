@@ -24,6 +24,62 @@ export function HomeReasonsSection() {
   );
 }
 
+export function HomeNaturalStoneSuppliersSection() {
+  const content = HOME_SEO_CONTENT.naturalStoneSuppliers;
+
+  return (
+    <section className="bg-white page-padding-x py-20 sm:py-28">
+      <div className="mx-auto grid max-w-[1400px] gap-10 border-t border-[#d8d0c4] pt-12 sm:gap-14 sm:pt-16 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Natural stone</p>
+          <h2 className="mt-4 max-w-xl font-serif text-[clamp(2.25rem,4.5vw,4.25rem)] leading-[1.05] text-[#1a1c18]">
+            {content.title}
+          </h2>
+        </div>
+        <div className="space-y-6 text-sm leading-7 text-[#666d62] sm:text-base sm:leading-8">
+          {content.paragraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function HomeExploreNaturalStoneRangeSection() {
+  const content = HOME_SEO_CONTENT.exploreNaturalStoneRange;
+
+  return (
+    <section className="bg-[#F8F5F1] page-padding-x py-20 sm:py-28">
+      <div className="mx-auto max-w-[1400px]">
+        <div className="max-w-4xl">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Products by application</p>
+          <h2 className="mt-4 font-serif text-[clamp(2.25rem,5vw,4.4rem)] leading-tight text-[#1a1c18]">
+            {content.title}
+          </h2>
+          <p className="mt-6 text-base leading-8 text-[#666d62]">{content.introduction}</p>
+        </div>
+        <div className="mt-12 grid gap-px overflow-hidden border border-[#d8d0c4] bg-[#d8d0c4] sm:grid-cols-2">
+          {content.items.map((item) => (
+            <Link
+              key={item.title}
+              href={item.href}
+              className="group flex min-h-64 flex-col bg-white p-7 transition-colors hover:bg-[#FCFAF7] sm:p-10"
+            >
+              <h3 className="font-serif text-2xl text-[#1a1c18] sm:text-3xl">{item.title}</h3>
+              <p className="mt-5 text-sm leading-7 text-[#666d62]">{item.description}</p>
+              <span className="mt-auto inline-flex items-center gap-3 pt-8 text-[10px] uppercase tracking-[0.18em] text-[#1a1c18]">
+                Explore products
+                <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function HomeSeoDetails() {
   return (
     <>
