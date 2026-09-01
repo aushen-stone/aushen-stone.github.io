@@ -7,6 +7,41 @@ export const HOME_SEO_CONTENT = {
     "Transform your residential or commercial project with premium natural stone from Aushen Stone, one of Melbourne's trusted natural stone suppliers. We supply an extensive range of premium stone building materials for homes, landscapes, architectural projects and commercial developments across Australia. Whether you're creating a luxurious outdoor entertaining area, upgrading a garden, or specifying building stone supplies for a large-scale construction project, our carefully selected natural stone products combine lasting durability, timeless beauty and exceptional craftsmanship.",
     "With more than 20 years of industry experience, Aushen Stone has become a preferred choice for homeowners, builders, architects, designers and landscapers looking for reliable stone suppliers. Our knowledgeable team is committed to helping you select the ideal stone to suit your project's design, functionality and budget.",
   ],
+  naturalStoneSuppliers: {
+    title: "Natural Stone Suppliers for Every Project",
+    paragraphs: [
+      "As experienced natural stone suppliers, Aushen Stone provides premium products that bring together functionality, durability and timeless design. Natural stone has remained one of the most sought-after stone building materials because it offers a unique combination of strength and natural character that manufactured alternatives often cannot replicate.",
+      "Our extensive range includes premium paving, wall cladding, pool coping, cobblestones, stepping stones, crazy paving and feature stone suitable for both indoor and outdoor applications. Every piece showcases unique colours, textures and natural variations that add depth and individuality to your finished project.",
+      "Whether you're designing a contemporary courtyard, creating an inviting pool area, installing elegant pathways or specifying materials for a commercial development, our experienced team can recommend the most suitable products based on your design goals, budget and practical requirements.",
+      "Factors such as slip resistance, finish, durability, maintenance requirements and intended application all influence the best choice. Our knowledgeable team will guide you through every stage of the selection process to ensure you achieve a result that looks exceptional for years to come.",
+    ],
+  },
+  exploreNaturalStoneRange: {
+    title: "Explore Our Natural Stone Range",
+    introduction: "We offer premium natural stone products for every application.",
+    items: [
+      {
+        title: "Natural Stone Pavers",
+        href: "https://aushenstone.com.au/products/?category=permeable-paver",
+        description: "Create elegant patios, courtyards, pathways and entertaining areas with durable natural stone pavers available in a variety of colours, textures and finishes.",
+      },
+      {
+        title: "Pool Coping",
+        href: "https://aushenstone.com.au/products/?category=pool-coping",
+        description: "Complete your swimming pool with premium coping designed to provide a stylish finish while improving safety and durability around pool surrounds.",
+      },
+      {
+        title: "Wall Cladding",
+        href: "https://aushenstone.com.au/products/?category=cladding",
+        description: "Transform internal and external walls with natural stone cladding that adds texture, depth and timeless architectural appeal.",
+      },
+      {
+        title: "Cobblestones & Stepping Stones",
+        href: "https://aushenstone.com.au/products/?category=cobble-stone",
+        description: "Enhance driveways, pathways and landscaped gardens with premium natural stone products that combine durability with classic visual appeal.",
+      },
+    ],
+  },
   reasons: [
     "Extensive premium building stone supplies for residential, commercial and landscaping applications.",
     "Stone for pool surrounds, pathways, retaining walls, gardens and outdoor entertaining areas.",
