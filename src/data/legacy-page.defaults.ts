@@ -5,7 +5,9 @@ import type { LegacyPageContentMap } from "@/types/siteContent";
 export const DEFAULT_LEGACY_PAGES: Required<LegacyPageContentMap> = {
   home: {
     hero: {
-      titleLines: ["Find your crafted", "architectural surfaces."],
+      seoTitle: "Natural Stone Suppliers",
+      tagline: "Where natural stone meets architecture.",
+      titleLines: ["Natural Stone Suppliers"],
       text: "Natural stone, paving, pool coping and wall cladding advice from the Aushen showroom team.",
       image: "/AushenShop.webp",
       primaryLabel: "Talk to a Stone Specialist",
@@ -66,13 +68,15 @@ export const DEFAULT_LEGACY_PAGES: Required<LegacyPageContentMap> = {
   services: {
     hero: {
       eyebrow: "Our Expertise",
-      title: "Beyond",
-      emphasis: "The Stone",
-      text: "We don't just supply natural stone. We craft, customize, and curate it to fit your vision perfectly.",
+      seoTitle: "Stone Fabrication & Cutting Service",
+      tagline: "Beyond the Stone",
+      title: "Stone Fabrication & Cutting Service",
+      emphasis: "Beyond the Stone",
+      text: "Professional stone fabrication and precision stone cutting for residential, commercial and landscape projects across Melbourne.",
     },
     fabrication: {
       eyebrow: "The Workshop",
-      heading: "Precision Fabrication",
+      heading: "How Does Our Stone Fabrication Process Work?",
       items: [
         { id: "profiling", title: "Edge Profiling", description: "From classic pencil rounds to complex drop-face coping. We shape the stone to fit your design language, ensuring every edge is smooth, safe, and aesthetically perfect.", features: ["Bullnose & Pencil Edge", "Drop Face Coping", "Mitred Aprons"], image: "/task-a-2026-02-24/svc-profiling.webp" },
         { id: "curved", title: "Curved Cutting", description: "Standard pavers don't fit curved pools. Our specialized waterjet and bridge saw technology allows us to cut precise radii, creating a seamless flow for organic shapes.", features: ["Radius Cutting", "Template Matching", "Zero-tolerance Fit"], image: "/task-a-2026-02-24/svc-curved.webp" },
@@ -81,15 +85,15 @@ export const DEFAULT_LEGACY_PAGES: Required<LegacyPageContentMap> = {
     },
     consultation: { image: "/task-a-2026-02-24/svc-consultation.webp", imageAlt: "Showroom Consultation", quote: "Bring your plans, the coffee is on us.", eyebrow: "Design Consultation", heading: "Not sure where to start?", text: "Navigating natural stone options can be overwhelming. Our experienced team is here to guide you through color palettes, finishes, and technical suitability for your specific project.", label: "Book A Consultation", href: "/contact" },
     logistics: {
-      heading: "Seamless Delivery",
-      stepLabel: "Step 03 — Final Mile",
+      heading: "Choose Aushen For Expert Stone Cutting Service",
+      stepLabel: "Project Support",
       items: [
         { title: "Trusted Installer Network", text: "We don't install, but we know who does it best. Access our curated list of verified professionals.", icon: "network" },
         { title: "Flexible Logistics", text: "Tight access? No problem. We coordinate crane trucks to ensure your stone is delivered safely.", icon: "logistics" },
         { title: "After-Care Support", text: "Detailed advice on sealing, cleaning, and maintaining your stone for decades to come.", icon: "support" },
       ],
     },
-    cta: { heading: "Ready to begin?", text: "Let's discuss your project over coffee.", primaryLabel: "Contact Us", primaryHref: "/contact", secondaryLabel: "Visit Showroom", secondaryHref: "/contact" },
+    cta: { heading: "Get Your Stone Fabrication Quote Today", text: "Whether you need a single custom-cut stone or complete fabrication for a large construction project, Aushen Stone is ready to help.", primaryLabel: "Contact Us", primaryHref: "/contact", secondaryLabel: "Visit Showroom", secondaryHref: "/contact" },
   },
   about: {
     hero: {

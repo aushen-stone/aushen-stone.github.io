@@ -1420,3 +1420,24 @@ Last updated: 2026-07-29
 - Validation baseline: unit tests, TypeScript and ESLint pass (existing
   `<img>` advisory warnings remain); production export and browser QA are
   required before deployment.
+
+## Homepage and Services consultant content (2026-09-01)
+
+- Marked the pre-change production commit with the pushed rollback tag
+  `rollback/pre-home-services-seo-2026-09-01`.
+- Applied the approved Homepage and Services content from the consultant Word
+  documents while retaining the existing page layout and interaction system.
+- Set the Homepage subtitle to the approved copy: “Where natural stone meets
+  architecture.”
+- Added homepage range, reasons, FAQ, warranty/returns, and shipping/delivery
+  content; added Services benefits, service table, related-service links, FAQ,
+  and quote CTA content.
+- Added FAQ structured data and page-specific metadata for both routes.
+- Added CMS-safe optional hero SEO title/tagline fields; older CMS rows fall
+  back to the approved copy and the Admin structured editor exposes the new
+  fields on the next edit.
+- Added unit coverage for approved headings, dedicated landing-page links,
+  FAQ completeness, and Services content structure.
+- Confirmed Supabase no longer contains a `cms_products` row with slug `test`,
+  removed the stale generated product/override snapshot entries, and added a
+  catalogue regression test so `/products/test/` cannot silently return.
