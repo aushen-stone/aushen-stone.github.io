@@ -9,6 +9,12 @@ test("homepage uses the approved heading and architectural tagline", () => {
   assert.ok(HOME_SEO_CONTENT.reasons.length >= 5);
 });
 
+test("homepage brand banner introduction retains both approved paragraphs", () => {
+  assert.equal(HOME_SEO_CONTENT.introduction.length, 2);
+  assert.match(HOME_SEO_CONTENT.introduction[0], /^Transform your residential or commercial project/);
+  assert.match(HOME_SEO_CONTENT.introduction[1], /^With more than 20 years of industry experience/);
+});
+
 test("homepage range cards link to dedicated SEO landing pages", () => {
   for (const item of HOME_SEO_CONTENT.range) {
     assert.match(item.href, /^\/products\/application\/[a-z0-9-]+\/$/);

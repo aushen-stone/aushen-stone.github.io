@@ -1,10 +1,11 @@
 // components/BrandBanner.tsx
 import { CMS_LEGACY_PAGES } from "@/data/cms-site.generated";
+import { HOME_SEO_CONTENT } from "@/data/pageSeoContent";
 export function BrandBanner() {
   const content = CMS_LEGACY_PAGES.home?.brand;
   return (
     // 背景色吸取了图片中的深橄榄绿
-    <div className="bg-[#3B4034] py-14 sm:py-20 md:py-24 page-padding-x">
+    <section aria-label="About Aushen" className="bg-[#3B4034] py-14 sm:py-20 md:py-24 page-padding-x">
       <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-start md:items-center gap-6 sm:gap-8 md:gap-16">
         
         {/* 左侧线框 Logo (用 CSS 模拟截图中的 S 形状) */}
@@ -15,10 +16,12 @@ export function BrandBanner() {
         </div>
 
         {/* 右侧文字内容 */}
-        <p className="text-white/90 font-serif text-[clamp(1.1rem,3.2vw,1.55rem)] leading-relaxed max-w-4xl font-light">
-          {content?.text || "At Aushen, we craft and curate only the best natural stone, architectural surfaces and outdoor furniture. We celebrate the imperfections and textural richness that can only be found in nature."}
-        </p>
+        <div className="max-w-5xl space-y-4 text-white/90 font-serif text-[clamp(1rem,1.6vw,1.3rem)] leading-relaxed font-light">
+          {HOME_SEO_CONTENT.introduction.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

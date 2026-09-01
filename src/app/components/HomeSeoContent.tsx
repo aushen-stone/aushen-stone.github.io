@@ -3,22 +3,14 @@ import { ArrowRight, Check } from "lucide-react";
 import { HOME_SEO_CONTENT } from "@/data/pageSeoContent";
 import { FaqSection } from "@/app/components/FaqSection";
 
-export function HomeSeoIntro() {
+export function HomeReasonsSection() {
   return (
     <section className="bg-[#F8F5F1] page-padding-x py-20 sm:py-28">
-      <div className="mx-auto grid max-w-[1400px] gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-24">
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Aushen Stone</p>
-          <h2 className="mt-4 max-w-3xl font-serif text-[clamp(2.2rem,5vw,4.6rem)] leading-[0.98] text-[#1a1c18]">
-            Natural stone suppliers for every project.
-          </h2>
-          <div className="mt-8 space-y-5 text-sm leading-7 text-[#666d62] sm:text-base sm:leading-8">
-            {HOME_SEO_CONTENT.introduction.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-          </div>
-        </div>
-        <div>
+      <div className="mx-auto max-w-[1400px]">
+        <div className="max-w-5xl">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Why Aushen</p>
           <h2 className="font-serif text-3xl leading-tight text-[#1a1c18]">Why choose Aushen Stone as your landscaping stone suppliers?</h2>
-          <ul className="mt-8 border-t border-[#d8d0c4]">
+          <ul className="mt-8 grid border-t border-[#d8d0c4] md:grid-cols-2 md:gap-x-12">
             {HOME_SEO_CONTENT.reasons.map((reason) => (
               <li key={reason} className="flex gap-4 border-b border-[#d8d0c4] py-4 text-sm leading-6 text-[#555d53]">
                 <Check aria-hidden="true" size={16} className="mt-1 shrink-0 text-[#8b6f35]" />

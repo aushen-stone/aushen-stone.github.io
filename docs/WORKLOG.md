@@ -1441,3 +1441,6 @@ Last updated: 2026-07-29
 - Confirmed Supabase no longer contains a `cms_products` row with slug `test`,
   removed the stale generated product/override snapshot entries, and added a
   catalogue regression test so `/products/test/` cannot silently return.
+- Corrected the Homepage document mapping so its two-paragraph introduction
+  replaces the legacy dark Brand Banner copy instead of appearing in a separate
+  duplicate introduction block; the approved reasons remain below it.
