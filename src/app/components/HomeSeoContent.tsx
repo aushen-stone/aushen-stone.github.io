@@ -9,7 +9,7 @@ export function HomeReasonsSection() {
       <div className="mx-auto max-w-[1400px]">
         <div className="max-w-5xl">
           <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Why Aushen</p>
-          <h2 className="font-serif text-3xl leading-tight text-[#1a1c18]">Why choose Aushen Stone as your landscaping stone suppliers?</h2>
+          <h2 className="font-serif text-3xl leading-tight text-[#1a1c18]">Why Choose Aushen Stone As Your Landscaping Stone Suppliers?</h2>
           <ul className="mt-8 grid border-t border-[#d8d0c4] md:grid-cols-2 md:gap-x-12">
             {HOME_SEO_CONTENT.reasons.map((reason) => (
               <li key={reason} className="flex gap-4 border-b border-[#d8d0c4] py-4 text-sm leading-6 text-[#555d53]">
@@ -88,13 +88,13 @@ export function HomeSeoDetails() {
         <div className="mx-auto grid max-w-[1400px] gap-px overflow-hidden border border-[#d8d0c4] bg-[#d8d0c4] md:grid-cols-2">
           <div className="bg-white p-8 sm:p-10">
             <p className="text-[10px] uppercase tracking-[0.2em] text-[#73796f]">Customer care</p>
-            <h2 className="mt-3 font-serif text-3xl text-[#1a1c18]">Warranty &amp; returns</h2>
+            <h2 className="mt-3 font-serif text-3xl text-[#1a1c18]">Warranty &amp; Returns</h2>
             <p className="mt-5 text-sm leading-7 text-[#666d62]">Please inspect goods on delivery and notify us promptly of visible damage, shortages or discrepancies. Requests are assessed under Australian Consumer Law and Aushen Stone policies, with an appropriate resolution provided where applicable.</p>
             <Link href="/terms-condition/" className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-[#1a1c18]">View terms <ArrowRight size={13} /></Link>
           </div>
           <div className="bg-white p-8 sm:p-10">
             <p className="text-[10px] uppercase tracking-[0.2em] text-[#73796f]">Order support</p>
-            <h2 className="mt-3 font-serif text-3xl text-[#1a1c18]">Shipping &amp; delivery</h2>
+            <h2 className="mt-3 font-serif text-3xl text-[#1a1c18]">Shipping &amp; Delivery</h2>
             <p className="mt-5 text-sm leading-7 text-[#666d62]">We coordinate stone delivery across Melbourne and Australia through Aushen Stone or authorised carriers. Delivery dates are estimates, larger orders may arrive in instalments, and visible damage or shortages should be reported within three days.</p>
             <Link href="/contact/" className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-[#1a1c18]">Discuss delivery <ArrowRight size={13} /></Link>
           </div>
