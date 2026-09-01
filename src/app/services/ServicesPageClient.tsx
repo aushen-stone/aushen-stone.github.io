@@ -113,7 +113,58 @@ export default function ServicesPage() {
       </section>
 
       {/* =========================================
-          2. FABRICATION (Dark + Numbering)
+          2. LOGISTICS (Architectural Grid Lines)
+         ========================================= */}
+      <section className="bg-[#F8F5F1] pb-24 sm:pb-32 page-padding-x">
+        <div className="max-w-[1600px] mx-auto pt-24">
+
+           <div className="mb-12 flex items-end justify-between">
+              <h2 className="font-serif text-3xl text-[#1a1c18]">Choose Aushen for expert stone cutting service</h2>
+              <span className="hidden md:block text-[10px] uppercase tracking-widest text-gray-400">Project support</span>
+           </div>
+
+           {/* Refinement: Grid Lines using Borders instead of Gap */}
+           <div className="grid grid-cols-1 md:grid-cols-3 border-t border-gray-200 border-l border-gray-200">
+
+              {/* Card 1 */}
+              <div className="group border-b border-gray-200 border-r border-gray-200 p-8 md:p-12 hover:bg-white transition-colors duration-500">
+                 <div className="mb-8 w-12 h-12 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
+                    <BlueprintIcon type={logisticsItems[0].icon} />
+                 </div>
+                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">{logisticsItems[0].title}</h3>
+                 <p className="text-sm text-gray-500 leading-relaxed font-light">
+                    {logisticsItems[0].text}
+                 </p>
+              </div>
+
+              {/* Card 2 */}
+              <div className="group border-b border-gray-200 border-r border-gray-200 p-8 md:p-12 hover:bg-white transition-colors duration-500">
+                 <div className="mb-8 w-12 h-12 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
+                    <BlueprintIcon type={logisticsItems[1].icon} />
+                 </div>
+                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">{logisticsItems[1].title}</h3>
+                 <p className="text-sm text-gray-500 leading-relaxed font-light">
+                    {logisticsItems[1].text}
+                 </p>
+              </div>
+
+              {/* Card 3 */}
+              <div className="group border-b border-gray-200 border-r border-gray-200 p-8 md:p-12 hover:bg-white transition-colors duration-500">
+                 <div className="mb-8 w-12 h-12 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
+                    <BlueprintIcon type={logisticsItems[2].icon} />
+                 </div>
+                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">{logisticsItems[2].title}</h3>
+                 <p className="text-sm text-gray-500 leading-relaxed font-light">
+                    {logisticsItems[2].text}
+                 </p>
+              </div>
+
+           </div>
+        </div>
+      </section>
+
+      {/* =========================================
+          3. FABRICATION (Dark + Numbering)
          ========================================= */}
       <section className="bg-[#1a1c18] text-[#F8F5F1] pt-24 sm:pt-32 pb-32 sm:pb-48 page-padding-x relative border-t border-white/5 z-10">
         <div className="max-w-[1600px] mx-auto">
@@ -206,7 +257,7 @@ export default function ServicesPage() {
       </section>
 
       {/* =========================================
-          3. CONSULTATION (Overlap / Broken Grid)
+          4. CONSULTATION (Overlap / Broken Grid)
          ========================================= */}
       <section className="bg-[#F8F5F1] pb-24 page-padding-x overflow-hidden relative z-20">
         <div className="max-w-[1600px] mx-auto">
@@ -247,57 +298,6 @@ export default function ServicesPage() {
             </div>
 
           </div>
-        </div>
-      </section>
-
-      {/* =========================================
-          4. LOGISTICS (Architectural Grid Lines)
-         ========================================= */}
-      <section className="bg-[#F8F5F1] pb-24 sm:pb-32 page-padding-x">
-        <div className="max-w-[1600px] mx-auto pt-24">
-
-           <div className="mb-12 flex items-end justify-between">
-              <h2 className="font-serif text-3xl text-[#1a1c18]">Choose Aushen for expert stone cutting service</h2>
-              <span className="hidden md:block text-[10px] uppercase tracking-widest text-gray-400">Project support</span>
-           </div>
-
-           {/* Refinement: Grid Lines using Borders instead of Gap */}
-           <div className="grid grid-cols-1 md:grid-cols-3 border-t border-gray-200 border-l border-gray-200">
-
-              {/* Card 1 */}
-              <div className="group border-b border-gray-200 border-r border-gray-200 p-8 md:p-12 hover:bg-white transition-colors duration-500">
-                 <div className="mb-8 w-12 h-12 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
-                    <BlueprintIcon type={logisticsItems[0].icon} />
-                 </div>
-                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">{logisticsItems[0].title}</h3>
-                 <p className="text-sm text-gray-500 leading-relaxed font-light">
-                    {logisticsItems[0].text}
-                 </p>
-              </div>
-
-              {/* Card 2 */}
-              <div className="group border-b border-gray-200 border-r border-gray-200 p-8 md:p-12 hover:bg-white transition-colors duration-500">
-                 <div className="mb-8 w-12 h-12 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
-                    <BlueprintIcon type={logisticsItems[1].icon} />
-                 </div>
-                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">{logisticsItems[1].title}</h3>
-                 <p className="text-sm text-gray-500 leading-relaxed font-light">
-                    {logisticsItems[1].text}
-                 </p>
-              </div>
-
-              {/* Card 3 */}
-              <div className="group border-b border-gray-200 border-r border-gray-200 p-8 md:p-12 hover:bg-white transition-colors duration-500">
-                 <div className="mb-8 w-12 h-12 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
-                    <BlueprintIcon type={logisticsItems[2].icon} />
-                 </div>
-                 <h3 className="font-serif text-xl mb-3 text-[#1a1c18]">{logisticsItems[2].title}</h3>
-                 <p className="text-sm text-gray-500 leading-relaxed font-light">
-                    {logisticsItems[2].text}
-                 </p>
-              </div>
-
-           </div>
         </div>
       </section>
 
