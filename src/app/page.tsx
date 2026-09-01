@@ -9,7 +9,7 @@ import { ServicesSection } from "@/app/components/ServicesSection"
 import { CreativeHubSection } from "@/app/components/CreativeHubSection"
 import { TrustSignalStrip } from "@/app/components/TrustSignalStrip"
 import { Footer } from "@/app/components/Footer"
-import { HomeSeoDetails, HomeSeoIntro } from "@/app/components/HomeSeoContent"
+import { HomeReasonsSection, HomeSeoDetails } from "@/app/components/HomeSeoContent"
 import { HOME_SEO_CONTENT } from "@/data/pageSeoContent";
 import { buildMetadata } from "@/lib/seo";
 
@@ -36,7 +36,7 @@ export default function Home() {
       <Hero />
       <BrandBanner />
       <TrustSignalStrip />
-      <HomeSeoIntro />
+      <HomeReasonsSection />
       <BestSellers />
       <AccessoriesGatewaySection />
       <ProjectShowcase />
