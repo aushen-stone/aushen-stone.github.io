@@ -51,12 +51,6 @@ export const HOME_SEO_CONTENT = {
     "Options suited to contemporary and traditional Australian architecture.",
     "Reliable support for homeowners, builders, architects, landscape designers and trade professionals.",
   ],
-  range: [
-    { title: "Natural Stone Pavers", text: "Create elegant patios, courtyards, pathways and entertaining areas with durable natural stone pavers in a variety of colours, textures and finishes.", href: "/products/application/pavers/" },
-    { title: "Pool Coping", text: "Complete your swimming pool with premium coping that provides a considered finish with safety and durability around pool surrounds.", href: "/products/application/pool-coping/" },
-    { title: "Wall Cladding", text: "Transform internal and external walls with natural stone cladding that adds texture, depth and enduring architectural appeal.", href: "/products/application/cladding/" },
-    { title: "Cobblestones & Stepping Stones", text: "Enhance driveways, pathways and landscaped gardens with durable stone products that bring natural character to the project.", href: "/products/application/cobblestone/" },
-  ],
   faqs: [
     { question: "What is the best natural stone for outdoor paving?", answer: "The best natural stone depends on your project and personal style. Travertine, bluestone, limestone and granite are popular choices because they offer durability, weather resistance and timeless character. The right option depends on the installation area, expected foot traffic and preferred finish." },
     { question: "How do I choose the right natural stone for my project?", answer: "Consider colour, texture, finish, maintenance requirements, slip resistance and intended application. At our Cheltenham showroom you can compare products in person and receive guidance from the Aushen team before making a final selection." },
