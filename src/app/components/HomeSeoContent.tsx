@@ -9,7 +9,7 @@ export function HomeReasonsSection() {
       <div className="mx-auto max-w-[1400px]">
         <div className="max-w-5xl">
           <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Why Aushen</p>
-          <h2 className="font-serif text-3xl leading-tight text-[#1a1c18]">Why choose Aushen Stone as your landscaping stone suppliers?</h2>
+          <h2 className="font-serif text-3xl leading-tight text-[#1a1c18]">Why Choose Aushen Stone As Your Landscaping Stone Suppliers?</h2>
           <ul className="mt-8 grid border-t border-[#d8d0c4] md:grid-cols-2 md:gap-x-12">
             {HOME_SEO_CONTENT.reasons.map((reason) => (
               <li key={reason} className="flex gap-4 border-b border-[#d8d0c4] py-4 text-sm leading-6 text-[#555d53]">
