@@ -83,24 +83,6 @@ export function HomeExploreNaturalStoneRangeSection() {
 export function HomeSeoDetails() {
   return (
     <>
-      <section className="bg-[#F8F5F1] page-padding-x py-20 sm:py-28">
-        <div className="mx-auto max-w-[1400px]">
-          <div className="max-w-4xl">
-            <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Materials and applications</p>
-            <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.4rem)] leading-tight text-[#1a1c18]">Explore our natural stone range.</h2>
-            <p className="mt-6 text-base leading-8 text-[#666d62]">Natural stone combines strength with individual colour, texture and character. Our team can help compare slip resistance, finish, maintenance and intended use so the selected material performs as beautifully as it looks.</p>
-          </div>
-          <div className="mt-12 grid gap-px overflow-hidden border border-[#d8d0c4] bg-[#d8d0c4] sm:grid-cols-2">
-            {HOME_SEO_CONTENT.range.map((item) => (
-              <Link key={item.title} href={item.href} className="group bg-[#F8F5F1] p-7 transition-colors hover:bg-white sm:p-10">
-                <h3 className="font-serif text-2xl text-[#1a1c18]">{item.title}</h3>
-                <p className="mt-4 text-sm leading-7 text-[#666d62]">{item.text}</p>
-                <span className="mt-7 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-[#1a1c18]">Explore range <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" /></span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
       <FaqSection faqs={HOME_SEO_CONTENT.faqs} />
       <section className="bg-[#F8F5F1] page-padding-x pb-24">
         <div className="mx-auto grid max-w-[1400px] gap-px overflow-hidden border border-[#d8d0c4] bg-[#d8d0c4] md:grid-cols-2">

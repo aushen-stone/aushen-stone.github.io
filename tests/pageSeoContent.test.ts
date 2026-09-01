@@ -50,12 +50,6 @@ test("homepage natural stone range section retains the approved links", () => {
   assert.ok(section.items.every((item) => item.description.length > 100));
 });
 
-test("homepage range cards link to dedicated SEO landing pages", () => {
-  for (const item of HOME_SEO_CONTENT.range) {
-    assert.match(item.href, /^\/products\/application\/[a-z0-9-]+\/$/);
-  }
-});
-
 test("homepage and services FAQ questions are complete and unique", () => {
   for (const faqs of [HOME_SEO_CONTENT.faqs, SERVICES_SEO_CONTENT.faqs]) {
     assert.ok(faqs.length >= 6);
