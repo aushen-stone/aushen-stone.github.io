@@ -119,7 +119,7 @@ export default function ServicesPage() {
         <div className="max-w-[1600px] mx-auto pt-24">
 
            <div className="mb-12 flex items-end justify-between">
-              <h2 className="font-serif text-3xl text-[#1a1c18]">Choose Aushen for expert stone cutting service</h2>
+              <h2 className="font-serif text-3xl text-[#1a1c18]">Choose Aushen For Expert Stone Cutting Service</h2>
               <span className="hidden md:block text-[10px] uppercase tracking-widest text-gray-400">Project support</span>
            </div>
 
