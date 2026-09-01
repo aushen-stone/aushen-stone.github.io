@@ -2,20 +2,6 @@
 import type { Product } from "@/types/product";
 export const CMS_PRODUCTS: Product[] = [
   {
-    "id": "test",
-    "name": "Test",
-    "slug": "test",
-    "finishes": [],
-    "materialId": "limestone",
-    "description": "",
-    "materialName": "Limestone",
-    "applicationIndex": [],
-    "applicationImageUrls": [
-      "https://mwxkwusmisegsictizuz.supabase.co/storage/v1/object/public/cms-media/products/application/3fe6149c-756f-4286-9366-70dd204da9d3-weixin-image-20260710131803-4-132.png",
-      "https://mwxkwusmisegsictizuz.supabase.co/storage/v1/object/public/cms-media/products/application/7114fdb6-024b-4442-9749-d5801864eb3d-weixin-image-20260713171355-14-132.png"
-    ]
-  },
-  {
     "id": "antarctica",
     "name": "Antarctica White",
     "slug": "antarctica",

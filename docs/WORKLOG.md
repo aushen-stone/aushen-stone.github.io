@@ -1438,3 +1438,6 @@ Last updated: 2026-07-29
   fields on the next edit.
 - Added unit coverage for approved headings, dedicated landing-page links,
   FAQ completeness, and Services content structure.
+- Confirmed Supabase no longer contains a `cms_products` row with slug `test`,
+  removed the stale generated product/override snapshot entries, and added a
+  catalogue regression test so `/products/test/` cannot silently return.
