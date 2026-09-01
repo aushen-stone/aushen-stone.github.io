@@ -96,6 +96,33 @@ const EMPTY_EDITOR: EditorState = {
 };
 
 const PAGE_ENTITIES = new Set<CmsEntityType>(["home", "services", "about"]);
+
+const mergeMissingPageFields = (
+  defaults: Record<string, unknown>,
+  content: Record<string, unknown>,
+): Record<string, unknown> =>
+  Object.fromEntries(
+    Object.entries({ ...defaults, ...content }).map(([key, value]) => {
+      const defaultValue = defaults[key];
+      const contentValue = content[key];
+      const bothObjects =
+        defaultValue &&
+        contentValue &&
+        typeof defaultValue === "object" &&
+        typeof contentValue === "object" &&
+        !Array.isArray(defaultValue) &&
+        !Array.isArray(contentValue);
+      return [
+        key,
+        bothObjects
+          ? mergeMissingPageFields(
+              defaultValue as Record<string, unknown>,
+              contentValue as Record<string, unknown>,
+            )
+          : value,
+      ];
+    }),
+  );
 const ENTITY_LABELS: Record<CmsEntityType, string> = {
   products: "Products",
   blog: "Blog",
@@ -273,8 +300,12 @@ function editorFromRow(row: CmsRow): EditorState {
   // Earlier CMS builds stored generic `blocks` that could not reproduce the
   // legacy design. Upgrade those rows in the editor to the exact legacy schema
   // so the next save is safe and immediately editable.
-  const editableContent =
-    pageKey && !("hero" in content) ? DEFAULT_LEGACY_PAGES[pageKey] : content;
+  const editableContent = pageKey
+    ? mergeMissingPageFields(
+        DEFAULT_LEGACY_PAGES[pageKey] as Record<string, unknown>,
+        "hero" in content ? content : {},
+      )
+    : content;
   const categories = Array.isArray(content.categories)
     ? content.categories
         .map((category) =>

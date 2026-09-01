@@ -7,12 +7,10 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { CMS_LEGACY_PAGES } from "@/data/cms-site.generated";
 import { FadeIn } from "./animations/FadeIn"; // 引入第一步做好的通用组件
+import { HOME_SEO_CONTENT } from "@/data/pageSeoContent";
 
 export function Hero() {
   const content = CMS_LEGACY_PAGES.home?.hero;
-  const titleLines = content?.titleLines?.length
-    ? content.titleLines
-    : ["Find your crafted", "architectural surfaces."];
   const containerRef = useRef(null);
 
   // 监听滚动进度
@@ -48,14 +46,16 @@ export function Hero() {
           <h1 className="font-serif display-hero text-white leading-[1.05]">
             {/* 第一行文字：延迟 0.2s 浮现 */}
             <FadeIn delay={0.2} className="block">
-              <span>{titleLines[0]}</span>
+              <span>{content?.seoTitle || HOME_SEO_CONTENT.title}</span>
             </FadeIn>
 
-            {/* 第二行文字：延迟 0.4s 浮现 (去掉了br，因为FadeIn是块级元素，自带换行) */}
-            <FadeIn delay={0.4} className="block">
-              <span>{titleLines[1] ?? ""}</span>
-            </FadeIn>
           </h1>
+
+          <FadeIn delay={0.4} className="mt-4 block">
+            <p className="font-serif text-xl italic leading-tight text-white/90 sm:text-2xl md:text-3xl">
+              {content?.tagline || HOME_SEO_CONTENT.tagline}
+            </p>
+          </FadeIn>
 
           <FadeIn delay={0.55} className="mt-6 max-w-xl">
             <p className="text-sm leading-6 text-white/75 sm:text-base sm:leading-7">

@@ -6,6 +6,8 @@ import { Footer } from "@/app/components/Footer";
 import { MoveDown, CheckCircle2, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CMS_LEGACY_PAGES } from "@/data/cms-site.generated";
+import { SERVICES_SEO_CONTENT } from "@/data/pageSeoContent";
+import { FaqSection } from "@/app/components/FaqSection";
 
 // --- MOCK DATA ---
 const FABRICATION_SERVICES = [
@@ -91,14 +93,17 @@ export default function ServicesPage() {
             <span className="block text-white/40 text-[10px] uppercase tracking-[0.3em] mb-6 pl-1 border-l border-white/20">
               {content?.hero?.eyebrow || "Our Expertise"}
             </span>
-            <h1 className="font-serif text-[clamp(2.2rem,8vw,6rem)] text-[#F8F5F1] leading-[0.9] tracking-tight">
-              {content?.hero?.title || "Beyond"} <br/> <span className="italic text-white/30 ml-4 md:ml-12">{content?.hero?.emphasis || "The Stone"}</span>
+            <h1 className="font-serif text-[clamp(2.4rem,6vw,5.6rem)] text-[#F8F5F1] leading-[0.95] tracking-tight">
+              {content?.hero?.seoTitle || SERVICES_SEO_CONTENT.title}
             </h1>
+            <h2 className="mt-7 font-serif text-2xl italic text-white/35 sm:text-3xl">
+              {content?.hero?.tagline || "Beyond the Stone"}
+            </h2>
           </div>
 
           <div className="flex flex-col items-end gap-8">
-             <p className="text-white/60 text-sm font-light max-w-sm text-right leading-loose hidden md:block">
-               {content?.hero?.text || "We don't just supply natural stone. We craft, customize, and curate it to fit your vision perfectly."}
+             <p className="text-white/60 text-sm font-light max-w-lg text-left md:text-right leading-loose">
+               {SERVICES_SEO_CONTENT.introduction}
              </p>
              <div className="flex items-center gap-3 text-white/30 text-[10px] uppercase tracking-widest animate-pulse">
                 Process <MoveDown size={14} />
@@ -114,7 +119,7 @@ export default function ServicesPage() {
         <div className="max-w-[1600px] mx-auto">
           <div className="mb-20">
              <span className="text-[#3B4034] bg-[#F0F2E4] px-2 py-1 text-[10px] uppercase tracking-widest rounded mb-4 inline-block">{content?.fabrication?.eyebrow || "The Workshop"}</span>
-             <h2 className="font-serif text-3xl md:text-5xl">{content?.fabrication?.heading || "Precision Fabrication"}</h2>
+             <h2 className="font-serif text-3xl md:text-5xl">How does our stone fabrication process work?</h2>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
@@ -252,8 +257,8 @@ export default function ServicesPage() {
         <div className="max-w-[1600px] mx-auto pt-24">
 
            <div className="mb-12 flex items-end justify-between">
-              <h2 className="font-serif text-3xl text-[#1a1c18]">{logistics?.heading || "Seamless Delivery"}</h2>
-              <span className="hidden md:block text-[10px] uppercase tracking-widest text-gray-400">{logistics?.stepLabel || "Step 03 — Final Mile"}</span>
+              <h2 className="font-serif text-3xl text-[#1a1c18]">Choose Aushen for expert stone cutting service</h2>
+              <span className="hidden md:block text-[10px] uppercase tracking-widest text-gray-400">Project support</span>
            </div>
 
            {/* Refinement: Grid Lines using Borders instead of Gap */}
@@ -296,14 +301,75 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      <section className="bg-white page-padding-x py-20 sm:py-28">
+        <div className="mx-auto grid max-w-[1400px] gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Accuracy and finish</p>
+            <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.2rem)] leading-tight text-[#1a1c18]">Benefits of professional stone fabrication</h2>
+          </div>
+          <div>
+            <p className="text-lg leading-8 text-[#3f463e]">Are you searching for reliable stone fabrication shops? You have come to the right place.</p>
+            <div className="mt-8 space-y-5 border-t border-[#d8d0c4] pt-7">
+              {SERVICES_SEO_CONTENT.benefits.map((benefit) => (
+                <p key={benefit} className="text-sm leading-7 text-[#666d62] sm:text-base">{benefit}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#F8F5F1] page-padding-x py-20 sm:py-28">
+        <div className="mx-auto max-w-[1400px]">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Workshop capabilities</p>
+          <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.2rem)] text-[#1a1c18]">Stone fabrication services</h2>
+          <div className="mt-10 overflow-x-auto border border-[#d8d0c4] bg-white">
+            <table className="w-full min-w-[620px] border-collapse text-left">
+              <thead>
+                <tr className="border-b border-[#d8d0c4] bg-[#ede8df] text-[10px] uppercase tracking-[0.2em] text-[#73796f]">
+                  <th className="px-6 py-4 font-medium sm:px-8">Service</th>
+                  <th className="px-6 py-4 font-medium sm:px-8">Best for</th>
+                </tr>
+              </thead>
+              <tbody>
+                {SERVICES_SEO_CONTENT.serviceRows.map(([service, bestFor]) => (
+                  <tr key={service} className="border-b border-[#e4ded5] last:border-b-0">
+                    <th scope="row" className="px-6 py-5 font-serif text-xl font-normal text-[#1a1c18] sm:px-8">{service}</th>
+                    <td className="px-6 py-5 text-sm text-[#666d62] sm:px-8">{bestFor}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#1a1c18] page-padding-x py-20 text-[#F8F5F1] sm:py-28">
+        <div className="mx-auto max-w-[1400px]">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-white/40">Related applications</p>
+          <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.2rem)]">Explore more services</h2>
+          <p className="mt-5 max-w-2xl text-sm leading-7 text-white/55 sm:text-base">We offer a complete range of natural stone supply and fabrication services.</p>
+          <div className="mt-12 grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2">
+            {SERVICES_SEO_CONTENT.exploreLinks.map((item) => (
+              <Link key={item.title} href={item.href} className="group bg-[#1a1c18] p-7 transition-colors hover:bg-[#242820] sm:p-9">
+                <h3 className="font-serif text-2xl">{item.title}</h3>
+                <p className="mt-4 text-sm leading-7 text-white/50">{item.text}</p>
+                <span className="mt-7 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-white/75">Explore <ArrowUpRight size={14} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" /></span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <FaqSection faqs={SERVICES_SEO_CONTENT.faqs} heading="Stone fabrication FAQs" />
+
       {/* =========================================
           5. CTA
          ========================================= */}
       <section className="bg-[#1a1c18] text-[#F8F5F1] py-24 border-t border-white/10">
          <div className="max-w-[1600px] mx-auto page-padding-x flex flex-col md:flex-row items-center justify-between gap-8">
             <div>
-               <h2 className="font-serif text-3xl md:text-5xl mb-2">{cta?.heading || "Ready to begin?"}</h2>
-               <p className="text-white/40 font-light">{cta?.text || "Let's discuss your project over coffee."}</p>
+               <h2 className="font-serif text-3xl md:text-5xl mb-2">Get your stone fabrication quote today</h2>
+               <p className="max-w-2xl text-white/40 font-light">Whether you need a single custom-cut stone or complete fabrication for a large construction project, Aushen Stone is ready to help.</p>
             </div>
             <div className="flex w-full sm:w-auto flex-col sm:flex-row gap-3 sm:gap-4">
                <Link

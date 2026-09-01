@@ -18,7 +18,7 @@ export type ManagedPage = {
 // prevents content editing from replacing the public site with a generic page
 // renderer and keeps every legacy class name and animation in place.
 export type LegacyHomeContent = {
-  hero?: { titleLines: string[]; text: string; image: string; primaryLabel: string; primaryHref: string; secondaryLabel: string; secondaryHref: string };
+  hero?: { seoTitle?: string; tagline?: string; titleLines: string[]; text: string; image: string; primaryLabel: string; primaryHref: string; secondaryLabel: string; secondaryHref: string };
   brand?: { text: string; logo: string };
   projectShowcase?: { titlePrefix: string; titleEmphasis: string; titleSuffix: string; text: string; image: string; linkLabel: string; linkHref: string };
   accessories?: { eyebrow: string; heading: string; text: string; primaryLabel: string; primaryHref: string; secondaryLabel: string; secondaryHref: string; items: Record<string, { eyebrow: string; blurb: string; note: string }> };
@@ -27,7 +27,7 @@ export type LegacyHomeContent = {
 };
 
 export type LegacyServicesContent = {
-  hero?: { eyebrow: string; title: string; emphasis: string; text: string };
+  hero?: { eyebrow: string; seoTitle?: string; tagline?: string; title: string; emphasis: string; text: string };
   fabrication?: { eyebrow: string; heading: string; items: Array<{ id: string; title: string; description: string; features: string[]; image: string }> };
   consultation?: { image: string; imageAlt: string; quote: string; eyebrow: string; heading: string; text: string; label: string; href: string };
   logistics?: { heading: string; stepLabel: string; items: Array<{ title: string; text: string; icon: "network" | "logistics" | "support" }> };

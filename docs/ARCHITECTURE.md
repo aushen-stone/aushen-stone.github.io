@@ -1,6 +1,6 @@
 # Aushen Web - Architecture Overview
 
-Last updated: 2026-07-29
+Last updated: 2026-09-01
 
 ## Project Type
 - Next.js App Router frontend.
@@ -29,7 +29,7 @@ Last updated: 2026-07-29
   - `public/CNAME` must export to `dist/CNAME`; CI verifies it is exactly `aushenstone.com.au`
 
 ## Route Architecture
-- Homepage composition: `src/app/page.tsx`.
+- Homepage composition: `src/app/page.tsx`; approved homepage/Services SEO copy is centralized in `src/data/pageSeoContent.ts`, with reusable visible FAQ markup in `src/app/components/FaqSection.tsx`.
 - Server wrapper routes (metadata ownership):
   - `src/app/about/page.tsx`
   - `src/app/admin/page.tsx`
@@ -75,6 +75,7 @@ Last updated: 2026-07-29
 
 ## SEO and Indexing Contract
 - Metadata utilities: `src/lib/seo.ts`.
+- Homepage and Services publish page-specific metadata plus FAQ structured data from `src/data/pageSeoContent.ts`.
 - Metadata routes:
   - `src/app/robots.ts`
   - `src/app/sitemap.ts`

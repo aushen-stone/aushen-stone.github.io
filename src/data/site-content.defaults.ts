@@ -6,7 +6,7 @@ export const DEFAULT_MANAGED_PAGES: Record<ManagedPage["key"], ManagedPage> = {
     title: "Home",
     heroImageUrl: "/AushenShop.webp",
     blocks: [
-      { id: "home-hero", type: "hero", title: "Find your crafted architectural surfaces.", text: "Natural stone, paving, pool coping and wall cladding advice from the Aushen showroom team.", imageUrl: "/AushenShop.webp", dark: true },
+      { id: "home-hero", type: "hero", title: "Natural Stone Suppliers", text: "Where natural stone meets architecture.", imageUrl: "/AushenShop.webp", dark: true },
       { id: "home-story", type: "text", title: "Crafted by nature, curated by Aushen.", text: "We source architectural surfaces with character, consistency and enduring material integrity." },
       { id: "home-cta", type: "cta", title: "Start your material selection", text: "Visit the showroom or talk with a stone specialist.", label: "Contact us", href: "/contact/" },
     ],
@@ -16,13 +16,13 @@ export const DEFAULT_MANAGED_PAGES: Record<ManagedPage["key"], ManagedPage> = {
     title: "Services",
     heroImageUrl: "/task-a-2026-02-24/svc-profiling.webp",
     blocks: [
-      { id: "services-hero", type: "hero", title: "Beyond the stone", text: "We craft, customise and curate natural stone to fit your project.", imageUrl: "/task-a-2026-02-24/svc-profiling.webp", dark: true },
+      { id: "services-hero", type: "hero", title: "Stone Fabrication & Cutting Service", text: "Professional stone fabrication and precision stone cutting across Melbourne.", imageUrl: "/task-a-2026-02-24/svc-profiling.webp", dark: true },
       { id: "services-cards", type: "cards", title: "Precision fabrication", items: [
         { title: "Edge Profiling", text: "Bullnose, pencil edges, drop faces and mitred aprons.", imageUrl: "/task-a-2026-02-24/svc-profiling.webp" },
         { title: "Curved Cutting", text: "Precise radius cutting and template matching.", imageUrl: "/task-a-2026-02-24/svc-curved.webp" },
         { title: "Bespoke Custom", text: "Core drilling, cut-outs and custom modifications.", imageUrl: "/task-a-2026-02-24/svc-bespoke.webp" },
       ] },
-      { id: "services-cta", type: "cta", title: "Ready to begin?", text: "Discuss your project with our showroom team.", label: "Book a consultation", href: "/contact/" },
+      { id: "services-cta", type: "cta", title: "Get Your Stone Fabrication Quote Today", text: "Discuss custom cutting or complete project fabrication with our team.", label: "Request a quote", href: "/contact/" },
     ],
   },
   about: {

@@ -9,26 +9,40 @@ import { ServicesSection } from "@/app/components/ServicesSection"
 import { CreativeHubSection } from "@/app/components/CreativeHubSection"
 import { TrustSignalStrip } from "@/app/components/TrustSignalStrip"
 import { Footer } from "@/app/components/Footer"
+import { HomeSeoDetails, HomeSeoIntro } from "@/app/components/HomeSeoContent"
+import { HOME_SEO_CONTENT } from "@/data/pageSeoContent";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Aushen Stone | Natural Stone Supplier in Melbourne",
+  title: "Natural Stone Suppliers Melbourne | Aushen Stone",
   description:
-    "Aushen Stone supplies premium natural stone products and project support across Melbourne, from consultation to delivery.",
+    "Aushen Stone supplies premium natural stone, paving, pool coping and wall cladding for residential, commercial and landscaping projects across Melbourne and Australia.",
   path: "/",
 });
 
 export default function Home() {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: HOME_SEO_CONTENT.faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: { "@type": "Answer", text: faq.answer },
+    })),
+  };
   return (
     <main className="min-h-screen">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Hero />
       <BrandBanner />
       <TrustSignalStrip />
+      <HomeSeoIntro />
       <BestSellers />
       <AccessoriesGatewaySection />
       <ProjectShowcase />
       <ServicesSection />
       <CreativeHubSection />
+      <HomeSeoDetails />
       <Footer />
     </main>
   )
