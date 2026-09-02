@@ -170,7 +170,7 @@ export default function ServicesPage() {
         <div className="max-w-[1600px] mx-auto">
           <div className="mb-20">
              <span className="text-[#3B4034] bg-[#F0F2E4] px-2 py-1 text-[10px] uppercase tracking-widest rounded mb-4 inline-block">{content?.fabrication?.eyebrow || "The Workshop"}</span>
-             <h2 className="font-serif text-3xl md:text-5xl">How does our stone fabrication process work?</h2>
+             <h2 className="font-serif text-3xl md:text-5xl">How Does Our Stone Fabrication Process Work?</h2>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
@@ -256,6 +256,48 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      <section className="bg-white page-padding-x py-20 sm:py-28">
+        <div className="mx-auto grid max-w-[1400px] gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Accuracy and finish</p>
+            <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.2rem)] leading-tight text-[#1a1c18]">Benefits Of Professional Stone Fabrication</h2>
+          </div>
+          <div>
+            <p className="text-lg leading-8 text-[#3f463e]">Are you searching for reliable stone fabrication shops? You have come to the right place.</p>
+            <div className="mt-8 space-y-5 border-t border-[#d8d0c4] pt-7">
+              {SERVICES_SEO_CONTENT.benefits.map((benefit) => (
+                <p key={benefit} className="text-sm leading-7 text-[#666d62] sm:text-base">{benefit}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#F8F5F1] page-padding-x py-20 sm:py-28">
+        <div className="mx-auto max-w-[1400px]">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Workshop capabilities</p>
+          <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.2rem)] text-[#1a1c18]">Stone Fabrication Services</h2>
+          <div className="mt-10 overflow-x-auto border border-[#d8d0c4] bg-white">
+            <table className="w-full min-w-[620px] border-collapse text-left">
+              <thead>
+                <tr className="border-b border-[#d8d0c4] bg-[#ede8df] text-[10px] uppercase tracking-[0.2em] text-[#73796f]">
+                  <th className="px-6 py-4 font-medium sm:px-8">Service</th>
+                  <th className="px-6 py-4 font-medium sm:px-8">Best for</th>
+                </tr>
+              </thead>
+              <tbody>
+                {SERVICES_SEO_CONTENT.serviceRows.map(([service, bestFor]) => (
+                  <tr key={service} className="border-b border-[#e4ded5] last:border-b-0">
+                    <th scope="row" className="px-6 py-5 font-serif text-xl font-normal text-[#1a1c18] sm:px-8">{service}</th>
+                    <td className="px-6 py-5 text-sm text-[#666d62] sm:px-8">{bestFor}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       {/* =========================================
           4. CONSULTATION (Overlap / Broken Grid)
          ========================================= */}
@@ -263,9 +305,8 @@ export default function ServicesPage() {
         <div className="max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
 
-            {/* Visual: Image Overlap (Refinement) */}
-            {/* -mt-24 md:-mt-48 makes it overlap the dark section above */}
-            <div className="lg:col-span-7 relative -mt-24 md:-mt-48 z-20">
+            {/* Visual: Image */}
+            <div className="lg:col-span-7 relative z-20">
               <div className="relative aspect-[4/3] bg-gray-200 overflow-hidden shadow-2xl">
                  <img
                    src={consultation?.image || "/task-a-2026-02-24/svc-consultation.webp"}
@@ -297,48 +338,6 @@ export default function ServicesPage() {
                </Link>
             </div>
 
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white page-padding-x py-20 sm:py-28">
-        <div className="mx-auto grid max-w-[1400px] gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Accuracy and finish</p>
-            <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.2rem)] leading-tight text-[#1a1c18]">Benefits of professional stone fabrication</h2>
-          </div>
-          <div>
-            <p className="text-lg leading-8 text-[#3f463e]">Are you searching for reliable stone fabrication shops? You have come to the right place.</p>
-            <div className="mt-8 space-y-5 border-t border-[#d8d0c4] pt-7">
-              {SERVICES_SEO_CONTENT.benefits.map((benefit) => (
-                <p key={benefit} className="text-sm leading-7 text-[#666d62] sm:text-base">{benefit}</p>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#F8F5F1] page-padding-x py-20 sm:py-28">
-        <div className="mx-auto max-w-[1400px]">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Workshop capabilities</p>
-          <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.2rem)] text-[#1a1c18]">Stone fabrication services</h2>
-          <div className="mt-10 overflow-x-auto border border-[#d8d0c4] bg-white">
-            <table className="w-full min-w-[620px] border-collapse text-left">
-              <thead>
-                <tr className="border-b border-[#d8d0c4] bg-[#ede8df] text-[10px] uppercase tracking-[0.2em] text-[#73796f]">
-                  <th className="px-6 py-4 font-medium sm:px-8">Service</th>
-                  <th className="px-6 py-4 font-medium sm:px-8">Best for</th>
-                </tr>
-              </thead>
-              <tbody>
-                {SERVICES_SEO_CONTENT.serviceRows.map(([service, bestFor]) => (
-                  <tr key={service} className="border-b border-[#e4ded5] last:border-b-0">
-                    <th scope="row" className="px-6 py-5 font-serif text-xl font-normal text-[#1a1c18] sm:px-8">{service}</th>
-                    <td className="px-6 py-5 text-sm text-[#666d62] sm:px-8">{bestFor}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </div>
       </section>
