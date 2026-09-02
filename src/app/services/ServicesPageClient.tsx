@@ -256,6 +256,23 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      <section className="bg-white page-padding-x py-20 sm:py-28">
+        <div className="mx-auto grid max-w-[1400px] gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Accuracy and finish</p>
+            <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.2rem)] leading-tight text-[#1a1c18]">Benefits Of Professional Stone Fabrication</h2>
+          </div>
+          <div>
+            <p className="text-lg leading-8 text-[#3f463e]">Are you searching for reliable stone fabrication shops? You have come to the right place.</p>
+            <div className="mt-8 space-y-5 border-t border-[#d8d0c4] pt-7">
+              {SERVICES_SEO_CONTENT.benefits.map((benefit) => (
+                <p key={benefit} className="text-sm leading-7 text-[#666d62] sm:text-base">{benefit}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* =========================================
           4. CONSULTATION (Overlap / Broken Grid)
          ========================================= */}
@@ -263,9 +280,8 @@ export default function ServicesPage() {
         <div className="max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
 
-            {/* Visual: Image Overlap (Refinement) */}
-            {/* -mt-24 md:-mt-48 makes it overlap the dark section above */}
-            <div className="lg:col-span-7 relative -mt-24 md:-mt-48 z-20">
+            {/* Visual: Image */}
+            <div className="lg:col-span-7 relative z-20">
               <div className="relative aspect-[4/3] bg-gray-200 overflow-hidden shadow-2xl">
                  <img
                    src={consultation?.image || "/task-a-2026-02-24/svc-consultation.webp"}
@@ -297,23 +313,6 @@ export default function ServicesPage() {
                </Link>
             </div>
 
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white page-padding-x py-20 sm:py-28">
-        <div className="mx-auto grid max-w-[1400px] gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Accuracy and finish</p>
-            <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.2rem)] leading-tight text-[#1a1c18]">Benefits of professional stone fabrication</h2>
-          </div>
-          <div>
-            <p className="text-lg leading-8 text-[#3f463e]">Are you searching for reliable stone fabrication shops? You have come to the right place.</p>
-            <div className="mt-8 space-y-5 border-t border-[#d8d0c4] pt-7">
-              {SERVICES_SEO_CONTENT.benefits.map((benefit) => (
-                <p key={benefit} className="text-sm leading-7 text-[#666d62] sm:text-base">{benefit}</p>
-              ))}
-            </div>
           </div>
         </div>
       </section>
