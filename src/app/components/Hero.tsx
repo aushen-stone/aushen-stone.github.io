@@ -43,7 +43,7 @@ export function Hero() {
 
         {/* 标题区域 */}
         <div className="max-w-2xl">
-          <h1 className="font-serif display-hero text-white leading-[1.05]">
+          <h1 className="font-serif display-xl text-white leading-[1.05]">
             {/* 第一行文字：延迟 0.2s 浮现 */}
             <FadeIn delay={0.2} className="block">
               <span>{content?.seoTitle || HOME_SEO_CONTENT.title}</span>
@@ -52,7 +52,7 @@ export function Hero() {
           </h1>
 
           <FadeIn delay={0.4} className="mt-4 block">
-            <p className="font-serif text-xl italic leading-tight text-white/90 sm:text-2xl md:text-3xl">
+            <p className="font-serif text-2xl italic leading-tight text-white/90 sm:text-3xl md:text-4xl">
               {content?.tagline || HOME_SEO_CONTENT.tagline}
             </p>
           </FadeIn>
