@@ -39,11 +39,11 @@ export function Hero() {
       </motion.div>
 
       {/* 2. 内容层 */}
-      <div className="relative z-10 h-full max-w-[1920px] mx-auto page-padding-x pt-[calc(var(--nav-h-expanded)+var(--nav-logo-h-transparent)+env(safe-area-inset-top)+1rem)] pb-16 sm:pt-[calc(var(--nav-h-expanded)+var(--nav-logo-h-transparent)+env(safe-area-inset-top)+1.25rem)] sm:pb-20 md:pt-[calc(var(--nav-h-expanded)+var(--nav-logo-h-transparent)+env(safe-area-inset-top)+1.5rem)] md:pb-24 lg:pt-24 lg:pb-24 flex flex-col justify-start lg:justify-center">
+      <div className="relative z-10 h-full max-w-[1920px] mx-auto page-padding-x pt-[calc(var(--nav-h-expanded)+var(--nav-logo-h-transparent)+env(safe-area-inset-top)+1rem)] pb-16 sm:pt-[calc(var(--nav-h-expanded)+var(--nav-logo-h-transparent)+env(safe-area-inset-top)+1.25rem)] sm:pb-20 md:pt-[calc(var(--nav-h-expanded)+var(--nav-logo-h-transparent)+env(safe-area-inset-top)+1.5rem)] md:pb-24 lg:pt-56 lg:pb-24 flex flex-col justify-start">
 
         {/* 标题区域 */}
-        <div className="max-w-2xl">
-          <h1 className="font-serif display-xl text-white leading-[1.05]">
+        <div className="max-w-3xl">
+          <h1 className="font-serif text-xl text-white leading-[1.05] sm:text-2xl">
             {/* 第一行文字：延迟 0.2s 浮现 */}
             <FadeIn delay={0.2} className="block">
               <span>{content?.seoTitle || HOME_SEO_CONTENT.title}</span>
@@ -52,7 +52,7 @@ export function Hero() {
           </h1>
 
           <FadeIn delay={0.4} className="mt-4 block">
-            <p className="font-serif text-2xl italic leading-tight text-white/90 sm:text-3xl md:text-4xl">
+            <p className="font-serif text-[clamp(2.5rem,5.25vw,4.5rem)] italic leading-tight text-white/90">
               {content?.tagline || HOME_SEO_CONTENT.tagline}
             </p>
           </FadeIn>

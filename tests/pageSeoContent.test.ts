@@ -4,7 +4,7 @@ import { HOME_SEO_CONTENT, SERVICES_SEO_CONTENT } from "../src/data/pageSeoConte
 
 test("homepage uses the approved heading and architectural tagline", () => {
   assert.equal(HOME_SEO_CONTENT.title, "Natural Stone Suppliers");
-  assert.equal(HOME_SEO_CONTENT.tagline, "Where natural stone meets architecture.");
+  assert.equal(HOME_SEO_CONTENT.tagline, "Where Natural Stone Meets Architecture.");
   assert.ok(HOME_SEO_CONTENT.introduction.length >= 2);
   assert.ok(HOME_SEO_CONTENT.reasons.length >= 5);
 });

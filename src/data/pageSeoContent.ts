@@ -2,7 +2,7 @@ export type PageFaq = { question: string; answer: string };
 
 export const HOME_SEO_CONTENT = {
   title: "Natural Stone Suppliers",
-  tagline: "Where natural stone meets architecture.",
+  tagline: "Where Natural Stone Meets Architecture.",
   introduction: [
     "Transform your residential or commercial project with premium natural stone from Aushen Stone, one of Melbourne's trusted natural stone suppliers. We supply an extensive range of premium stone building materials for homes, landscapes, architectural projects and commercial developments across Australia. Whether you're creating a luxurious outdoor entertaining area, upgrading a garden, or specifying building stone supplies for a large-scale construction project, our carefully selected natural stone products combine lasting durability, timeless beauty and exceptional craftsmanship.",
     "With more than 20 years of industry experience, Aushen Stone has become a preferred choice for homeowners, builders, architects, designers and landscapers looking for reliable stone suppliers. Our knowledgeable team is committed to helping you select the ideal stone to suit your project's design, functionality and budget.",

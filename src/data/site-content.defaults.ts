@@ -6,7 +6,7 @@ export const DEFAULT_MANAGED_PAGES: Record<ManagedPage["key"], ManagedPage> = {
     title: "Home",
     heroImageUrl: "/AushenShop.webp",
     blocks: [
-      { id: "home-hero", type: "hero", title: "Natural Stone Suppliers", text: "Where natural stone meets architecture.", imageUrl: "/AushenShop.webp", dark: true },
+      { id: "home-hero", type: "hero", title: "Natural Stone Suppliers", text: "Where Natural Stone Meets Architecture.", imageUrl: "/AushenShop.webp", dark: true },
       { id: "home-story", type: "text", title: "Crafted by nature, curated by Aushen.", text: "We source architectural surfaces with character, consistency and enduring material integrity." },
       { id: "home-cta", type: "cta", title: "Start your material selection", text: "Visit the showroom or talk with a stone specialist.", label: "Contact us", href: "/contact/" },
     ],

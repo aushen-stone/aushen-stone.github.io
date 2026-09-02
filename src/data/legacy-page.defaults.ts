@@ -6,7 +6,7 @@ export const DEFAULT_LEGACY_PAGES: Required<LegacyPageContentMap> = {
   home: {
     hero: {
       seoTitle: "Natural Stone Suppliers",
-      tagline: "Where natural stone meets architecture.",
+      tagline: "Where Natural Stone Meets Architecture.",
       titleLines: ["Natural Stone Suppliers"],
       text: "Natural stone, paving, pool coping and wall cladding advice from the Aushen showroom team.",
       image: "/AushenShop.webp",
