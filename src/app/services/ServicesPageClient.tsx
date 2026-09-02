@@ -273,6 +273,31 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      <section className="bg-[#F8F5F1] page-padding-x py-20 sm:py-28">
+        <div className="mx-auto max-w-[1400px]">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Workshop capabilities</p>
+          <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.2rem)] text-[#1a1c18]">Stone Fabrication Services</h2>
+          <div className="mt-10 overflow-x-auto border border-[#d8d0c4] bg-white">
+            <table className="w-full min-w-[620px] border-collapse text-left">
+              <thead>
+                <tr className="border-b border-[#d8d0c4] bg-[#ede8df] text-[10px] uppercase tracking-[0.2em] text-[#73796f]">
+                  <th className="px-6 py-4 font-medium sm:px-8">Service</th>
+                  <th className="px-6 py-4 font-medium sm:px-8">Best for</th>
+                </tr>
+              </thead>
+              <tbody>
+                {SERVICES_SEO_CONTENT.serviceRows.map(([service, bestFor]) => (
+                  <tr key={service} className="border-b border-[#e4ded5] last:border-b-0">
+                    <th scope="row" className="px-6 py-5 font-serif text-xl font-normal text-[#1a1c18] sm:px-8">{service}</th>
+                    <td className="px-6 py-5 text-sm text-[#666d62] sm:px-8">{bestFor}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       {/* =========================================
           4. CONSULTATION (Overlap / Broken Grid)
          ========================================= */}
@@ -313,31 +338,6 @@ export default function ServicesPage() {
                </Link>
             </div>
 
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#F8F5F1] page-padding-x py-20 sm:py-28">
-        <div className="mx-auto max-w-[1400px]">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-[#73796f]">Workshop capabilities</p>
-          <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.2rem)] text-[#1a1c18]">Stone fabrication services</h2>
-          <div className="mt-10 overflow-x-auto border border-[#d8d0c4] bg-white">
-            <table className="w-full min-w-[620px] border-collapse text-left">
-              <thead>
-                <tr className="border-b border-[#d8d0c4] bg-[#ede8df] text-[10px] uppercase tracking-[0.2em] text-[#73796f]">
-                  <th className="px-6 py-4 font-medium sm:px-8">Service</th>
-                  <th className="px-6 py-4 font-medium sm:px-8">Best for</th>
-                </tr>
-              </thead>
-              <tbody>
-                {SERVICES_SEO_CONTENT.serviceRows.map(([service, bestFor]) => (
-                  <tr key={service} className="border-b border-[#e4ded5] last:border-b-0">
-                    <th scope="row" className="px-6 py-5 font-serif text-xl font-normal text-[#1a1c18] sm:px-8">{service}</th>
-                    <td className="px-6 py-5 text-sm text-[#666d62] sm:px-8">{bestFor}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </div>
       </section>
