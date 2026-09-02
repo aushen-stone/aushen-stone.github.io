@@ -367,7 +367,7 @@ export default function ServicesPage() {
       <section className="bg-[#1a1c18] text-[#F8F5F1] py-24 border-t border-white/10">
          <div className="max-w-[1600px] mx-auto page-padding-x flex flex-col md:flex-row items-center justify-between gap-8">
             <div>
-               <h2 className="font-serif text-3xl md:text-5xl mb-2">Get your stone fabrication quote today</h2>
+               <h2 className="font-serif text-3xl md:text-5xl mb-2">Get Your Stone Fabrication Quote Today</h2>
                <p className="max-w-2xl text-white/40 font-light">Whether you need a single custom-cut stone or complete fabrication for a large construction project, Aushen Stone is ready to help.</p>
             </div>
             <div className="flex w-full sm:w-auto flex-col sm:flex-row gap-3 sm:gap-4">
