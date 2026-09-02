@@ -342,8 +342,6 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <FaqSection faqs={SERVICES_SEO_CONTENT.faqs} heading="Stone fabrication FAQs" />
-
       <section className="bg-[#1a1c18] page-padding-x py-20 text-[#F8F5F1] sm:py-28">
         <div className="mx-auto max-w-[1400px]">
           <p className="text-[10px] uppercase tracking-[0.22em] text-white/40">Related applications</p>
@@ -360,6 +358,8 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
+
+      <FaqSection faqs={SERVICES_SEO_CONTENT.faqs} heading="Stone Fabrication FAQs" />
 
       {/* =========================================
           5. CTA
