@@ -345,7 +345,7 @@ export default function ServicesPage() {
       <section className="bg-[#1a1c18] page-padding-x py-20 text-[#F8F5F1] sm:py-28">
         <div className="mx-auto max-w-[1400px]">
           <p className="text-[10px] uppercase tracking-[0.22em] text-white/40">Related applications</p>
-          <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.2rem)]">Explore more services</h2>
+          <h2 className="mt-4 font-serif text-[clamp(2.2rem,5vw,4.2rem)]">Explore More Services</h2>
           <p className="mt-5 max-w-2xl text-sm leading-7 text-white/55 sm:text-base">We offer a complete range of natural stone supply and fabrication services.</p>
           <div className="mt-12 grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2">
             {SERVICES_SEO_CONTENT.exploreLinks.map((item) => (
@@ -359,7 +359,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <FaqSection faqs={SERVICES_SEO_CONTENT.faqs} heading="Stone fabrication FAQs" />
+      <FaqSection faqs={SERVICES_SEO_CONTENT.faqs} heading="Stone Fabrication FAQs" />
 
       {/* =========================================
           5. CTA
