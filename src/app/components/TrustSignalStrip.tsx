@@ -86,7 +86,7 @@ export function TrustSignalStrip({
                 Proof points
               </p>
               <h2 className="mt-3 max-w-3xl font-serif text-[clamp(1.7rem,4vw,3.2rem)] leading-tight text-[#1a1c18]">
-                Selection support backed by real showroom experience.
+                Selection Support Backed By Real Showroom Experience.
               </h2>
             </div>
             <GoogleReviewBadge />
