@@ -15,7 +15,22 @@ test("admin demo renders content management and opens the product editor", async
   await expect(page.getByText("Upload application photos", { exact: true })).toBeVisible();
   await page.getByLabel("Name / title").fill("New Test Stone");
   await expect(page.getByLabel("Slug")).toHaveValue("new-test-stone");
-  await page.getByLabel("Material").fill("Marble");
+  const material = page.getByLabel("Material");
+  await expect(material).toHaveRole("combobox");
+  await expect(material.locator("option")).toHaveText([
+    "Select a material",
+    "Bluestone",
+    "Limestone",
+    "Marble",
+    "Travertine",
+    "Granite",
+    "Quartz",
+    "Sandstone",
+    "Porcelain",
+    "Brick",
+    "Permeable Paver",
+  ]);
+  await material.selectOption({ label: "Marble" });
   await expect(page.getByRole("heading", { name: "Product specifications" })).toBeVisible();
   await page.getByRole("button", { name: "Application", exact: true }).click();
   await page.getByLabel("Application name").fill("Pool Coping / Drop Face");
