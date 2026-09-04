@@ -47,7 +47,10 @@ test("product material filters update the catalogue heading", async ({ page }) =
   await expect(page.getByRole("heading", { level: 1, name: "Bluestone" })).toBeVisible();
   await expect(page.getByText("When it comes to elevating the aesthetics of your home", { exact: false })).toBeVisible();
 
-  await page.getByRole("combobox", { name: "Filter by material" }).selectOption("limestone");
+  await page.getByRole("button", { name: "Filter by material" }).click();
+  await page.getByRole("option", { name: "All Materials" }).click();
+  await page.getByRole("option", { name: "Limestone" }).click();
+  await page.getByRole("button", { name: "Done" }).click();
   await expect(page).toHaveURL(/material=limestone/);
   await expect(page.getByRole("heading", { level: 1, name: "Limestone" })).toBeVisible();
   await expect(page.getByText("Enhance your home or commercial project with premium limestone", { exact: false })).toBeVisible();
@@ -103,15 +106,48 @@ test("Siena Earth large product image is non-empty", async ({ page }) => {
 
 test("product heading names material and application filter results", async ({ page }) => {
   await page.goto("/products/");
-  await page.getByRole("combobox", { name: "Filter by material" }).selectOption("bluestone");
+  await page.getByRole("button", { name: "Filter by material" }).click();
+  await page.getByRole("option", { name: "Bluestone" }).click();
+  await page.getByRole("button", { name: "Done" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Bluestone");
-  await page.getByRole("combobox", { name: "Filter by application" }).selectOption("paver");
+  await page.getByRole("button", { name: "Filter by application" }).click();
+  await page.getByRole("option", { name: "Paver", exact: true }).click();
+  await page.getByRole("button", { name: "Done" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Bluestone & Paver");
+});
+
+test("product material and application filters support shareable multi-selection", async ({ page }) => {
+  await page.goto("/products/");
+
+  await page.getByRole("button", { name: "Filter by material" }).click();
+  await page.getByRole("option", { name: "Bluestone" }).click();
+  await expect(page).toHaveURL(/material=bluestone/);
+  await page.getByRole("option", { name: "Marble" }).click();
+  await expect(page).toHaveURL(/material=bluestone.*material=marble/);
+  await expect(page.getByRole("button", { name: "Filter by material" })).toHaveText(/2 Materials/);
+  await page.getByRole("button", { name: "Done" }).click();
+
+  await page.getByRole("button", { name: "Filter by application" }).click();
+  await page.getByRole("option", { name: "Paver", exact: true }).click();
+  await expect(page).toHaveURL(/application=paver/);
+  await page.getByRole("option", { name: "Pool Coping", exact: true }).click();
+  await expect(page).toHaveURL(/application=paver.*application=pool-coping/);
+  await expect(page.getByRole("button", { name: "Filter by application" })).toHaveText(/2 Applications/);
+  await page.getByRole("button", { name: "Done" }).click();
+
+  const resultCount = await page.locator('a[id^="product-"]').count();
+  expect(resultCount).toBeGreaterThan(0);
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Filter by material" })).toHaveText(/2 Materials/);
+  await expect(page.getByRole("button", { name: "Filter by application" })).toHaveText(/2 Applications/);
+  await expect(page.locator('a[id^="product-"]')).toHaveCount(resultCount);
 });
 
 test("product applications drive catalogue filtering and availability selections", async ({ page }) => {
   await page.goto("/products/");
-  await page.getByRole("combobox", { name: "Filter by application" }).selectOption("pool-coping");
+  await page.getByRole("button", { name: "Filter by application" }).click();
+  await page.getByRole("option", { name: "Pool Coping", exact: true }).click();
+  await page.getByRole("button", { name: "Done" }).click();
   await expect(page).toHaveURL(/application=pool-coping/);
   await expect(page.getByText("Filters applied")).toBeVisible();
   expect(await page.locator('a[id^="product-"]').count()).toBeGreaterThan(0);
