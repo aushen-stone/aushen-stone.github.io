@@ -43,6 +43,7 @@ import {
   uploadCmsMediaVariants,
 } from "@/lib/cmsMediaUpload";
 import type { CmsEntityType, CmsRow, CmsStatus } from "@/types/cms";
+import { MATERIAL_FILTER_OPTIONS } from "@/data/productFilterOptions";
 import {
   DEFAULT_MANAGED_PAGES,
   DEFAULT_MANAGED_PROJECTS,
@@ -1502,15 +1503,27 @@ function EditorPanel({
                   <option value="material">Material</option>
                   <option value="application">Application</option>
                 </select>
+              ) : entity === "products" ? (
+                <select
+                  required
+                  value={editor.secondaryLabel}
+                  onChange={(event) => update("secondaryLabel", event.target.value)}
+                  className="admin-input"
+                >
+                  <option value="" disabled>Select a material</option>
+                  {MATERIAL_FILTER_OPTIONS.map((material) => (
+                    <option key={material.slug} value={material.name}>
+                      {material.name}
+                    </option>
+                  ))}
+                </select>
               ) : (
-              <input
-                required
-                value={editor.secondaryLabel}
-                onChange={(event) =>
-                  update("secondaryLabel", event.target.value)
-                }
-                className="admin-input"
-              />
+                <input
+                  required
+                  value={editor.secondaryLabel}
+                  onChange={(event) => update("secondaryLabel", event.target.value)}
+                  className="admin-input"
+                />
               )}
             </Field>
           ) : !PAGE_ENTITIES.has(entity) ? (
