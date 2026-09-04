@@ -5,7 +5,7 @@ import {
   useEffect,
   useMemo,
   useRef,
-  type ReactNode,
+  useState,
 } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Footer } from "@/app/components/Footer";
@@ -26,8 +26,8 @@ import {
 
 type FilterState = {
   query: string;
-  material: string;
-  application: string;
+  materials: string[];
+  applications: string[];
   tone: string;
 };
 
@@ -61,8 +61,8 @@ const buildInitialFilters = (
 ): FilterState => {
   const selected: FilterState = {
     query: "",
-    material: "",
-    application: "",
+    materials: [],
+    applications: [],
     tone: "",
   };
 
@@ -73,9 +73,9 @@ const buildInitialFilters = (
   const isTone = TONE_OPTIONS.some((tone) => tone.slug === category);
 
   if (isMaterial) {
-    selected.material = category;
+    selected.materials = [category];
   } else if (isApplication) {
-    selected.application = category;
+    selected.applications = [category];
   } else if (isTone) {
     selected.tone = category;
   }
@@ -84,12 +84,12 @@ const buildInitialFilters = (
 };
 
 const hasActiveFilters = (filters: FilterState) =>
-  Boolean(filters.query || filters.material || filters.application || filters.tone);
+  Boolean(filters.query || filters.materials.length || filters.applications.length || filters.tone);
 
 const emptyFilters = (): FilterState => ({
   query: "",
-  material: "",
-  application: "",
+  materials: [],
+  applications: [],
   tone: "",
 });
 
@@ -105,16 +105,20 @@ const parseFiltersFromParams = (
   );
 
   const query = params.get("q")?.trim() || "";
-  const material = params.get("material") || selected.material;
-  const application = params.get("application") || selected.application;
+  const materialValues = params.getAll("material");
+  const applicationValues = params.getAll("application");
+  const selectedMaterials = materialValues.length ? materialValues : selected.materials;
+  const selectedApplications = applicationValues.length ? applicationValues : selected.applications;
   const tone = params.get("tone") || selected.tone;
 
   return {
     query,
-    material: materials.some((item) => item.slug === material) ? material : "",
-    application: applications.some((item) => item.slug === application)
-      ? application
-      : "",
+    materials: Array.from(new Set(selectedMaterials)).filter((value) =>
+      materials.some((item) => item.slug === value)
+    ),
+    applications: Array.from(new Set(selectedApplications)).filter((value) =>
+      applications.some((item) => item.slug === value)
+    ),
     tone: TONE_OPTIONS.some((item) => item.slug === tone) ? tone : "",
   };
 };
@@ -131,8 +135,8 @@ const buildProductsQuery = (
 
   const query = filters.query.trim();
   if (query) nextParams.set("q", query);
-  if (filters.material) nextParams.set("material", filters.material);
-  if (filters.application) nextParams.set("application", filters.application);
+  filters.materials.forEach((material) => nextParams.append("material", material));
+  filters.applications.forEach((application) => nextParams.append("application", application));
   if (filters.tone) nextParams.set("tone", filters.tone);
 
   return nextParams.toString();
@@ -168,46 +172,107 @@ const readProductsReturnContext = (): ProductsReturnContext | null => {
   }
 };
 
-function FilterSelect({
-  value,
-  onValueChange,
-  className,
+function MultiSelectFilter({
+  values,
+  onValuesChange,
+  options,
+  allLabel,
+  selectedLabel,
   ariaLabel,
-  children,
 }: {
-  value: string;
-  onValueChange: (value: string) => void;
-  className: string;
+  values: string[];
+  onValuesChange: (values: string[]) => void;
+  options: ReadonlyArray<{ name: string; slug: string }>;
+  allLabel: string;
+  selectedLabel: string;
   ariaLabel: string;
-  children: ReactNode;
 }) {
-  const isOpenRef = useRef(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedValues, setSelectedValues] = useState(values);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setSelectedValues(values);
+  }, [values]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) setIsOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsOpen(false);
+    };
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("mousedown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isOpen]);
+
+  const buttonLabel = selectedValues.length === 0
+    ? allLabel
+    : selectedValues.length === 1
+      ? options.find((option) => option.slug === selectedValues[0])?.name || selectedLabel
+      : `${selectedValues.length} ${selectedLabel}`;
+
+  const toggleValue = (value: string) => {
+    const nextValues = selectedValues.includes(value)
+      ? selectedValues.filter((selected) => selected !== value)
+      : [...selectedValues, value];
+    setSelectedValues(nextValues);
+    onValuesChange(nextValues);
+  };
+
+  const clearValues = () => {
+    setSelectedValues([]);
+    onValuesChange([]);
+  };
 
   return (
-    <select
-      value={value}
-      onMouseDown={(event) => {
-        if (isOpenRef.current) {
-          event.preventDefault();
-          isOpenRef.current = false;
-          event.currentTarget.blur();
-          return;
-        }
-        isOpenRef.current = true;
-      }}
-      onBlur={() => {
-        isOpenRef.current = false;
-      }}
-      onChange={(event) => {
-        onValueChange(event.target.value);
-        isOpenRef.current = false;
-        event.currentTarget.blur();
-      }}
-      className={className}
-      aria-label={ariaLabel}
-    >
-      {children}
-    </select>
+    <div ref={containerRef} className="relative">
+      <button type="button" onClick={() => setIsOpen((open) => !open)}
+        className="flex h-10 w-full items-center justify-between border border-[#D8D2C8] bg-white px-3 text-left text-sm text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+        aria-label={ariaLabel} aria-haspopup="listbox" aria-expanded={isOpen}>
+        <span className="truncate">{buttonLabel}</span>
+        <svg className={`ml-2 h-4 w-4 shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`} viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="m6 8 4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+      {isOpen && (
+        <div role="listbox" aria-label={`${ariaLabel} options`} aria-multiselectable="true"
+          className="absolute z-30 mt-1 max-h-72 w-full min-w-[220px] overflow-y-auto border border-[#D8D2C8] bg-white py-1 shadow-lg">
+          <button type="button" role="option" aria-selected={selectedValues.length === 0}
+            onClick={clearValues}
+            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-[#F8F5F1] focus-visible:outline-none focus-visible:bg-[#F8F5F1]">
+            <span className={`flex h-4 w-4 shrink-0 items-center justify-center border ${selectedValues.length === 0 ? "border-[#1a1c18] bg-[#1a1c18] text-white" : "border-[#B8B1A7]"}`}>
+              {selectedValues.length === 0 && <span aria-hidden="true">✓</span>}
+            </span>
+            {allLabel}
+          </button>
+          {options.map((option) => {
+            const isSelected = selectedValues.includes(option.slug);
+            return (
+              <button key={option.slug} type="button" role="option" aria-selected={isSelected}
+                onClick={() => toggleValue(option.slug)}
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-[#F8F5F1] focus-visible:outline-none focus-visible:bg-[#F8F5F1]">
+                <span className={`flex h-4 w-4 shrink-0 items-center justify-center border ${isSelected ? "border-[#1a1c18] bg-[#1a1c18] text-white" : "border-[#B8B1A7]"}`}>
+                  {isSelected && <span aria-hidden="true">✓</span>}
+                </span>
+                {option.name}
+              </button>
+            );
+          })}
+          <div className="sticky bottom-0 border-t border-[#E6E0D8] bg-white p-2">
+            <button type="button" onClick={() => setIsOpen(false)}
+              className="w-full bg-[#1a1c18] px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2">
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -259,13 +324,13 @@ function ProductsPageContent({
     const normalizedQuery = filters.query.trim().toLowerCase();
 
     return PRODUCTS.filter((product) => {
-      if (filters.material && product.materialId !== filters.material) {
+      if (filters.materials.length > 0 && !filters.materials.includes(product.materialId)) {
         return false;
       }
 
-      if (filters.application) {
+      if (filters.applications.length > 0) {
         const hasApplication = product.applicationIndex.some(
-          (application) => application.categorySlug === filters.application
+          (application) => filters.applications.includes(application.categorySlug)
         );
         if (!hasApplication) {
           return false;
@@ -331,24 +396,26 @@ function ProductsPageContent({
     }
   };
 
-  const selectedMaterialName =
-    materials.find((material) => material.slug === filters.material)?.name;
-  const selectedApplicationName =
-    applications.find((application) => application.slug === filters.application)?.name;
+  const selectedMaterialName = filters.materials.length === 1
+    ? materials.find((material) => material.slug === filters.materials[0])?.name
+    : undefined;
+  const selectedApplicationName = filters.applications.length === 1
+    ? applications.find((application) => application.slug === filters.applications[0])?.name
+    : undefined;
   const selectedToneName = TONE_OPTIONS.find((tone) => tone.slug === filters.tone)?.name;
   const filterHeading = buildProductFilterHeading({
     material: selectedMaterialName,
     application: selectedApplicationName,
     tone: selectedToneName,
   });
-  const selectedSeoPage = filters.material
-    ? SEO_LANDING_PAGES.find((page) => page.kind === "material" && page.slug === filters.material)
-    : filters.application
+  const selectedSeoPage = filters.materials.length === 1 && filters.applications.length === 0
+    ? SEO_LANDING_PAGES.find((page) => page.kind === "material" && page.slug === filters.materials[0])
+    : filters.applications.length === 1 && filters.materials.length === 0
       ? SEO_LANDING_PAGES.find((page) => page.kind === "application" && (
-          page.slug === filters.application ||
-          (page.slug === "cobblestone" && filters.application === "cobble-stone") ||
-          (page.slug === "crazy-paving" && filters.application === "crazy-paver") ||
-          (page.slug === "pavers" && filters.application === "paver")
+          page.slug === filters.applications[0] ||
+          (page.slug === "cobblestone" && filters.applications[0] === "cobble-stone") ||
+          (page.slug === "crazy-paving" && filters.applications[0] === "crazy-paver") ||
+          (page.slug === "pavers" && filters.applications[0] === "paver")
         ))
       : undefined;
   const catalogueDescription = selectedSeoPage?.catalogueDescription?.trim() ||
@@ -388,48 +455,34 @@ function ProductsPageContent({
               />
             </label>
 
-            <label className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1.5">
               <span className="text-[11px] uppercase tracking-[0.14em] text-gray-500">Material</span>
-              <FilterSelect
-                value={filters.material}
-                onValueChange={(value) => updateFilter("material", value)}
-                className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              <MultiSelectFilter
+                values={filters.materials}
+                onValuesChange={(values) => updateFilter("materials", values)}
+                options={materials} allLabel="All Materials" selectedLabel="Materials"
                 ariaLabel="Filter by material"
-              >
-                <option value="">All Materials</option>
-                {materials.map((material) => (
-                  <option key={material.slug} value={material.slug}>
-                    {material.name}
-                  </option>
-                ))}
-              </FilterSelect>
-            </label>
+              />
+            </div>
 
-            <label className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1.5">
               <span className="text-[11px] uppercase tracking-[0.14em] text-gray-500">Application</span>
-              <FilterSelect
-                value={filters.application}
-                onValueChange={(value) => updateFilter("application", value)}
-                className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              <MultiSelectFilter
+                values={filters.applications}
+                onValuesChange={(values) => updateFilter("applications", values)}
+                options={applications} allLabel="All Applications" selectedLabel="Applications"
                 ariaLabel="Filter by application"
-              >
-                <option value="">All Applications</option>
-                {applications.map((application) => (
-                  <option key={application.slug} value={application.slug}>
-                    {application.name}
-                  </option>
-                ))}
-              </FilterSelect>
-            </label>
+              />
+            </div>
 
             {TONE_OPTIONS.length > 0 && (
               <label className="flex flex-col gap-1.5 sm:col-span-2 lg:col-span-1">
                 <span className="text-[11px] uppercase tracking-[0.14em] text-gray-500">Tone</span>
-                <FilterSelect
+                <select
                   value={filters.tone}
-                  onValueChange={(value) => updateFilter("tone", value)}
+                  onChange={(event) => updateFilter("tone", event.target.value)}
                   className="h-10 px-3 text-sm border border-[#D8D2C8] bg-white text-[#1D1D1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                  ariaLabel="Filter by tone"
+                  aria-label="Filter by tone"
                 >
                   <option value="">All Tones</option>
                   {TONE_OPTIONS.map((tone) => (
@@ -437,7 +490,7 @@ function ProductsPageContent({
                       {tone.name}
                     </option>
                   ))}
-                </FilterSelect>
+                </select>
               </label>
             )}
           </div>
