@@ -22,22 +22,22 @@ export const HOME_SEO_CONTENT = {
     items: [
       {
         title: "Natural Stone Pavers",
-        href: "https://aushenstone.com.au/products/?category=permeable-paver",
+        href: "https://aushenstone.com.au/products/?application=paver",
         description: "Create elegant patios, courtyards, pathways and entertaining areas with durable natural stone pavers available in a variety of colours, textures and finishes.",
       },
       {
         title: "Pool Coping",
-        href: "https://aushenstone.com.au/products/?category=pool-coping",
+        href: "https://aushenstone.com.au/products/?application=pool-coping",
         description: "Complete your swimming pool with premium coping designed to provide a stylish finish while improving safety and durability around pool surrounds.",
       },
       {
         title: "Wall Cladding",
-        href: "https://aushenstone.com.au/products/?category=cladding",
+        href: "https://aushenstone.com.au/products/?application=cladding",
         description: "Transform internal and external walls with natural stone cladding that adds texture, depth and timeless architectural appeal.",
       },
       {
         title: "Cobblestones & Stepping Stones",
-        href: "https://aushenstone.com.au/products/?category=cobble-stone",
+        href: "https://aushenstone.com.au/products/?application=cobble-stone&application=organic-stepper&application=giant-stepper",
         description: "Enhance driveways, pathways and landscaped gardens with premium natural stone products that combine durability with classic visual appeal.",
       },
     ],

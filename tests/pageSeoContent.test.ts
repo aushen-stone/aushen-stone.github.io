@@ -41,10 +41,10 @@ test("homepage natural stone range section retains the approved links", () => {
   assert.deepEqual(
     section.items.map((item) => item.href),
     [
-      "https://aushenstone.com.au/products/?category=permeable-paver",
-      "https://aushenstone.com.au/products/?category=pool-coping",
-      "https://aushenstone.com.au/products/?category=cladding",
-      "https://aushenstone.com.au/products/?category=cobble-stone",
+      "https://aushenstone.com.au/products/?application=paver",
+      "https://aushenstone.com.au/products/?application=pool-coping",
+      "https://aushenstone.com.au/products/?application=cladding",
+      "https://aushenstone.com.au/products/?application=cobble-stone&application=organic-stepper&application=giant-stepper",
     ],
   );
   assert.ok(section.items.every((item) => item.description.length > 100));
