@@ -1,0 +1,48 @@
+name: Supabase Keepalive
+
+on:
+  schedule:
+    # Two small read-only requests per day. Scheduled workflows run from the
+    # default branch, so this takes effect only after the change reaches main.
+    - cron: "17 1,13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-keepalive
+  cancel-in-progress: true
+
+jobs:
+  read-health-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Validate public Supabase configuration
+        env:
+          SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          if [ -z "${SUPABASE_URL}" ] || [ -z "${SUPABASE_PUBLISHABLE_KEY}" ]; then
+            echo "Required Supabase repository variables are missing."
+            exit 1
+          fi
+
+      - name: Perform minimal read-only database request
+        env:
+          SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          curl --fail --silent --show-error \
+            --retry 2 \
+            --retry-delay 5 \
+            --connect-timeout 15 \
+            --max-time 30 \
+            --output /dev/null \
+            --header "apikey: ${SUPABASE_PUBLISHABLE_KEY}" \
+            --header "Authorization: Bearer ${SUPABASE_PUBLISHABLE_KEY}" \
+            "${SUPABASE_URL}/rest/v1/cms_products?select=slug&status=eq.published&limit=1"
+
+          echo "Supabase read-only health check succeeded."

@@ -95,6 +95,11 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 No Supabase service-role secret is required in GitHub. The build reads only
 published rows using the publishable key, and Postgres RLS remains enforced.
 
+`.github/workflows/supabase-keepalive.yml` also uses these public repository
+variables for a minimal read-only query twice per day. Its purpose is to keep
+the Free Plan project active and surface connectivity failures without granting
+write access. Scheduled workflows run only from the repository default branch.
+
 When an admin selects **Publish site**, the Edge Function sends a `cms_publish` repository dispatch. The workflow synchronizes published CMS rows into generated TypeScript files, builds all static product/blog routes, and deploys GitHub Pages.
 
 Published CMS images are copied from Supabase Storage into the GitHub Pages

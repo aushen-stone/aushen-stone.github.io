@@ -27,6 +27,11 @@ Last updated: 2026-09-01
   - publish artifact: `dist/`
   - repository Pages source must be `GitHub Actions`
   - `public/CNAME` must export to `dist/CNAME`; CI verifies it is exactly `aushenstone.com.au`
+- Supabase activity workflow:
+  - `.github/workflows/supabase-keepalive.yml`
+  - trigger: twice-daily schedule + `workflow_dispatch`
+  - performs one minimal read-only published-product query using the existing
+    publishable repository variables; it has no write or service-role access
 
 ## Route Architecture
 - Homepage composition: `src/app/page.tsx`; approved homepage/Services SEO copy is centralized in `src/data/pageSeoContent.ts`, with reusable visible FAQ markup in `src/app/components/FaqSection.tsx`.
