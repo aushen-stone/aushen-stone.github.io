@@ -725,13 +725,13 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                   <button
                     type="button"
                     onClick={() => setIsQuoteOpen(true)}
-                    className="group inline-flex min-h-14 w-full items-center justify-between bg-[#1a1c18] px-6 py-4 text-xs font-medium uppercase tracking-[0.16em] text-[#F8F5F1] transition-colors hover:bg-[#3B4034] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                    className="group relative inline-flex min-h-14 w-full items-center justify-center bg-[#1a1c18] px-12 py-4 text-xs font-medium uppercase tracking-[0.16em] text-[#F8F5F1] transition-colors hover:bg-[#3B4034] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                     aria-haspopup="dialog"
                   >
                     {quoteLabel}
                     <ArrowRight
                       size={16}
-                      className="transition-transform duration-300 group-hover:translate-x-1.5"
+                      className="absolute right-6 transition-transform duration-300 group-hover:translate-x-1.5"
                     />
                   </button>
                   <button
