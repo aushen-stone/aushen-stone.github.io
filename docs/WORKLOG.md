@@ -1459,3 +1459,6 @@ Last updated: 2026-07-29
   `03-9585 7005`. The mobile number remains where it was already shown.
 - `/services`: hero "Call 03-9585 7005" and "Request a Quote" buttons; quote
   form directly below the hero (`source: services-fabrication`).
+- 2026-10-14 follow-up: the header landline call link now shows on every page
+  (icon + number on desktop, icon on mobile); the `/services` hero Call button
+  was removed in favour of it. The "Request a Quote" label is centred.

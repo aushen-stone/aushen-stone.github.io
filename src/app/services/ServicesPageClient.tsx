@@ -120,13 +120,6 @@ export default function ServicesPage() {
              </p>
              <div className="flex w-full sm:w-auto flex-col sm:flex-row gap-3">
                 <a
-                  href={CONTACT_INFO.landlineLink}
-                  className="inline-flex items-center justify-center gap-2.5 whitespace-nowrap bg-white px-6 py-4 text-[11px] font-medium uppercase tracking-[0.16em] text-[#1a1c18] transition-colors hover:bg-[#F0F2E4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
-                >
-                  <Phone size={15} strokeWidth={1.6} />
-                  Call {CONTACT_INFO.landlineDisplay}
-                </a>
-                <a
                   href="#fabrication-quote"
                   className="inline-flex items-center justify-center gap-2.5 whitespace-nowrap border border-white/25 px-6 py-4 text-[11px] font-medium uppercase tracking-[0.16em] text-white transition-colors hover:bg-white hover:text-[#1a1c18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
                 >
