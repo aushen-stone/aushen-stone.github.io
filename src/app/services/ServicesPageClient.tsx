@@ -3,11 +3,24 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Footer } from "@/app/components/Footer";
-import { MoveDown, CheckCircle2, ArrowUpRight } from "lucide-react";
+import { CheckCircle2, ArrowUpRight, Phone, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CMS_LEGACY_PAGES } from "@/data/cms-site.generated";
 import { SERVICES_SEO_CONTENT } from "@/data/pageSeoContent";
 import { FaqSection } from "@/app/components/FaqSection";
+import { QuickEnquiryForm } from "@/app/components/QuickEnquiryForm";
+import { CONTACT_INFO } from "@/data/contact";
+
+const SERVICES_QUOTE_SOURCE = "services-fabrication";
+
+const buildFabricationQuoteMessage = (customerNotes: string) =>
+  [
+    "Stone fabrication quote request from services page:",
+    `Page: ${typeof window === "undefined" ? "/services/" : window.location.href}`,
+    "",
+    "Customer notes:",
+    customerNotes.trim() || "-",
+  ].join("\n");
 
 // --- MOCK DATA ---
 const FABRICATION_SERVICES = [
@@ -105,9 +118,62 @@ export default function ServicesPage() {
              <p className="text-white/60 text-sm font-light max-w-lg text-left md:text-right leading-loose">
                {SERVICES_SEO_CONTENT.introduction}
              </p>
-             <div className="flex items-center gap-3 text-white/30 text-[10px] uppercase tracking-widest animate-pulse">
-                Process <MoveDown size={14} />
+             <div className="flex w-full sm:w-auto flex-col sm:flex-row gap-3">
+                <a
+                  href={CONTACT_INFO.landlineLink}
+                  className="inline-flex items-center justify-center gap-2.5 whitespace-nowrap bg-white px-6 py-4 text-[11px] font-medium uppercase tracking-[0.16em] text-[#1a1c18] transition-colors hover:bg-[#F0F2E4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
+                >
+                  <Phone size={15} strokeWidth={1.6} />
+                  Call {CONTACT_INFO.landlineDisplay}
+                </a>
+                <a
+                  href="#fabrication-quote"
+                  className="inline-flex items-center justify-center gap-2.5 whitespace-nowrap border border-white/25 px-6 py-4 text-[11px] font-medium uppercase tracking-[0.16em] text-white transition-colors hover:bg-white hover:text-[#1a1c18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
+                >
+                  Request a Quote
+                  <ArrowRight size={15} />
+                </a>
              </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================
+          QUICK QUOTE (above the fold on desktop, right after hero on mobile)
+         ========================================= */}
+      <section
+        id="fabrication-quote"
+        className="scroll-mt-[var(--content-sticky-top)] bg-[#F8F5F1] pt-16 sm:pt-24 page-padding-x"
+      >
+        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+          <div className="lg:col-span-5">
+            <span className="block text-gray-500 text-[10px] uppercase tracking-[0.3em] mb-5">
+              Fabrication quote
+            </span>
+            <h2 className="font-serif text-3xl md:text-5xl text-[#1a1c18] leading-tight">
+              Tell us what you need cut
+            </h2>
+            <p className="mt-5 max-w-md text-sm text-gray-600 font-light leading-loose">
+              Send your stone, dimensions, quantity and timing and our team will come
+              back to you with a quote. Prefer to talk it through?
+            </p>
+            <a
+              href={CONTACT_INFO.landlineLink}
+              className="mt-6 inline-flex items-center gap-2.5 text-sm text-[#1a1c18] underline decoration-[#1a1c18]/25 underline-offset-4 transition-colors hover:decoration-[#1a1c18]"
+            >
+              <Phone size={15} strokeWidth={1.6} />
+              Call {CONTACT_INFO.landlineDisplay}
+            </a>
+          </div>
+          <div className="lg:col-span-7 rounded-xl border border-[#E6E0D8] bg-white p-5 sm:p-7">
+            <QuickEnquiryForm
+              source={SERVICES_QUOTE_SOURCE}
+              userType="fabrication-quote"
+              buildMessage={buildFabricationQuoteMessage}
+              submitLabel="Send Quote Request"
+              notesPlaceholder="Stone, dimensions, quantity, edge profile, timing"
+              idPrefix="services-quote"
+            />
           </div>
         </div>
       </section>

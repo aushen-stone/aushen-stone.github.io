@@ -1444,3 +1444,18 @@ Last updated: 2026-07-29
 - Corrected the Homepage document mapping so its two-paragraph introduction
   replaces the legacy dark Brand Banner copy instead of appearing in a separate
   duplicate introduction block; the approved reasons remain below it.
+
+## Quote and click-to-call enquiry paths (2026-10-14)
+- Client request: simplify product enquiries, add a mobile click-to-call on the
+  business landline, and surface a call button plus quote form near the top of
+  the stone fabrication page.
+- Product detail: removed the "Check Availability" block (it only opened an
+  enquiry form) and the "Enquiry" link to `/contact`; added a primary
+  "Request a Quote" button that opens a modal quote form with the current
+  selection attached. "Request Sample" stays as the secondary action.
+- Extracted the shared `QuickEnquiryForm`; product and `/services` quote
+  submits now route to `/thank-you/` like `/contact`.
+- Mobile header: phone icon next to the sample cart dialling the landline
+  `03-9585 7005`. The mobile number remains where it was already shown.
+- `/services`: hero "Call 03-9585 7005" and "Request a Quote" buttons; quote
+  form directly below the hero (`source: services-fabrication`).

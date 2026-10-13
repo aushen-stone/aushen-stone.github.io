@@ -122,9 +122,13 @@ function checkContactConversionContract() {
   requireIncludes("src/app/contact/ContactPageClient.tsx", "submitContactEnquiry");
   requireIncludes("src/app/contact/ContactPageClient.tsx", "pushContactConversionEvent");
   requireIncludes("src/app/contact/ContactPageClient.tsx", 'router.push("/thank-you/")');
+  requireIncludes("src/app/components/QuickEnquiryForm.tsx", "submitContactEnquiry");
+  requireIncludes("src/app/components/QuickEnquiryForm.tsx", "pushContactConversionEvent");
+  requireIncludes("src/app/components/QuickEnquiryForm.tsx", 'router.push("/thank-you/")');
   requireIncludes("src/app/products/[slug]/ProductDetailClient.tsx", "product-detail-inline");
-  requireIncludes("src/app/products/[slug]/ProductDetailClient.tsx", "submitContactEnquiry");
-  requireIncludes("src/app/products/[slug]/ProductDetailClient.tsx", "pushContactConversionEvent");
+  requireIncludes("src/app/products/[slug]/ProductDetailClient.tsx", "QuickEnquiryForm");
+  requireIncludes("src/app/services/ServicesPageClient.tsx", "services-fabrication");
+  requireIncludes("src/app/services/ServicesPageClient.tsx", "QuickEnquiryForm");
   requireIncludes("src/app/components/cart/SampleCartDrawer.tsx", "sample-drawer");
   requireIncludes("src/app/components/cart/SampleCartDrawer.tsx", "submitContactEnquiry");
   requireIncludes("src/app/components/cart/SampleCartDrawer.tsx", "pushContactConversionEvent");

@@ -193,10 +193,11 @@ Last updated: 2026-09-01
   - selector params are validated against the current generated product before use, and invalid combinations are normalized to available options.
   - product detail canonical metadata remains the slug route; selector params are client-side UI state only.
 - Product detail enquiry paths:
-  - product detail includes an inline enquiry form that submits the current product, application, finish, size, slip rating, and page URL without leaving `/products/[slug]`.
-  - inline product enquiries use `source: product-detail-inline` and push the shared `contact_form_submit` conversion event after successful submit.
-  - consultation fallback CTAs still write the current product, application, finish, size, slip rating, and page URL to `sessionStorage` under `aushen_product_contact_prefill_v1`.
-  - `/contact?source=product-detail` reads that fallback handoff as the initial message and clears it after successful submit.
+  - the primary CTA "Request a Quote" opens a modal `<dialog>` with the shared `QuickEnquiryForm`, which submits the current product, application, finish, size, slip rating, and page URL.
+  - product quote requests use `source: product-detail-inline` (kept for reporting continuity), push the shared `contact_form_submit` conversion event, then route to `/thank-you/`.
+  - `/contact?source=product-detail` still reads a `sessionStorage` handoff under `aushen_product_contact_prefill_v1` if one exists, but product detail no longer writes it.
+- Services (`/services`, stone fabrication) enquiry path:
+  - hero shows "Call" (landline) and "Request a Quote" (anchors to `#fabrication-quote`); the quote form sits directly below the hero and submits with `source: services-fabrication`, `userType: fabrication-quote`.
 - Accessories intentionally bypass the `Product` selector contract and use direct enquiry CTAs instead of sample ordering.
 - Sample cart contract (`src/types/cart.ts`):
   - storage key: `aushen_sample_cart_v1`
@@ -210,12 +211,12 @@ Last updated: 2026-09-01
 
 ## Contact Submission Contract
 - Shared submit helper: `src/lib/contactSubmission.ts`.
-- Contact submit clients: `src/app/contact/ContactPageClient.tsx`, `src/app/products/[slug]/ProductDetailClient.tsx`, and `src/app/components/cart/SampleCartDrawer.tsx`.
+- Contact submit clients: `src/app/contact/ContactPageClient.tsx`, `src/app/components/QuickEnquiryForm.tsx` (used by product detail and `/services`), and `src/app/components/cart/SampleCartDrawer.tsx`.
 - Build-time endpoint env var: `NEXT_PUBLIC_CONTACT_API_URL`.
 - CI validates variable shape and checks endpoint string is bundled in `dist`.
 - Production delivery target: Cloudflare Worker + Resend.
 - Successful submit pushes `contact_form_submit` to `window.dataLayer`.
-- Successful `/contact` submit routes to `/thank-you/`; successful inline product enquiry stays on the product page and shows an in-page success state.
+- Successful `/contact`, product quote and `/services` quote submits route to `/thank-you/`.
 - Successful sample drawer request stays inside the drawer, shows an in-drawer success state, and clears selected sample lines.
 - `/thank-you/` exists as a noindex confirmation page for conversion tracking and customer reassurance.
 
