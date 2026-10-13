@@ -197,7 +197,7 @@ Last updated: 2026-09-01
   - product quote requests use `source: product-detail-inline` (kept for reporting continuity), push the shared `contact_form_submit` conversion event, then route to `/thank-you/`.
   - `/contact?source=product-detail` still reads a `sessionStorage` handoff under `aushen_product_contact_prefill_v1` if one exists, but product detail no longer writes it.
 - Services (`/services`, stone fabrication) enquiry path:
-  - hero shows "Call" (landline) and "Request a Quote" (anchors to `#fabrication-quote`); the quote form sits directly below the hero and submits with `source: services-fabrication`, `userType: fabrication-quote`.
+  - hero shows "Request a Quote" (anchors to `#fabrication-quote`); calling uses the global header landline link; the quote form sits directly below the hero and submits with `source: services-fabrication`, `userType: fabrication-quote`.
 - Accessories intentionally bypass the `Product` selector contract and use direct enquiry CTAs instead of sample ordering.
 - Sample cart contract (`src/types/cart.ts`):
   - storage key: `aushen_sample_cart_v1`

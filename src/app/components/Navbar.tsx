@@ -389,6 +389,14 @@ export function Navbar() {
             ref={rightClusterRef}
             className={`flex items-center justify-end ${rightClusterSizingClass} 2xl:gap-6 2xl:text-xs font-medium uppercase 2xl:tracking-[0.18em] z-10 transition-colors ${textColorClass}`}
           >
+            <a
+              href={CONTACT_INFO.landlineLink}
+              className="flex items-center gap-2 p-1.5 lg:p-0 hover:opacity-70 transition-opacity whitespace-nowrap"
+              aria-label={`Call ${CONTACT_INFO.landlineDisplay}`}
+            >
+              <Phone size={18} strokeWidth={1.2} />
+              <span className="hidden lg:inline">{CONTACT_INFO.landlineDisplay}</span>
+            </a>
             <Link
               href="/contact"
               onClick={() => setActiveMenu(null)}
@@ -396,13 +404,6 @@ export function Navbar() {
             >
               Contact
             </Link>
-            <a
-              href={CONTACT_INFO.landlineLink}
-              className="lg:hidden p-1.5 hover:opacity-70 transition-opacity"
-              aria-label={`Call ${CONTACT_INFO.landlineDisplay}`}
-            >
-              <Phone size={20} strokeWidth={1.2} />
-            </a>
             <button
               type="button"
               className="flex items-center gap-1.5 sm:gap-2 hover:opacity-70 transition-opacity whitespace-nowrap"

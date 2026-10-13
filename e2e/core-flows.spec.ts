@@ -200,21 +200,24 @@ test("product quote request opens a dialog with the current selection", async ({
   await expect(dialog).toBeHidden();
 });
 
-test("mobile header exposes a landline call button", async ({ page }, testInfo) => {
-  test.skip(!testInfo.project.name.startsWith("mobile"), "Mobile-only control");
-  await page.goto("/");
+test("header exposes a landline call button on every page", async ({ page }, testInfo) => {
+  for (const path of ["/", "/services/"]) {
+    await page.goto(path);
 
-  const call = page.getByRole("link", { name: "Call 03-9585 7005" });
-  await expect(call).toBeVisible();
-  await expect(call).toHaveAttribute("href", "tel:+61395857005");
+    const call = page.getByRole("banner").getByRole("link", { name: "Call 03-9585 7005" });
+    await expect(call).toBeVisible();
+    await expect(call).toHaveAttribute("href", "tel:+61395857005");
+    // Desktop shows the number next to the icon; mobile keeps the icon only.
+    if (testInfo.project.name.startsWith("mobile")) {
+      await expect(call.getByText("03-9585 7005")).toBeHidden();
+    } else {
+      await expect(call.getByText("03-9585 7005")).toBeVisible();
+    }
+  }
 });
 
-test("fabrication page offers a call button and quote form near the top", async ({ page }) => {
+test("fabrication page offers a quote form near the top", async ({ page }) => {
   await page.goto("/services/");
-
-  const call = page.getByRole("link", { name: "Call 03-9585 7005" }).first();
-  await expect(call).toBeVisible();
-  await expect(call).toHaveAttribute("href", "tel:+61395857005");
 
   await page.getByRole("link", { name: "Request a Quote" }).click();
   await expect(page).toHaveURL(/#fabrication-quote$/);
