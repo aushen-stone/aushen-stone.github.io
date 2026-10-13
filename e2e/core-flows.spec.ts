@@ -154,7 +154,7 @@ test("product applications drive catalogue filtering and availability selections
 
   await page.goto("/products/antarctica/");
   await expect(
-    page.getByRole("button", { name: "Check Availability", exact: true }),
+    page.getByRole("button", { name: "Request a Quote", exact: true }),
   ).toBeVisible();
   await page.getByRole("combobox", { name: "Select application" }).selectOption("pool-coping--drop-face");
   await expect(page.getByRole("combobox", { name: "Select surface finish" })).toHaveValue("sandblasted-p5");
@@ -180,4 +180,44 @@ test("mobile navigation opens and exposes the primary sections", async ({ page }
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
   await expect(page.getByRole("link", { name: "Products", exact: true }).last()).toBeVisible();
   await expect(page.getByRole("link", { name: "Contact", exact: true }).last()).toBeVisible();
+});
+
+test("product quote request opens a dialog with the current selection", async ({ page }) => {
+  await page.goto("/products/antarctica/");
+  await expect(page.getByText("Check availability for", { exact: false })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Enquiry", exact: true })).toHaveCount(0);
+
+  await page.getByRole("combobox", { name: "Select application" }).selectOption("pool-coping--drop-face");
+  await page.getByRole("button", { name: "Request a Quote", exact: true }).click();
+
+  const dialog = page.getByRole("dialog", { name: "Antarctica" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByText(/Pool Coping \/ Drop Face/)).toBeVisible();
+  await expect(dialog.getByRole("textbox", { name: "First name" })).toBeFocused();
+  await expect(dialog.getByRole("button", { name: "Send Quote Request" })).toBeVisible();
+
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+});
+
+test("mobile header exposes a landline call button", async ({ page }, testInfo) => {
+  test.skip(!testInfo.project.name.startsWith("mobile"), "Mobile-only control");
+  await page.goto("/");
+
+  const call = page.getByRole("link", { name: "Call 03-9585 7005" });
+  await expect(call).toBeVisible();
+  await expect(call).toHaveAttribute("href", "tel:+61395857005");
+});
+
+test("fabrication page offers a call button and quote form near the top", async ({ page }) => {
+  await page.goto("/services/");
+
+  const call = page.getByRole("link", { name: "Call 03-9585 7005" }).first();
+  await expect(call).toBeVisible();
+  await expect(call).toHaveAttribute("href", "tel:+61395857005");
+
+  await page.getByRole("link", { name: "Request a Quote" }).click();
+  await expect(page).toHaveURL(/#fabrication-quote$/);
+  await expect(page.getByRole("heading", { name: "Tell us what you need cut" })).toBeInViewport();
+  await expect(page.getByRole("textbox", { name: "First name" })).toBeInViewport();
 });

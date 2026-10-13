@@ -29,6 +29,11 @@ body {
   overflow-x: hidden;
 }
 
+/* Keep the page behind an open modal dialog (e.g. product quote) from scrolling. */
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
 .page-padding-x {
   padding-left: var(--page-x);
   padding-right: var(--page-x);

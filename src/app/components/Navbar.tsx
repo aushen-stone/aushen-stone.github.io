@@ -4,9 +4,10 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
+import { ShoppingCart, Menu, X, ChevronDown, Phone } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ACCESSORY_BRANDS } from "@/data/accessories";
+import { CONTACT_INFO } from "@/data/contact";
 import {
   MATERIAL_FILTER_OPTIONS,
   PREFERRED_APPLICATION_FILTER_OPTIONS,
@@ -395,6 +396,13 @@ export function Navbar() {
             >
               Contact
             </Link>
+            <a
+              href={CONTACT_INFO.landlineLink}
+              className="lg:hidden p-1.5 hover:opacity-70 transition-opacity"
+              aria-label={`Call ${CONTACT_INFO.landlineDisplay}`}
+            >
+              <Phone size={20} strokeWidth={1.2} />
+            </a>
             <button
               type="button"
               className="flex items-center gap-1.5 sm:gap-2 hover:opacity-70 transition-opacity whitespace-nowrap"

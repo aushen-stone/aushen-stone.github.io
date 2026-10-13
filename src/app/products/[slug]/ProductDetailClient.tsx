@@ -15,13 +15,13 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
-  CheckCircle,
-  Loader2,
   Plus,
   Minus,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
+import { QuickEnquiryForm } from "@/app/components/QuickEnquiryForm";
 import { PRODUCTS } from "@/data/products";
 import { getProductDisplayName } from "@/data/product_display_names";
 import {
@@ -35,15 +35,9 @@ import {
 } from "@/data/product_overrides";
 import type { AddSampleResult } from "@/types/cart";
 import {
-  PRODUCT_CONTACT_HANDOFF_KEY,
   PRODUCTS_RETURN_CONTEXT_STORAGE_KEY,
   type ProductsReturnContext,
 } from "@/types/productNavigation";
-import {
-  isContactEndpointConfigured,
-  pushContactConversionEvent,
-  submitContactEnquiry,
-} from "@/lib/contactSubmission";
 import type { AudienceMode, Product } from "@/types/product";
 import {
   buildProductTechnicalSpecifications,
@@ -208,19 +202,6 @@ type ProductDetailViewProps = {
 
 type SampleFeedback = AddSampleResult | "unavailable";
 
-type InlineEnquiryFormState = {
-  firstName: string;
-  email: string;
-  phone: string;
-  message: string;
-  website: string;
-};
-
-type InlineEnquirySubmitState =
-  | { kind: "idle"; message: "" }
-  | { kind: "success"; message: string }
-  | { kind: "error"; message: string };
-
 type ProductSelectionState = {
   applicationId: string;
   finishId: string;
@@ -229,7 +210,8 @@ type ProductSelectionState = {
 
 const PRODUCT_DETAIL_SELECTION_PARAMS = ["application", "finish", "size"] as const;
 const PRODUCT_DETAIL_SELECTION_EVENT = "aushen_product_detail_selection_change";
-const PRODUCT_DETAIL_INLINE_CONTACT_SOURCE = "product-detail-inline";
+// Kept from the former inline enquiry so form_source reporting stays continuous.
+const PRODUCT_DETAIL_QUOTE_SOURCE = "product-detail-inline";
 const PRODUCT_RETURN_CONTEXT_MAX_AGE_MS = 30 * 60 * 1000;
 
 const subscribeNoop = () => () => {};
@@ -377,8 +359,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
   const professionalNotes = override?.professionalNotes || DEFAULT_PROFESSIONAL_NOTES;
 
   const sampleLabel = override?.ctaOverride?.sample || "Request Sample";
-  const enquireLabel = override?.ctaOverride?.enquire || "Check Availability";
-  const consultLabel = override?.ctaOverride?.consult || "Enquiry";
+  const quoteLabel = override?.ctaOverride?.enquire || "Request a Quote";
   const returnContextHref = useSyncExternalStore(
     subscribeNoop,
     () => getProductsReturnHrefSnapshot(product.slug),
@@ -413,22 +394,8 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
   const [audienceMode, setAudienceMode] = useState<AudienceMode>("homeowner");
   const [sampleFeedback, setSampleFeedback] = useState<SampleFeedback | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
-  const [isEnquirySubmitting, setIsEnquirySubmitting] = useState(false);
-  const [enquirySubmitState, setEnquirySubmitState] =
-    useState<InlineEnquirySubmitState>({
-      kind: "idle",
-      message: "",
-    });
-  const [enquiryFormState, setEnquiryFormState] =
-    useState<InlineEnquiryFormState>({
-      firstName: "",
-      email: "",
-      phone: "",
-      message: "",
-      website: "",
-    });
-  const firstEnquiryFieldRef = useRef<HTMLInputElement | null>(null);
+  const [isQuoteOpen, setIsQuoteOpen] = useState(false);
+  const quoteDialogRef = useRef<HTMLDialogElement | null>(null);
 
   const selectedApplication =
     product.applicationIndex.find((application) => application.id === selectedApplicationId) ||
@@ -497,16 +464,12 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
   }, [selectedSelection]);
 
   useEffect(() => {
-    if (!isEnquiryOpen) return;
+    const dialog = quoteDialogRef.current;
+    if (!dialog || !isQuoteOpen) return;
 
-    const frame = window.requestAnimationFrame(() => {
-      firstEnquiryFieldRef.current?.focus();
-    });
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-    };
-  }, [isEnquiryOpen]);
+    if (!dialog.open) dialog.showModal();
+    dialog.querySelector<HTMLInputElement>("input:not([tabindex='-1'])")?.focus();
+  }, [isQuoteOpen]);
 
   const handleApplicationSelect = (applicationId: string) => {
     const nextApplication = product.applicationIndex.find(
@@ -538,15 +501,6 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
       size,
     });
   };
-
-  const updateEnquiryField =
-    (field: keyof InlineEnquiryFormState) =>
-    (value: string): void => {
-      setEnquiryFormState((previous) => ({ ...previous, [field]: value }));
-      if (enquirySubmitState.kind !== "idle") {
-        setEnquirySubmitState({ kind: "idle", message: "" });
-      }
-    };
 
   const handleAddSample = () => {
     if (!selectedFinish) {
@@ -637,95 +591,19 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     `Page: ${getProductPageUrl()}`,
   ];
 
-  const buildProductContactMessage = () => {
+  const buildQuoteMessage = (customerNotes: string) => {
+    const trimmedNotes = customerNotes.trim();
     return [
-      "Hi Aushen team,",
-      "",
-      "I would like to enquire about this product:",
-      ...buildProductContextLines(),
-      "",
-      "Project suburb/address:",
-      "Approximate quantity or area:",
-      "Preferred timing:",
-      "",
-      "Thank you.",
-    ].join("\n");
-  };
-
-  const persistProductContactPrefill = () => {
-    if (typeof window === "undefined") return;
-
-    try {
-      window.sessionStorage.setItem(
-        PRODUCT_CONTACT_HANDOFF_KEY,
-        buildProductContactMessage()
-      );
-    } catch {
-      // Continue to the contact page even if handoff storage is unavailable.
-    }
-  };
-
-  const buildInlineEnquiryMessage = (customerMessage: string) => {
-    const trimmedMessage = customerMessage.trim();
-    return [
-      "Product enquiry from product detail page:",
+      "Quote request from product detail page:",
       ...buildProductContextLines(),
       "",
       "Customer notes:",
-      trimmedMessage || "-",
+      trimmedNotes || "-",
     ].join("\n");
   };
 
-  const handleInlineEnquirySubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-
-    if (!isContactEndpointConfigured()) {
-      setEnquirySubmitState({
-        kind: "error",
-        message:
-          "Contact endpoint is not configured. Please call or email Aushen directly.",
-      });
-      return;
-    }
-
-    setIsEnquirySubmitting(true);
-    setEnquirySubmitState({ kind: "idle", message: "" });
-
-    try {
-      await submitContactEnquiry({
-        firstName: enquiryFormState.firstName,
-        email: enquiryFormState.email,
-        phone: enquiryFormState.phone,
-        message: buildInlineEnquiryMessage(enquiryFormState.message),
-        userType: audienceMode === "professional" ? "pro" : "homeowner",
-        source: PRODUCT_DETAIL_INLINE_CONTACT_SOURCE,
-        website: enquiryFormState.website,
-      });
-
-      pushContactConversionEvent(PRODUCT_DETAIL_INLINE_CONTACT_SOURCE);
-      setEnquirySubmitState({
-        kind: "success",
-        message:
-          "Thanks, your product enquiry has been sent. Our team will contact you shortly.",
-      });
-      setEnquiryFormState({
-        firstName: "",
-        email: "",
-        phone: "",
-        message: "",
-        website: "",
-      });
-    } catch {
-      setEnquirySubmitState({
-        kind: "error",
-        message:
-          "We could not send your enquiry right now. Please call or email us directly.",
-      });
-    } finally {
-      setIsEnquirySubmitting(false);
-    }
+  const closeQuoteDialog = () => {
+    quoteDialogRef.current?.close();
   };
 
   return (
@@ -844,215 +722,87 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <div className="overflow-hidden border border-[#1a1c18] bg-[#1a1c18] text-[#F8F5F1]">
-                    <div className="p-5 sm:p-6">
+                  <button
+                    type="button"
+                    onClick={() => setIsQuoteOpen(true)}
+                    className="group inline-flex min-h-14 w-full items-center justify-between bg-[#1a1c18] px-6 py-4 text-xs font-medium uppercase tracking-[0.16em] text-[#F8F5F1] transition-colors hover:bg-[#3B4034] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                    aria-haspopup="dialog"
+                  >
+                    {quoteLabel}
+                    <ArrowRight
+                      size={16}
+                      className="transition-transform duration-300 group-hover:translate-x-1.5"
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleAddSample}
+                    disabled={!selectedFinish}
+                    className="border border-gray-300 text-gray-900 py-3 px-4 sm:px-5 flex items-center justify-center gap-2.5 hover:border-gray-900 transition-all uppercase tracking-[0.12em] text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:opacity-50 disabled:cursor-not-allowed"
+                    aria-label={sampleLabel}
+                  >
+                    {sampleLabel}
+                  </button>
+                </div>
+
+                <dialog
+                  ref={quoteDialogRef}
+                  aria-labelledby="product-quote-title"
+                  onClose={() => setIsQuoteOpen(false)}
+                  onClick={(event) => {
+                    // Clicks on the backdrop target the dialog element itself.
+                    if (event.target === event.currentTarget) closeQuoteDialog();
+                  }}
+                  className="m-auto max-h-[calc(100dvh-2rem)] w-[min(calc(100%-2rem),36rem)] overflow-y-auto bg-[#F8F5F1] p-0 text-[#1a1c18] shadow-2xl backdrop:bg-[#1a1c18]/60"
+                >
+                  {isQuoteOpen && (
+                    <div className="p-5 sm:p-7">
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <p className="text-[10px] uppercase tracking-[0.2em] text-white/55">
-                            Selected stone enquiry
+                          <p className="text-[10px] uppercase tracking-[0.2em] text-gray-500">
+                            {quoteLabel}
                           </p>
-                          <h3 className="mt-2 max-w-xl font-serif text-[1.55rem] leading-tight sm:text-[1.85rem]">
-                            Check availability for {displayName}
-                          </h3>
+                          <h2
+                            id="product-quote-title"
+                            className="mt-2 font-serif text-[1.55rem] leading-tight sm:text-[1.85rem]"
+                          >
+                            {displayName}
+                          </h2>
                         </div>
-                        {enquirySubmitState.kind === "success" && (
-                          <CheckCircle
-                            size={22}
-                            className="mt-1 shrink-0 text-[#DDE6CC]"
-                            aria-hidden="true"
-                          />
-                        )}
+                        <button
+                          type="button"
+                          onClick={closeQuoteDialog}
+                          className="-mr-1 shrink-0 p-1 text-gray-500 transition-colors hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18]"
+                          aria-label="Close quote request"
+                        >
+                          <X size={20} strokeWidth={1.5} />
+                        </button>
                       </div>
 
-                      <p className="mt-4 text-sm leading-6 text-white/70">
-                        Send the selected application, finish and size to Aushen.
-                        We&apos;ll confirm availability, samples and showroom options.
+                      <p className="mt-4 mb-5 text-sm leading-6 text-gray-600">
+                        Your selection is included automatically:{" "}
+                        <span className="text-gray-900">
+                          {[
+                            selectedApplication?.label,
+                            selectedFinish ? formatSurfaceFinishLabel(selectedFinish) : null,
+                            selectedSizeValue,
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </span>
                       </p>
 
-                      <dl className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        {techSpecs.map((spec) => (
-                          <div
-                            key={`availability-${spec.label}`}
-                            className="border border-white/10 bg-white/[0.06] px-3 py-2"
-                          >
-                            <dt className="text-[9px] uppercase tracking-[0.16em] text-white/45">
-                              {spec.label}
-                            </dt>
-                            <dd className="mt-1 truncate font-serif text-sm text-white">
-                              {spec.value}
-                            </dd>
-                          </div>
-                        ))}
-                      </dl>
-
-                      <button
-                        type="button"
-                        onClick={() => setIsEnquiryOpen((previous) => !previous)}
-                        className="group mt-5 inline-flex min-h-12 w-full items-center justify-between bg-[#F8F5F1] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.14em] text-[#1a1c18] transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
-                        aria-label={isEnquiryOpen ? "Close product enquiry" : enquireLabel}
-                        aria-expanded={isEnquiryOpen}
-                        aria-controls="product-inline-enquiry"
-                      >
-                        {isEnquiryOpen ? "Close Enquiry" : enquireLabel}
-                        <ArrowRight
-                          size={16}
-                          className={`transition-transform duration-300 ${
-                            isEnquiryOpen ? "-rotate-90" : "group-hover:translate-x-1.5"
-                          }`}
-                        />
-                      </button>
+                      <QuickEnquiryForm
+                        source={PRODUCT_DETAIL_QUOTE_SOURCE}
+                        userType={audienceMode === "professional" ? "pro" : "homeowner"}
+                        buildMessage={buildQuoteMessage}
+                        submitLabel="Send Quote Request"
+                        notesPlaceholder="Suburb, quantity or area, timing"
+                        idPrefix="product-quote"
+                      />
                     </div>
-                  </div>
-
-                  <AnimatePresence initial={false}>
-                    {isEnquiryOpen && (
-                      <motion.div
-                        id="product-inline-enquiry"
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.24, ease: [0.04, 0.62, 0.23, 0.98] }}
-                        className="-mt-3 overflow-hidden"
-                      >
-                        <div className="border border-[#1a1c18] border-t-0 bg-[#F8F5F1] p-5 sm:p-6">
-                          <p className="mb-5 text-sm leading-6 text-gray-600">
-                            Product details are included automatically. Add your
-                            contact details and any timing, quantity or suburb notes.
-                          </p>
-
-                          <form className="space-y-4" onSubmit={handleInlineEnquirySubmit}>
-                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                              <label className="flex flex-col gap-2">
-                                <span className="text-[10px] uppercase tracking-[0.14em] text-gray-500">
-                                  First name
-                                </span>
-                                <input
-                                  ref={firstEnquiryFieldRef}
-                                  type="text"
-                                  value={enquiryFormState.firstName}
-                                  onChange={(event) =>
-                                    updateEnquiryField("firstName")(event.target.value)
-                                  }
-                                  required
-                                  autoComplete="given-name"
-                                  className="h-11 border border-[#D8D2C8] bg-white px-3 text-sm text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                                />
-                              </label>
-
-                              <label className="flex flex-col gap-2">
-                                <span className="text-[10px] uppercase tracking-[0.14em] text-gray-500">
-                                  Email
-                                </span>
-                                <input
-                                  type="email"
-                                  value={enquiryFormState.email}
-                                  onChange={(event) =>
-                                    updateEnquiryField("email")(event.target.value)
-                                  }
-                                  required
-                                  autoComplete="email"
-                                  className="h-11 border border-[#D8D2C8] bg-white px-3 text-sm text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                                />
-                              </label>
-                            </div>
-
-                            <label className="flex flex-col gap-2">
-                              <span className="text-[10px] uppercase tracking-[0.14em] text-gray-500">
-                                Phone
-                              </span>
-                              <input
-                                type="tel"
-                                value={enquiryFormState.phone}
-                                onChange={(event) =>
-                                  updateEnquiryField("phone")(event.target.value)
-                                }
-                                autoComplete="tel"
-                                className="h-11 border border-[#D8D2C8] bg-white px-3 text-sm text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                              />
-                            </label>
-
-                            <label className="flex flex-col gap-2">
-                              <span className="text-[10px] uppercase tracking-[0.14em] text-gray-500">
-                                Project notes
-                              </span>
-                              <textarea
-                                value={enquiryFormState.message}
-                                onChange={(event) =>
-                                  updateEnquiryField("message")(event.target.value)
-                                }
-                                rows={4}
-                                placeholder="Suburb, quantity, timing, or selection questions"
-                                className="min-h-28 resize-y border border-[#D8D2C8] bg-white px-3 py-3 text-sm leading-6 text-gray-900 placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                              />
-                            </label>
-
-                            <div className="sr-only" aria-hidden="true">
-                              <label htmlFor="product-enquiry-website">Website</label>
-                              <input
-                                id="product-enquiry-website"
-                                type="text"
-                                tabIndex={-1}
-                                autoComplete="off"
-                                value={enquiryFormState.website}
-                                onChange={(event) =>
-                                  updateEnquiryField("website")(event.target.value)
-                                }
-                              />
-                            </div>
-
-                            {enquirySubmitState.kind !== "idle" && (
-                              <p
-                                role={
-                                  enquirySubmitState.kind === "error" ? "alert" : "status"
-                                }
-                                className={`text-sm leading-6 ${
-                                  enquirySubmitState.kind === "error"
-                                    ? "text-red-700"
-                                    : "text-[#3B4034]"
-                                }`}
-                              >
-                                {enquirySubmitState.message}
-                              </p>
-                            )}
-
-                            <button
-                              type="submit"
-                              disabled={isEnquirySubmitting}
-                              className="inline-flex min-h-12 w-full items-center justify-between bg-[#1a1c18] px-5 py-3 text-[11px] font-medium uppercase tracking-[0.14em] text-[#F8F5F1] transition-colors hover:bg-[#3B4034] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1] disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                              {isEnquirySubmitting ? "Sending" : "Send Availability Request"}
-                              {isEnquirySubmitting ? (
-                                <Loader2 size={15} className="animate-spin" />
-                              ) : (
-                                <ArrowRight size={15} />
-                              )}
-                            </button>
-                          </form>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <button
-                      type="button"
-                      onClick={handleAddSample}
-                      disabled={!selectedFinish}
-                      className="border border-gray-300 text-gray-900 py-3 px-4 sm:px-5 flex items-center justify-center gap-2.5 hover:border-gray-900 transition-all uppercase tracking-[0.12em] text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:opacity-50 disabled:cursor-not-allowed"
-                      aria-label={sampleLabel}
-                    >
-                      {sampleLabel}
-                    </button>
-                    <Link
-                      href="/contact?source=product-detail"
-                      onClick={persistProductContactPrefill}
-                      className="border border-transparent text-gray-600 py-3 px-4 sm:px-5 flex items-center justify-center gap-2.5 hover:text-gray-900 transition-all uppercase tracking-[0.12em] text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                      aria-label={consultLabel}
-                    >
-                      {consultLabel}
-                    </Link>
-                  </div>
-                </div>
+                  )}
+                </dialog>
 
                 {sampleFeedbackMessage && (
                   <p className="text-[11px] uppercase tracking-[0.14em] text-gray-500">

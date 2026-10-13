@@ -59,8 +59,8 @@ Last updated: 2026-05-07
 - Product browsing state is URL-led:
   - `/products` filter params are `q`, `material`, `application`, and `tone`; old `category` links remain readable but should not be emitted by new code.
   - `/products/[slug]` selector params are `application`, `finish`, and `size`, validated on the client against generated product data.
-  - product-list return context uses `sessionStorage` key `aushen_products_return_context_v1`; product-detail contact prefill fallback uses `aushen_product_contact_prefill_v1`.
-  - product detail inline enquiries submit through the shared contact helper with `source: product-detail-inline` and keep users on the product page after success.
+  - product-list return context uses `sessionStorage` key `aushen_products_return_context_v1`.
+  - product detail "Request a Quote" opens a modal quote form (`src/app/components/QuickEnquiryForm.tsx`) that submits the current selection with `source: product-detail-inline`; the former "Check Availability" block and the "Enquiry" link to `/contact` were removed on 2026-10-14.
 - Accessories are curated separately from CSV-generated stone products, with legacy Aushen accessories coverage used as the minimum Phase 1 baseline.
 - Accessories source files live inside the inner repo:
   - type contract: `src/types/accessory.ts`
@@ -68,7 +68,8 @@ Last updated: 2026-05-07
   - routes: `src/app/accessories/page.tsx`, `src/app/accessories/[slug]/page.tsx`
 - Accessories use enquiry-driven CTAs and must not be forced into the stone sample-cart workflow.
 - Continuity reasoning for accessories should stay in docs and handoff notes; public pages should stay customer-facing and avoid migration language.
-- Successful contact submissions push `contact_form_submit` to `window.dataLayer`; `/contact` routes to `/thank-you/` after success, while inline product enquiries show in-page success. Production GA4/GTM validation remains under `LAUNCH-P0-004`.
+- Successful contact submissions push `contact_form_submit` to `window.dataLayer`; `/contact`, the product quote dialog and the `/services` quote form all route to `/thank-you/` after success. Production GA4/GTM validation remains under `LAUNCH-P0-004`.
+- Click-to-call uses the business landline (`CONTACT_INFO.landlineLink`): mobile header phone icon and the `/services` "Call" buttons. The mobile number stays where it was already shown (footer, contact page, accessories); do not swap it into new call buttons.
 - Sample requests should use the sample drawer as the primary path. `src/app/components/cart/SampleCartDrawer.tsx` submits directly through the shared contact helper with `source: sample-drawer`; `/cart` remains a noindex fallback page.
 - Production contact delivery target is Cloudflare Worker + Resend; `NEXT_PUBLIC_CONTACT_API_URL` is configured in GitHub Actions repository variables.
 
