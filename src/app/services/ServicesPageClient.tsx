@@ -109,6 +109,17 @@ export default function ServicesPage() {
     return () => observer.disconnect();
   }, []);
 
+  // /services/?quote=1 (used by the old /services/quote/ URL) opens the quote dialog directly.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("quote") !== "1") return;
+
+    url.searchParams.delete("quote");
+    window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+    const timer = window.setTimeout(() => setIsQuoteOpen(true), 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   return (
     <main className="bg-[#F8F5F1] min-h-screen selection:bg-[#1a1c18] selection:text-white">
       {/* =========================================
