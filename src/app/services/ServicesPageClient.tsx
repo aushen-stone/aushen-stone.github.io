@@ -3,13 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Footer } from "@/app/components/Footer";
-import { CheckCircle2, ArrowUpRight, Phone, ArrowRight } from "lucide-react";
+import { CheckCircle2, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CMS_LEGACY_PAGES } from "@/data/cms-site.generated";
 import { SERVICES_SEO_CONTENT } from "@/data/pageSeoContent";
 import { FaqSection } from "@/app/components/FaqSection";
 import { QuickEnquiryForm } from "@/app/components/QuickEnquiryForm";
-import { CONTACT_INFO } from "@/data/contact";
 
 const SERVICES_QUOTE_SOURCE = "services-fabrication";
 
@@ -118,15 +117,6 @@ export default function ServicesPage() {
              <p className="text-white/60 text-sm font-light max-w-lg text-left md:text-right leading-loose">
                {SERVICES_SEO_CONTENT.introduction}
              </p>
-             <div className="flex w-full sm:w-auto flex-col sm:flex-row gap-3">
-                <a
-                  href="#fabrication-quote"
-                  className="inline-flex items-center justify-center gap-2.5 whitespace-nowrap border border-white/25 px-6 py-4 text-[11px] font-medium uppercase tracking-[0.16em] text-white transition-colors hover:bg-white hover:text-[#1a1c18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
-                >
-                  Request a Quote
-                  <ArrowRight size={15} />
-                </a>
-             </div>
           </div>
         </div>
       </section>
@@ -144,19 +134,12 @@ export default function ServicesPage() {
               Fabrication quote
             </span>
             <h2 className="font-serif text-3xl md:text-5xl text-[#1a1c18] leading-tight">
-              Tell us what you need cut
+              Tell Us What You Need Cut
             </h2>
             <p className="mt-5 max-w-md text-sm text-gray-600 font-light leading-loose">
               Send your stone, dimensions, quantity and timing and our team will come
-              back to you with a quote. Prefer to talk it through?
+              back to you with a quote.
             </p>
-            <a
-              href={CONTACT_INFO.landlineLink}
-              className="mt-6 inline-flex items-center gap-2.5 text-sm text-[#1a1c18] underline decoration-[#1a1c18]/25 underline-offset-4 transition-colors hover:decoration-[#1a1c18]"
-            >
-              <Phone size={15} strokeWidth={1.6} />
-              Call {CONTACT_INFO.landlineDisplay}
-            </a>
           </div>
           <div className="lg:col-span-7 rounded-xl border border-[#E6E0D8] bg-white p-5 sm:p-7">
             <QuickEnquiryForm

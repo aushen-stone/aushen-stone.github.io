@@ -1462,3 +1462,6 @@ Last updated: 2026-07-29
 - 2026-10-14 follow-up: the header landline call link now shows on every page
   (icon + number on desktop, icon on mobile); the `/services` hero Call button
   was removed in favour of it. The "Request a Quote" label is centred.
+- 2026-10-14 follow-up: `/services` drops the hero "Request a Quote" button and
+  the duplicate call link beside the form; heading is now "Tell Us What You
+  Need Cut" and the shared quote submit label is title case, not all caps.
