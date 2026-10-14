@@ -216,22 +216,30 @@ test("header exposes a landline call button on every page", async ({ page }, tes
   }
 });
 
-test("fabrication page links to a standalone quote page and floats the quote CTA on scroll", async ({ page }) => {
+test("fabrication page opens the quote dialog from the hero and a centred floating CTA", async ({ page }) => {
   await page.goto("/services/");
 
-  const heroQuote = page.locator("main > section").first().getByRole("link", { name: "Request a Quote" });
-  await expect(heroQuote).toBeVisible();
-  await expect(heroQuote).toHaveAttribute("href", "/services/quote/");
+  const dialog = page.getByRole("dialog", { name: "Tell Us What You Need Cut" });
+  const heroQuote = page.locator("main > section").first().getByRole("button", { name: "Request a Quote" });
+  await heroQuote.click();
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("textbox", { name: "First name" })).toBeFocused();
+  await expect(dialog.getByRole("button", { name: "Send Quote Request" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
 
-  const floatingQuote = page.locator('div.fixed a[href="/services/quote/"]');
+  const floatingQuote = page.locator("div.fixed").getByRole("button", { name: "Request a Quote" });
   await expect(floatingQuote).toHaveCount(0);
   await page.mouse.wheel(0, 1600);
   await expect(floatingQuote).toBeVisible();
   await expect(floatingQuote.locator("..")).toHaveCSS("opacity", "1");
 
+  // Floating CTA is vertically centred in the viewport.
+  const box = await floatingQuote.boundingBox();
+  const viewport = page.viewportSize();
+  expect(box && viewport).toBeTruthy();
+  expect(Math.abs(box!.y + box!.height / 2 - viewport!.height / 2)).toBeLessThan(12);
+
   await floatingQuote.click();
-  await expect(page).toHaveURL(/\/services\/quote\/$/);
-  await expect(page.getByRole("heading", { level: 1, name: "Tell Us What You Need Cut" })).toBeVisible();
-  await expect(page.getByRole("textbox", { name: "First name" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Send Quote Request" })).toBeVisible();
+  await expect(dialog).toBeVisible();
 });

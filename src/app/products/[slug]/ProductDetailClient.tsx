@@ -17,11 +17,11 @@ import {
   ChevronRight,
   Plus,
   Minus,
-  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSampleCart } from "@/app/components/cart/SampleCartProvider";
 import { QuickEnquiryForm } from "@/app/components/QuickEnquiryForm";
+import { QuoteDialog } from "@/app/components/QuoteDialog";
 import { PRODUCTS } from "@/data/products";
 import { getProductDisplayName } from "@/data/product_display_names";
 import {
@@ -395,7 +395,6 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
   const [sampleFeedback, setSampleFeedback] = useState<SampleFeedback | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
-  const quoteDialogRef = useRef<HTMLDialogElement | null>(null);
 
   const selectedApplication =
     product.applicationIndex.find((application) => application.id === selectedApplicationId) ||
@@ -463,13 +462,6 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
     }
   }, [selectedSelection]);
 
-  useEffect(() => {
-    const dialog = quoteDialogRef.current;
-    if (!dialog || !isQuoteOpen) return;
-
-    if (!dialog.open) dialog.showModal();
-    dialog.querySelector<HTMLInputElement>("input:not([tabindex='-1'])")?.focus();
-  }, [isQuoteOpen]);
 
   const handleApplicationSelect = (applicationId: string) => {
     const nextApplication = product.applicationIndex.find(
@@ -600,10 +592,6 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
       "Customer notes:",
       trimmedNotes || "-",
     ].join("\n");
-  };
-
-  const closeQuoteDialog = () => {
-    quoteDialogRef.current?.close();
   };
 
   return (
@@ -745,64 +733,35 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
                   </button>
                 </div>
 
-                <dialog
-                  ref={quoteDialogRef}
-                  aria-labelledby="product-quote-title"
+                <QuoteDialog
+                  open={isQuoteOpen}
                   onClose={() => setIsQuoteOpen(false)}
-                  onClick={(event) => {
-                    // Clicks on the backdrop target the dialog element itself.
-                    if (event.target === event.currentTarget) closeQuoteDialog();
-                  }}
-                  className="m-auto max-h-[calc(100dvh-2rem)] w-[min(calc(100%-2rem),36rem)] overflow-y-auto bg-[#F8F5F1] p-0 text-[#1a1c18] shadow-2xl backdrop:bg-[#1a1c18]/60"
+                  eyebrow={quoteLabel}
+                  title={displayName}
+                  titleId="product-quote-title"
                 >
-                  {isQuoteOpen && (
-                    <div className="p-5 sm:p-7">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <p className="text-[10px] uppercase tracking-[0.2em] text-gray-500">
-                            {quoteLabel}
-                          </p>
-                          <h2
-                            id="product-quote-title"
-                            className="mt-2 font-serif text-[1.55rem] leading-tight sm:text-[1.85rem]"
-                          >
-                            {displayName}
-                          </h2>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={closeQuoteDialog}
-                          className="-mr-1 shrink-0 p-1 text-gray-500 transition-colors hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18]"
-                          aria-label="Close quote request"
-                        >
-                          <X size={20} strokeWidth={1.5} />
-                        </button>
-                      </div>
+                  <p className="mt-4 mb-5 text-sm leading-6 text-gray-600">
+                    Your selection is included automatically:{" "}
+                    <span className="text-gray-900">
+                      {[
+                        selectedApplication?.label,
+                        selectedFinish ? formatSurfaceFinishLabel(selectedFinish) : null,
+                        selectedSizeValue,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
+                  </p>
 
-                      <p className="mt-4 mb-5 text-sm leading-6 text-gray-600">
-                        Your selection is included automatically:{" "}
-                        <span className="text-gray-900">
-                          {[
-                            selectedApplication?.label,
-                            selectedFinish ? formatSurfaceFinishLabel(selectedFinish) : null,
-                            selectedSizeValue,
-                          ]
-                            .filter(Boolean)
-                            .join(" · ")}
-                        </span>
-                      </p>
-
-                      <QuickEnquiryForm
-                        source={PRODUCT_DETAIL_QUOTE_SOURCE}
-                        userType={audienceMode === "professional" ? "pro" : "homeowner"}
-                        buildMessage={buildQuoteMessage}
-                        submitLabel="Send Quote Request"
-                        notesPlaceholder="Suburb, quantity or area, timing"
-                        idPrefix="product-quote"
-                      />
-                    </div>
-                  )}
-                </dialog>
+                  <QuickEnquiryForm
+                    source={PRODUCT_DETAIL_QUOTE_SOURCE}
+                    userType={audienceMode === "professional" ? "pro" : "homeowner"}
+                    buildMessage={buildQuoteMessage}
+                    submitLabel="Send Quote Request"
+                    notesPlaceholder="Suburb, quantity or area, timing"
+                    idPrefix="product-quote"
+                  />
+                </QuoteDialog>
 
                 {sampleFeedbackMessage && (
                   <p className="text-[11px] uppercase tracking-[0.14em] text-gray-500">

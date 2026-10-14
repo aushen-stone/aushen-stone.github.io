@@ -1469,3 +1469,7 @@ Last updated: 2026-07-29
   `/services/quote/` (indexable, in sitemap). `/services` restores the hero
   "Request a Quote" button linking there, plus a floating bottom-right
   "Request a Quote" button once the hero button scrolls away.
+- 2026-10-14 follow-up: `/services/quote/` was replaced by the shared
+  `QuoteDialog` modal (also used by product detail); the hero and the floating
+  "Request a Quote" (now vertically centred on the right) open it. Quote submit
+  labels are centred.

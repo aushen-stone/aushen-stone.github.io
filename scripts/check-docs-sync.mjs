@@ -127,8 +127,9 @@ function checkContactConversionContract() {
   requireIncludes("src/app/components/QuickEnquiryForm.tsx", 'router.push("/thank-you/")');
   requireIncludes("src/app/products/[slug]/ProductDetailClient.tsx", "product-detail-inline");
   requireIncludes("src/app/products/[slug]/ProductDetailClient.tsx", "QuickEnquiryForm");
-  requireIncludes("src/app/services/quote/ServicesQuotePageClient.tsx", "services-fabrication");
-  requireIncludes("src/app/services/quote/ServicesQuotePageClient.tsx", "QuickEnquiryForm");
+  requireIncludes("src/app/services/ServicesPageClient.tsx", "services-fabrication");
+  requireIncludes("src/app/services/ServicesPageClient.tsx", "QuoteDialog");
+  requireIncludes("src/app/products/[slug]/ProductDetailClient.tsx", "QuoteDialog");
   requireIncludes("src/app/components/cart/SampleCartDrawer.tsx", "sample-drawer");
   requireIncludes("src/app/components/cart/SampleCartDrawer.tsx", "submitContactEnquiry");
   requireIncludes("src/app/components/cart/SampleCartDrawer.tsx", "pushContactConversionEvent");

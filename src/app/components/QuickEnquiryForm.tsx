@@ -172,10 +172,14 @@ export function QuickEnquiryForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="inline-flex min-h-12 w-full items-center justify-between bg-[#1a1c18] px-5 py-3 text-sm font-medium tracking-[0.04em] text-[#F8F5F1] transition-colors hover:bg-[#3B4034] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1] disabled:cursor-not-allowed disabled:opacity-60"
+        className="relative inline-flex min-h-12 w-full items-center justify-center bg-[#1a1c18] px-12 py-3 text-sm font-medium tracking-[0.04em] text-[#F8F5F1] transition-colors hover:bg-[#3B4034] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSubmitting ? "Sending" : submitLabel}
-        {isSubmitting ? <Loader2 size={15} className="animate-spin" /> : <ArrowRight size={15} />}
+        {isSubmitting ? (
+          <Loader2 size={15} className="absolute right-5 animate-spin" />
+        ) : (
+          <ArrowRight size={15} className="absolute right-5" />
+        )}
       </button>
     </form>
   );
