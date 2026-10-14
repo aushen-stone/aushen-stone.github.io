@@ -243,3 +243,9 @@ test("fabrication page opens the quote dialog from the hero and a centred floati
   await floatingQuote.click();
   await expect(dialog).toBeVisible();
 });
+
+test("old /services/quote/ URL redirects to the services quote dialog", async ({ page }) => {
+  await page.goto("/services/quote/");
+  await expect(page).toHaveURL(/\/services\/$/);
+  await expect(page.getByRole("dialog", { name: "Tell Us What You Need Cut" })).toBeVisible();
+});

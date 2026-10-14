@@ -1473,3 +1473,6 @@ Last updated: 2026-07-29
   `QuoteDialog` modal (also used by product detail); the hero and the floating
   "Request a Quote" (now vertically centred on the right) open it. Quote submit
   labels are centred.
+- 2026-10-14 follow-up: restored `/services/quote/` as a noindex redirect to
+  `/services/?quote=1` (auto-opens the quote dialog) so old links and tabs cached
+  from the standalone-page release no longer hit a 404.

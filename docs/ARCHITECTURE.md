@@ -49,6 +49,7 @@ Last updated: 2026-09-01
   - `src/app/projects/page.tsx`
   - `src/app/privacy-policy/page.tsx`
   - `src/app/services/page.tsx`
+  - `src/app/services/quote/page.tsx`
   - `src/app/cart/page.tsx`
   - `src/app/thank-you/page.tsx`
   - `src/app/terms-condition/page.tsx`
@@ -96,6 +97,7 @@ Last updated: 2026-09-01
   - `/products/[slug]`: indexable
   - `/privacy-policy`: indexable
   - `/thank-you`: `noindex,nofollow`
+  - `/services/quote`: `noindex,follow` (redirect to the `/services` quote dialog)
   - `/terms-condition`: indexable
 - Sitemap content:
   - core static routes, legal static routes, accessories routes, generated product detail routes, SEO landing-page routes, and generated blog detail routes.
@@ -199,6 +201,7 @@ Last updated: 2026-09-01
 - Services (`/services`, stone fabrication) enquiry path:
   - hero "Request a Quote" opens the shared `QuoteDialog` (same modal as product detail); once the hero button scrolls out of view a floating "Request a Quote" button appears, vertically centred on the right edge, and opens the same dialog.
   - the dialog hosts `QuickEnquiryForm` and submits with `source: services-fabrication`, `userType: fabrication-quote`.
+  - `/services/quote/` (`noindex,follow`, not in the sitemap) is kept only as a redirect to `/services/?quote=1`, which opens the dialog; it covers old links and tabs cached from the brief standalone-page release.
   - calling uses the global header landline link.
 - Accessories intentionally bypass the `Product` selector contract and use direct enquiry CTAs instead of sample ordering.
 - Sample cart contract (`src/types/cart.ts`):
