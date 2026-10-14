@@ -49,6 +49,7 @@ Last updated: 2026-09-01
   - `src/app/projects/page.tsx`
   - `src/app/privacy-policy/page.tsx`
   - `src/app/services/page.tsx`
+  - `src/app/services/quote/page.tsx`
   - `src/app/cart/page.tsx`
   - `src/app/thank-you/page.tsx`
   - `src/app/terms-condition/page.tsx`
@@ -197,7 +198,9 @@ Last updated: 2026-09-01
   - product quote requests use `source: product-detail-inline` (kept for reporting continuity), push the shared `contact_form_submit` conversion event, then route to `/thank-you/`.
   - `/contact?source=product-detail` still reads a `sessionStorage` handoff under `aushen_product_contact_prefill_v1` if one exists, but product detail no longer writes it.
 - Services (`/services`, stone fabrication) enquiry path:
-  - no hero CTA buttons; calling uses the global header landline link; the quote form sits directly below the hero and submits with `source: services-fabrication`, `userType: fabrication-quote`.
+  - hero "Request a Quote" links to the standalone `/services/quote/` page; once it scrolls out of view a floating "Request a Quote" button appears bottom-right, above the back-to-top button.
+  - `/services/quote/` hosts the shared `QuickEnquiryForm` and submits with `source: services-fabrication`, `userType: fabrication-quote`; it is indexable and listed in the sitemap.
+  - calling uses the global header landline link.
 - Accessories intentionally bypass the `Product` selector contract and use direct enquiry CTAs instead of sample ordering.
 - Sample cart contract (`src/types/cart.ts`):
   - storage key: `aushen_sample_cart_v1`

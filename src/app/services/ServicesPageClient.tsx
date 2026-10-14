@@ -1,25 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Footer } from "@/app/components/Footer";
-import { CheckCircle2, ArrowUpRight } from "lucide-react";
+import { CheckCircle2, ArrowUpRight, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CMS_LEGACY_PAGES } from "@/data/cms-site.generated";
 import { SERVICES_SEO_CONTENT } from "@/data/pageSeoContent";
 import { FaqSection } from "@/app/components/FaqSection";
-import { QuickEnquiryForm } from "@/app/components/QuickEnquiryForm";
 
-const SERVICES_QUOTE_SOURCE = "services-fabrication";
-
-const buildFabricationQuoteMessage = (customerNotes: string) =>
-  [
-    "Stone fabrication quote request from services page:",
-    `Page: ${typeof window === "undefined" ? "/services/" : window.location.href}`,
-    "",
-    "Customer notes:",
-    customerNotes.trim() || "-",
-  ].join("\n");
+const SERVICES_QUOTE_HREF = "/services/quote/";
 
 // --- MOCK DATA ---
 const FABRICATION_SERVICES = [
@@ -91,6 +81,22 @@ export default function ServicesPage() {
   ];
   const cta = content?.cta;
 
+  // Once the hero "Request a Quote" button scrolls out of view, a floating copy takes over.
+  const heroQuoteRef = useRef<HTMLAnchorElement | null>(null);
+  const [showFloatingQuote, setShowFloatingQuote] = useState(false);
+
+  useEffect(() => {
+    const heroQuote = heroQuoteRef.current;
+    if (!heroQuote) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setShowFloatingQuote(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+    });
+    observer.observe(heroQuote);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <main className="bg-[#F8F5F1] min-h-screen selection:bg-[#1a1c18] selection:text-white">
       {/* =========================================
@@ -117,39 +123,14 @@ export default function ServicesPage() {
              <p className="text-white/60 text-sm font-light max-w-lg text-left md:text-right leading-loose">
                {SERVICES_SEO_CONTENT.introduction}
              </p>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================
-          QUICK QUOTE (above the fold on desktop, right after hero on mobile)
-         ========================================= */}
-      <section
-        id="fabrication-quote"
-        className="scroll-mt-[var(--content-sticky-top)] bg-[#F8F5F1] pt-16 sm:pt-24 page-padding-x"
-      >
-        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-5">
-            <span className="block text-gray-500 text-[10px] uppercase tracking-[0.3em] mb-5">
-              Fabrication quote
-            </span>
-            <h2 className="font-serif text-3xl md:text-5xl text-[#1a1c18] leading-tight">
-              Tell Us What You Need Cut
-            </h2>
-            <p className="mt-5 max-w-md text-sm text-gray-600 font-light leading-loose">
-              Send your stone, dimensions, quantity and timing and our team will come
-              back to you with a quote.
-            </p>
-          </div>
-          <div className="lg:col-span-7 rounded-xl border border-[#E6E0D8] bg-white p-5 sm:p-7">
-            <QuickEnquiryForm
-              source={SERVICES_QUOTE_SOURCE}
-              userType="fabrication-quote"
-              buildMessage={buildFabricationQuoteMessage}
-              submitLabel="Send Quote Request"
-              notesPlaceholder="Stone, dimensions, quantity, edge profile, timing"
-              idPrefix="services-quote"
-            />
+             <Link
+               ref={heroQuoteRef}
+               href={SERVICES_QUOTE_HREF}
+               className="inline-flex w-full sm:w-auto items-center justify-center gap-2.5 whitespace-nowrap border border-white/25 px-6 py-4 text-[11px] font-medium uppercase tracking-[0.16em] text-white transition-colors hover:bg-white hover:text-[#1a1c18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
+             >
+               Request a Quote
+               <ArrowRight size={15} />
+             </Link>
           </div>
         </div>
       </section>
@@ -428,6 +409,27 @@ export default function ServicesPage() {
             </div>
          </div>
       </section>
+
+      <AnimatePresence>
+        {showFloatingQuote && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12 }}
+            transition={{ duration: 0.2 }}
+            // Sits above the shared back-to-top button in the bottom-right corner.
+            className="fixed right-[var(--page-x)] bottom-[calc(env(safe-area-inset-bottom)+4.25rem)] sm:bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-[100]"
+          >
+            <Link
+              href={SERVICES_QUOTE_HREF}
+              className="inline-flex items-center gap-2.5 border border-[#1a1c18]/15 bg-[#F8F5F1] px-5 py-3.5 text-[11px] font-medium uppercase tracking-[0.16em] text-[#1a1c18] shadow-[0_14px_34px_-14px_rgba(0,0,0,0.55)] transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
+            >
+              Request a Quote
+              <ArrowRight size={15} />
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <Footer />
     </main>

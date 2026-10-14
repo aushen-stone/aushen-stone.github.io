@@ -216,14 +216,22 @@ test("header exposes a landline call button on every page", async ({ page }, tes
   }
 });
 
-test("fabrication page offers a quote form near the top", async ({ page }) => {
+test("fabrication page links to a standalone quote page and floats the quote CTA on scroll", async ({ page }) => {
   await page.goto("/services/");
 
-  const quoteSection = page.locator("#fabrication-quote");
-  await expect(quoteSection.getByRole("heading", { name: "Tell Us What You Need Cut" })).toBeVisible();
-  await expect(quoteSection.getByRole("textbox", { name: "First name" })).toBeVisible();
-  await expect(quoteSection.getByRole("button", { name: "Send Quote Request" })).toBeVisible();
-  // The landline lives in the global header; the hero and quote section don't repeat it.
-  await expect(page.locator('main > section').first().locator("a")).toHaveCount(0);
-  await expect(quoteSection.locator('a[href^="tel:"]')).toHaveCount(0);
+  const heroQuote = page.locator("main > section").first().getByRole("link", { name: "Request a Quote" });
+  await expect(heroQuote).toBeVisible();
+  await expect(heroQuote).toHaveAttribute("href", "/services/quote/");
+
+  const floatingQuote = page.locator('div.fixed a[href="/services/quote/"]');
+  await expect(floatingQuote).toHaveCount(0);
+  await page.mouse.wheel(0, 1600);
+  await expect(floatingQuote).toBeVisible();
+  await expect(floatingQuote.locator("..")).toHaveCSS("opacity", "1");
+
+  await floatingQuote.click();
+  await expect(page).toHaveURL(/\/services\/quote\/$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Tell Us What You Need Cut" })).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "First name" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Send Quote Request" })).toBeVisible();
 });
