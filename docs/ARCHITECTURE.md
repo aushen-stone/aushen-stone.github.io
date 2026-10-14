@@ -49,7 +49,6 @@ Last updated: 2026-09-01
   - `src/app/projects/page.tsx`
   - `src/app/privacy-policy/page.tsx`
   - `src/app/services/page.tsx`
-  - `src/app/services/quote/page.tsx`
   - `src/app/cart/page.tsx`
   - `src/app/thank-you/page.tsx`
   - `src/app/terms-condition/page.tsx`
@@ -194,12 +193,12 @@ Last updated: 2026-09-01
   - selector params are validated against the current generated product before use, and invalid combinations are normalized to available options.
   - product detail canonical metadata remains the slug route; selector params are client-side UI state only.
 - Product detail enquiry paths:
-  - the primary CTA "Request a Quote" opens a modal `<dialog>` with the shared `QuickEnquiryForm`, which submits the current product, application, finish, size, slip rating, and page URL.
+  - the primary CTA "Request a Quote" opens the shared modal `QuoteDialog` (`src/app/components/QuoteDialog.tsx`) with `QuickEnquiryForm`, which submits the current product, application, finish, size, slip rating, and page URL.
   - product quote requests use `source: product-detail-inline` (kept for reporting continuity), push the shared `contact_form_submit` conversion event, then route to `/thank-you/`.
   - `/contact?source=product-detail` still reads a `sessionStorage` handoff under `aushen_product_contact_prefill_v1` if one exists, but product detail no longer writes it.
 - Services (`/services`, stone fabrication) enquiry path:
-  - hero "Request a Quote" links to the standalone `/services/quote/` page; once it scrolls out of view a floating "Request a Quote" button appears bottom-right, above the back-to-top button.
-  - `/services/quote/` hosts the shared `QuickEnquiryForm` and submits with `source: services-fabrication`, `userType: fabrication-quote`; it is indexable and listed in the sitemap.
+  - hero "Request a Quote" opens the shared `QuoteDialog` (same modal as product detail); once the hero button scrolls out of view a floating "Request a Quote" button appears, vertically centred on the right edge, and opens the same dialog.
+  - the dialog hosts `QuickEnquiryForm` and submits with `source: services-fabrication`, `userType: fabrication-quote`.
   - calling uses the global header landline link.
 - Accessories intentionally bypass the `Product` selector contract and use direct enquiry CTAs instead of sample ordering.
 - Sample cart contract (`src/types/cart.ts`):

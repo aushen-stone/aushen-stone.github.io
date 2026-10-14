@@ -68,7 +68,7 @@ Last updated: 2026-05-07
   - routes: `src/app/accessories/page.tsx`, `src/app/accessories/[slug]/page.tsx`
 - Accessories use enquiry-driven CTAs and must not be forced into the stone sample-cart workflow.
 - Continuity reasoning for accessories should stay in docs and handoff notes; public pages should stay customer-facing and avoid migration language.
-- Successful contact submissions push `contact_form_submit` to `window.dataLayer`; `/contact`, the product quote dialog and the `/services/quote/` form all route to `/thank-you/` after success. Production GA4/GTM validation remains under `LAUNCH-P0-004`.
+- Successful contact submissions push `contact_form_submit` to `window.dataLayer`; `/contact`, the product and `/services` quote dialogs all route to `/thank-you/` after success. Production GA4/GTM validation remains under `LAUNCH-P0-004`.
 - Click-to-call uses the business landline (`CONTACT_INFO.landlineLink`): the header call link on every page (icon on mobile, icon + number on desktop). Page bodies should not repeat it. The mobile number stays where it was already shown (footer, contact page, accessories); do not swap it into new call buttons.
 - Sample requests should use the sample drawer as the primary path. `src/app/components/cart/SampleCartDrawer.tsx` submits directly through the shared contact helper with `source: sample-drawer`; `/cart` remains a noindex fallback page.
 - Production contact delivery target is Cloudflare Worker + Resend; `NEXT_PUBLIC_CONTACT_API_URL` is configured in GitHub Actions repository variables.

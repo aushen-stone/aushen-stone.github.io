@@ -8,8 +8,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CMS_LEGACY_PAGES } from "@/data/cms-site.generated";
 import { SERVICES_SEO_CONTENT } from "@/data/pageSeoContent";
 import { FaqSection } from "@/app/components/FaqSection";
+import { QuickEnquiryForm } from "@/app/components/QuickEnquiryForm";
+import { QuoteDialog } from "@/app/components/QuoteDialog";
 
-const SERVICES_QUOTE_HREF = "/services/quote/";
+const SERVICES_QUOTE_SOURCE = "services-fabrication";
+
+const buildFabricationQuoteMessage = (customerNotes: string) =>
+  [
+    "Stone fabrication quote request from services page:",
+    `Page: ${typeof window === "undefined" ? "/services/" : window.location.href}`,
+    "",
+    "Customer notes:",
+    customerNotes.trim() || "-",
+  ].join("\n");
 
 // --- MOCK DATA ---
 const FABRICATION_SERVICES = [
@@ -82,8 +93,9 @@ export default function ServicesPage() {
   const cta = content?.cta;
 
   // Once the hero "Request a Quote" button scrolls out of view, a floating copy takes over.
-  const heroQuoteRef = useRef<HTMLAnchorElement | null>(null);
+  const heroQuoteRef = useRef<HTMLButtonElement | null>(null);
   const [showFloatingQuote, setShowFloatingQuote] = useState(false);
+  const [isQuoteOpen, setIsQuoteOpen] = useState(false);
 
   useEffect(() => {
     const heroQuote = heroQuoteRef.current;
@@ -123,14 +135,16 @@ export default function ServicesPage() {
              <p className="text-white/60 text-sm font-light max-w-lg text-left md:text-right leading-loose">
                {SERVICES_SEO_CONTENT.introduction}
              </p>
-             <Link
+             <button
                ref={heroQuoteRef}
-               href={SERVICES_QUOTE_HREF}
+               type="button"
+               onClick={() => setIsQuoteOpen(true)}
+               aria-haspopup="dialog"
                className="inline-flex w-full sm:w-auto items-center justify-center gap-2.5 whitespace-nowrap border border-white/25 px-6 py-4 text-[11px] font-medium uppercase tracking-[0.16em] text-white transition-colors hover:bg-white hover:text-[#1a1c18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1a1c18]"
              >
                Request a Quote
                <ArrowRight size={15} />
-             </Link>
+             </button>
           </div>
         </div>
       </section>
@@ -413,23 +427,46 @@ export default function ServicesPage() {
       <AnimatePresence>
         {showFloatingQuote && (
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 12 }}
             transition={{ duration: 0.2 }}
-            // Sits above the shared back-to-top button in the bottom-right corner.
-            className="fixed right-[var(--page-x)] bottom-[calc(env(safe-area-inset-bottom)+4.25rem)] sm:bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] z-[100]"
+            // Vertically centred on the right edge, clear of the back-to-top button.
+            className="fixed right-[var(--page-x)] top-1/2 z-[100] -mt-6"
           >
-            <Link
-              href={SERVICES_QUOTE_HREF}
+            <button
+              type="button"
+              onClick={() => setIsQuoteOpen(true)}
+              aria-haspopup="dialog"
               className="inline-flex items-center gap-2.5 border border-[#1a1c18]/15 bg-[#F8F5F1] px-5 py-3.5 text-[11px] font-medium uppercase tracking-[0.16em] text-[#1a1c18] shadow-[0_14px_34px_-14px_rgba(0,0,0,0.55)] transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1c18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F8F5F1]"
             >
               Request a Quote
               <ArrowRight size={15} />
-            </Link>
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <QuoteDialog
+        open={isQuoteOpen}
+        onClose={() => setIsQuoteOpen(false)}
+        eyebrow="Fabrication quote"
+        title="Tell Us What You Need Cut"
+        titleId="services-quote-title"
+      >
+        <p className="mt-4 mb-5 text-sm leading-6 text-gray-600">
+          Send your stone, dimensions, quantity and timing and our team will come back to
+          you with a quote.
+        </p>
+        <QuickEnquiryForm
+          source={SERVICES_QUOTE_SOURCE}
+          userType="fabrication-quote"
+          buildMessage={buildFabricationQuoteMessage}
+          submitLabel="Send Quote Request"
+          notesPlaceholder="Stone, dimensions, quantity, edge profile, timing"
+          idPrefix="services-quote"
+        />
+      </QuoteDialog>
 
       <Footer />
     </main>
