@@ -219,8 +219,11 @@ test("header exposes a landline call button on every page", async ({ page }, tes
 test("fabrication page offers a quote form near the top", async ({ page }) => {
   await page.goto("/services/");
 
-  await page.getByRole("link", { name: "Request a Quote" }).click();
-  await expect(page).toHaveURL(/#fabrication-quote$/);
-  await expect(page.getByRole("heading", { name: "Tell us what you need cut" })).toBeInViewport();
-  await expect(page.getByRole("textbox", { name: "First name" })).toBeInViewport();
+  const quoteSection = page.locator("#fabrication-quote");
+  await expect(quoteSection.getByRole("heading", { name: "Tell Us What You Need Cut" })).toBeVisible();
+  await expect(quoteSection.getByRole("textbox", { name: "First name" })).toBeVisible();
+  await expect(quoteSection.getByRole("button", { name: "Send Quote Request" })).toBeVisible();
+  // The landline lives in the global header; the hero and quote section don't repeat it.
+  await expect(page.locator('main > section').first().locator("a")).toHaveCount(0);
+  await expect(quoteSection.locator('a[href^="tel:"]')).toHaveCount(0);
 });
