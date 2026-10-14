@@ -18,6 +18,7 @@ const STATIC_ROUTES = [
   "/projects/",
   "/privacy-policy/",
   "/services/",
+  "/services/quote/",
   "/terms-condition/",
 ];
 
