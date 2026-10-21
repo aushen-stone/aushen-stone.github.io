@@ -69,6 +69,8 @@ const BlogRichTextEditor = dynamic(() => import("./BlogRichTextEditor"), {
 
 type EditorState = {
   id?: string;
+  /** Row `updated_at` when the editor opened; used to refuse saves over newer edits. */
+  loadedUpdatedAt?: string;
   title: string;
   slug: string;
   secondaryLabel: string;
@@ -320,6 +322,7 @@ function editorFromRow(row: CmsRow): EditorState {
 
   return {
     id: row.id,
+    loadedUpdatedAt: row.updatedAt,
     title: row.title,
     slug: row.slug,
     secondaryLabel: row.secondaryLabel,
@@ -519,6 +522,29 @@ export default function AdminPageClient() {
         return;
       }
       const supabase = getSupabaseBrowserClient();
+      // Saves replace the whole row, so an editor opened before someone else's
+      // change (e.g. newly uploaded application photos) would silently undo it.
+      // Refuse the save if the row changed after this editor was opened.
+      if (editor.id && editor.loadedUpdatedAt) {
+        const isPage = PAGE_ENTITIES.has(entity);
+        const { data: current, error: currentError } = await supabase
+          .from(tableForEntity(entity))
+          .select("updated_at")
+          .eq(isPage ? "page_key" : "id", isPage ? entity : editor.id)
+          .maybeSingle();
+        if (currentError) throw currentError;
+        if (
+          current?.updated_at &&
+          new Date(current.updated_at).getTime() !== new Date(editor.loadedUpdatedAt).getTime()
+        ) {
+          setMessage(
+            `Not saved: this item was changed by someone else at ${new Date(
+              current.updated_at,
+            ).toLocaleString("en-AU")} after you opened it. Close the editor, reload, and re-apply your changes.`,
+          );
+          return;
+        }
+      }
       const { data: auth } = await supabase.auth.getUser();
       const content = buildCmsContent(entity, editor);
       const base = {

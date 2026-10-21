@@ -1,0 +1,103 @@
+name: Application Photo Monitor
+
+# Read-only check that product application photos in the CMS are all present
+# on the live site, and that the CMS itself has not silently lost photos since
+# the previous run. A new problem opens (or comments on) an issue assigned to
+# the site owner, which GitHub emails; an unchanged problem is not re-sent.
+on:
+  schedule:
+    # Hourly CMS vs live comparison. Scheduled workflows run from main only.
+    - cron: "23 * * * *"
+    # Daily: additionally request every live photo URL (~06:41 Melbourne).
+    - cron: "41 19 * * *"
+  workflow_dispatch:
+    inputs:
+      check_assets:
+        description: "Also request every live photo URL"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: application-photo-monitor
+  cancel-in-progress: false
+
+env:
+  ALERT_ISSUE_TITLE: "Application photo monitor alert"
+  ALERT_ASSIGNEE: Hank-Z-0601
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout monitor script
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/monitor-application-photos.mjs
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Restore previous monitor state
+        uses: actions/cache/restore@v4
+        with:
+          path: .photo-monitor/state.json
+          key: photo-monitor-state-${{ github.run_id }}
+          restore-keys: photo-monitor-state-
+
+      - name: Compare CMS and live application photos
+        id: check
+        env:
+          SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+          CHECK_ASSETS: ${{ (github.event.schedule == '41 19 * * *' || inputs.check_assets) && '1' || '0' }}
+        run: |
+          set +e
+          node scripts/monitor-application-photos.mjs
+          code=$?
+          cat .photo-monitor/report.md >> "$GITHUB_STEP_SUMMARY" 2>/dev/null
+          echo "code=${code}" >> "$GITHUB_OUTPUT"
+          echo "status=$(node -e "try{console.log(require('./.photo-monitor/state.json').status)}catch{console.log('')}")" >> "$GITHUB_OUTPUT"
+
+      - name: Save monitor state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .photo-monitor/state.json
+          key: photo-monitor-state-${{ github.run_id }}
+
+      - name: Notify by issue (new alert)
+        if: steps.check.outputs.code != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          { cat .photo-monitor/report.md 2>/dev/null || echo "Monitor crashed before writing a report."; echo; echo "Run: ${RUN_URL}"; } > alert.md
+          number="$(gh issue list --state open --search "\"${ALERT_ISSUE_TITLE}\" in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "${number}" ]; then
+            gh issue comment "${number}" --body-file alert.md
+          else
+            gh issue create --title "${ALERT_ISSUE_TITLE}" --body-file alert.md --assignee "${ALERT_ASSIGNEE}"
+          fi
+          exit 1
+
+      - name: Close alert issue on recovery
+        if: steps.check.outputs.code == '0' && steps.check.outputs.status == 'ok'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          number="$(gh issue list --state open --search "\"${ALERT_ISSUE_TITLE}\" in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "${number}" ]; then
+            gh issue close "${number}" --comment "Recovered: CMS and live application photos match again. Run: ${RUN_URL}"
+          fi

@@ -116,6 +116,9 @@ GitHub Pages rather than consuming Supabase Storage egress.
 - Home, Services and Our Story are block-based singleton pages. Add, remove or reorder their `blocks` in Advanced JSON.
 - Projects are repeatable records with gallery, credits, tags and linked-product fields in Advanced JSON.
 - If Supabase build secrets are absent locally, `cms:sync` skips and the existing generated content remains the fallback.
+- If Supabase REST egress is quota-restricted during a deploy, the build fails and the current live site stays unchanged; re-run the deploy after the quota resets.
+- Saving refuses to overwrite a record that someone else changed after you opened the editor (for example newly uploaded application photos). Close the editor, reload and re-apply your change.
+- `.github/workflows/application-photo-monitor.yml` checks hourly that every published product's application photos are on the live site and emails the owner (via a GitHub issue) when photos go missing.
 
 ## Accounts and module permissions
 

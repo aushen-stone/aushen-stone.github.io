@@ -182,12 +182,17 @@ try {
   ]);
 } catch (error) {
   // Supabase can temporarily restrict REST egress when the free-plan quota is
-  // exhausted. Preserve the last verified, checked-in CMS snapshot so an SEO
-  // code deployment cannot erase the live catalogue. Other failures remain
-  // fatal because silently publishing stale content would hide real defects.
+  // exhausted. Fail the build instead of falling back to the checked-in
+  // snapshot: that snapshot is not kept current, and publishing it once
+  // (August 2026) stripped application photos from most products and dropped
+  // products created after it. A failed build leaves the last good Pages
+  // deployment live.
   if (error instanceof Error && error.message.startsWith("CMS_QUOTA_RESTRICTED:")) {
-    console.warn("cms:sync using the checked-in snapshot because Supabase REST egress is temporarily restricted");
-    process.exit(0);
+    console.error(
+      "cms:sync aborted: Supabase REST egress is temporarily restricted. " +
+        "The current live site stays as it is; re-run the deploy once the quota resets.",
+    );
+    process.exit(1);
   }
   throw error;
 }

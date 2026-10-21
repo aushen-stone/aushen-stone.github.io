@@ -1476,3 +1476,17 @@ Last updated: 2026-07-29
 - 2026-10-14 follow-up: restored `/services/quote/` as a noindex redirect to
   `/services/?quote=1` (auto-opens the quote dialog) so old links and tabs cached
   from the standalone-page release no longer hit a 404.
+
+## Application photo loss safeguards (2026-10-22)
+- Investigation: deploy logs show two builds (2026-08-13, 2026-08-14) where
+  Supabase REST egress was quota-restricted and `cms:sync` published the
+  checked-in snapshot; that snapshot had application photos for only 3 products
+  and lacked products created after it, so 57 products lost photos (and the five
+  Baton products disappeared) until the next normal deploy. The pre-2026-10-13
+  Baton loss in the CMS itself has no audit trail; admin saves replacing the
+  whole row from a stale editor is a plausible cause.
+- `cms:sync` now fails the build on quota restriction instead of publishing the
+  stale snapshot.
+- Admin saves refuse to overwrite rows changed after the editor was opened.
+- Added the hourly read-only application photo monitor workflow with issue/email
+  alerts (`scripts/monitor-application-photos.mjs`, unit-tested).

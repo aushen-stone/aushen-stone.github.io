@@ -32,6 +32,22 @@ Last updated: 2026-09-01
   - trigger: twice-daily schedule + `workflow_dispatch`
   - performs one minimal read-only published-product query using the existing
     publishable repository variables; it has no write or service-role access
+- Application photo monitor:
+  - `.github/workflows/application-photo-monitor.yml` runs
+    `scripts/monitor-application-photos.mjs` hourly (plus a daily pass that
+    requests every live photo URL) with the same read-only publishable variables.
+  - flags live products with fewer application photos than their published CMS
+    row (after a 45-minute deploy grace period), CMS photo counts lower than the
+    previous run (state kept in the Actions cache), unpublished products and
+    broken photo URLs; network/parse failures count as unknown and alert only
+    after 3 consecutive runs.
+  - a new alert opens or comments on the "Application photo monitor alert" issue
+    assigned to the site owner (GitHub emails it); recovery closes the issue.
+- CMS sync failure policy:
+  - if Supabase REST egress is quota-restricted (HTTP 402), `cms:sync` fails the
+    build so the last good Pages deployment stays live. It no longer publishes
+    the checked-in generated snapshot, which is not kept current (two such
+    deploys in August 2026 stripped most application photos).
 
 ## Route Architecture
 - Homepage composition: `src/app/page.tsx`; approved homepage/Services SEO copy is centralized in `src/data/pageSeoContent.ts`, with reusable visible FAQ markup in `src/app/components/FaqSection.tsx`.
